@@ -37,19 +37,29 @@ import android.view.Gravity;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -67,7 +77,7 @@ import java.util.Locale;
  */
 
 @Autonomous(name="Autonomous Operation")
-public class AutonomousOperation extends OpMode
+public class AutonomousOperation extends LinearOpMode
 {
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -81,13 +91,15 @@ public class AutonomousOperation extends OpMode
     private Orientation angles = null;
     private Acceleration gravity = null;
     private float distanceDriven = 0;
+    private VuforiaLocalizer vuforia;
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+    private OpenGLMatrix lastLocation = null;
+    private int step = 0;
+
     @Override
-    public void init() {
-        telemetry.addData("Status", "Initialized");
+    public void runOpMode() throws InterruptedException {
+        telemetry.addData("Status", "Starting...");
+        telemetry.update();
 
         // motors
         leftMotor  = hardwareMap.dcMotor.get("left motor");
@@ -105,33 +117,146 @@ public class AutonomousOperation extends OpMode
         //colorSensor = hardwareMap.colorSensor.get("color sensor");
 
         // imu
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
+        imuParameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        imuParameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        imuParameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        imuParameters.loggingEnabled      = true;
+        imuParameters.loggingTag          = "IMU";
+        imuParameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
+        imu.initialize(imuParameters);
 
+        // vuforia init
+        VuforiaLocalizer.Parameters vuforiaParameters = new VuforiaLocalizer.Parameters(com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId);
+        vuforiaParameters.vuforiaLicenseKey = "Aeqqx9n/////AAAAGU44IlIke0wcpp2TXZIm0doq2mr4uV5sFkonVd69btVkAHlcthh2lKkMMI+n0pvfyHG/1YVon/+hvr2sJ14bJp3HFifDm0EDP1lJ0B26oSFaShv339Snwjk53VLnXiIAxRu6ys9uovyitz8dlnnT8j6UHSRV1elViHriLiSJt9URKaUhoe0I0a+0XElImXIuZXN7p8NMMP/LIPK3bHYt3CIMIGQ4fSs1+4/06pqI06ijwsH1SIIZn0tiB4199YwyqLfea3Wi+Tsnwm3IkOhgWCy3JeHiCTs43EmciCH0ldF+2N/XuoFFMMPqe/81vMhdHWuWuQFPtXDK7wYrLNFqZ32YTGyKkhyFaejloP4No76F";
+        vuforiaParameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(vuforiaParameters);
+
+        // vuforia trackables
+        VuforiaTrackables ftcTrackables = this.vuforia.loadTrackablesFromAsset("FTC_2016-17");
+
+        VuforiaTrackable wheels = ftcTrackables.get(0);
+        wheels.setName("Wheels");
+
+        VuforiaTrackable tools = ftcTrackables.get(1);
+        tools.setName("Tools");
+
+        VuforiaTrackable legos = ftcTrackables.get(2);
+        legos.setName("Legos");
+
+        VuforiaTrackable gears = ftcTrackables.get(3);
+        gears.setName("Gears");
+
+        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+        allTrackables.addAll(ftcTrackables);
+
+        // units
+        float mmPerInch        = 25.4f;
+        float mmBotWidth       = 15.5f * mmPerInch;
+        float mmFTCFieldWidth  = (12*12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
+
+        // place beacons on field
+        OpenGLMatrix gearsLocationOnField = OpenGLMatrix
+                .translation(-mmFTCFieldWidth/2, -(2*12*mmPerInch), 0)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.XZX,
+                        AngleUnit.DEGREES, 90, 90, 0));
+        gears.setLocation(gearsLocationOnField);
+
+        OpenGLMatrix toolsLocationOnField = OpenGLMatrix
+                .translation(-mmFTCFieldWidth/2, (2*12*mmPerInch), 0)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.XZX,
+                        AngleUnit.DEGREES, 90, 90, 0));
+        tools.setLocation(toolsLocationOnField);
+
+        OpenGLMatrix legosLocationOnField = OpenGLMatrix
+                .translation(-(2*12*mmPerInch), mmFTCFieldWidth/2, 0)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.XZX,
+                        AngleUnit.DEGREES, 90, 0, 0));
+        legos.setLocation(legosLocationOnField);
+
+        OpenGLMatrix wheelsLocationOnField = OpenGLMatrix
+                .translation((2*12*mmPerInch), mmFTCFieldWidth/2, 0)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.XZX,
+                        AngleUnit.DEGREES, 90, 0, 0));
+        wheels.setLocation(wheelsLocationOnField);
+
+        // phone location on robot
+        OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
+                .translation(mmBotWidth/2,0,0)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.YZY,
+                        AngleUnit.DEGREES, -90, 0, 0));
+
+        // inform listeners about phone
+        ((VuforiaTrackableDefaultListener)wheels.getListener()).setPhoneInformation(phoneLocationOnRobot, vuforiaParameters.cameraDirection);
+        ((VuforiaTrackableDefaultListener)tools.getListener()).setPhoneInformation(phoneLocationOnRobot, vuforiaParameters.cameraDirection);
+        ((VuforiaTrackableDefaultListener)legos.getListener()).setPhoneInformation(phoneLocationOnRobot, vuforiaParameters.cameraDirection);
+        ((VuforiaTrackableDefaultListener)gears.getListener()).setPhoneInformation(phoneLocationOnRobot, vuforiaParameters.cameraDirection);
+
+        // ready to go!
         telemetry.addData("Status", "Initialized");
-    }
+        telemetry.update();
+        waitForStart();
 
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
-    public void init_loop() {
-    }
+        // activate vuforia dataset
+        ftcTrackables.activate();
 
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
-    public void start() {
-        runtime.reset();
+        while (true) {
+            telemetry.addData("Status", "Running: " + runtime.toString());
+            updateSensors();
+
+            // vuforia updating
+            for (VuforiaTrackable trackable : allTrackables) {
+                telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible() ? "Visible" : "Not Visible");    //
+                //((VuforiaTrackableDefaultListener)trackable.getListener()).
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
+                }
+            }
+
+            if (lastLocation != null) {
+                telemetry.addData("Pos", lastLocation.formatAsTransform());
+            } else {
+                telemetry.addData("Pos", "I am lost :(");
+            }
+
+            //leftMotor.setPower(0.25);
+            //rightMotor.setPower(0.25);
+
+            /*switch (step) {
+                case 0:
+                    moveForward(5, 0.20);
+                    break;
+                case 1:
+                    turnToHeading(160, 0.15);
+                    distanceDriven = 0.0f;
+                    break;
+                case 2:
+                    moveForward(5, 0.20);
+                    break;
+                case 3:
+                    turnToHeading(20, 0.15);
+                    break;
+            }
+            step++;*/
+
+            telemetry.update();
+            //turnToHeading(0, 0.20);
+            //turnToHeading(-90, 0.20);
+            //requestOpModeStop();
+
+            /*telemetry.addData("Clear", colorSensor.alpha());
+            telemetry.addData("Red  ", colorSensor.red());
+            telemetry.addData("Green", colorSensor.green());
+            telemetry.addData("Blue ", colorSensor.blue());*/
+        }
     }
 
     public void updateImu() {
@@ -148,7 +273,7 @@ public class AutonomousOperation extends OpMode
 
 
         telemetry.addData("distanceDriven", distanceDriven);
-        telemetry.update();
+        //telemetry.update();
     }
 
     public void updateSensors() {
@@ -207,52 +332,6 @@ public class AutonomousOperation extends OpMode
         }
         leftMotors(0.0);
         rightMotors(0.0);
-    }
-
-
-    public int step = 0;
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-    @Override
-    public void loop() {
-        telemetry.addData("Status", "Running: " + runtime.toString());
-        updateSensors();
-
-        //leftMotor.setPower(0.25);
-        //rightMotor.setPower(0.25);
-
-        switch (step) {
-            case 0:
-                moveForward(5, 0.20);
-                break;
-            case 1:
-                turnToHeading(160, 0.15);
-                distanceDriven = 0.0f;
-                break;
-            case 2:
-                moveForward(5, 0.20);
-                break;
-            case 3:
-                turnToHeading(20, 0.15);
-                break;
-        }
-        step++;
-        //turnToHeading(0, 0.20);
-        //turnToHeading(-90, 0.20);
-        //requestOpModeStop();
-
-        /*telemetry.addData("Clear", colorSensor.alpha());
-        telemetry.addData("Red  ", colorSensor.red());
-        telemetry.addData("Green", colorSensor.green());
-        telemetry.addData("Blue ", colorSensor.blue());*/
-    }
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop() {
     }
 
 }
