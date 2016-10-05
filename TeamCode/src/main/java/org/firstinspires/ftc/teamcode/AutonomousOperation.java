@@ -31,9 +31,10 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
-
+import java.util.Date;
+import android.graphics.Color;
 import android.view.Gravity;
-
+import java.text.SimpleDateFormat;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -42,6 +43,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -114,7 +116,7 @@ public class AutonomousOperation extends LinearOpMode
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
         // color sensor
-        //colorSensor = hardwareMap.colorSensor.get("color sensor");
+        colorSensor = hardwareMap.colorSensor.get("color sensor");
 
         // imu
         BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
@@ -334,4 +336,85 @@ public class AutonomousOperation extends LinearOpMode
         rightMotors(0.0);
     }
 
+    public void lineFollower() {
+
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F, 0F, 0F};
+
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
+        Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+        double whiteLineIntensityValue = 23.6; //Replace with value that we get
+        double blackMatIntensityValue = 1.24;  //Also do that here
+        double targetIntensity = whiteLineIntensityValue + blackMatIntensityValue / 2; //Get tarrget value
+
+        while (true) //change to run until called
+        {
+            if (Math.abs(hsvValues[2] - targetIntensity) <= 5) //if on line
+            {
+                moveForward(1, .3);
+            } else {
+                int i = 0;
+                while (hsvValues[2] - targetIntensity > 5 || i < 90) {
+                    turnToHeading((AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle) + 5), .3);
+                    i++;
+                }
+                turnToHeading((AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle) - (i * 5)), .3);
+                while (hsvValues[2] - targetIntensity > 5 || i < 90) {
+                    turnToHeading((AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle) - 5), .3);
+                }
+            }
+//            else
+//            {
+//                System.out.println("3Error");
+//                break;
+//            }
+        }
+    }
+
 }
+
+public class PIDcontroller {
+
+    //Date previous_time = new Date();
+    double total_integral = 0;
+    double P = .15;
+    double I = 0;
+    double D = 0;
+    //long d1 = previous_time.getTime();
+    long previous_time =  System.nanoTime();
+
+    public double Step( double cError ) {
+        double current_error = cError;
+        //Date end = new Date();
+        //long d2 = end.getTime();
+        long end =  System.nanoTime();
+        double time_diff = (end - previous_time) / 1000;
+        double error_diff = current_error * time_diff;
+        double integral_step = current_error * time_diff;
+        total_integral = total_integral + integral_step;
+
+        double Kp = current_error;
+        if (Kp < 0) {
+            Kp *= 1.8;
+        }
+        double Ki = total_integral;
+        double Kd = error_diff / time_diff;
+
+        double R = P*Kp + I*Ki + D*Kd;
+        if (R > 100) {
+            R = 100;
+        }
+        else if (R < -100) {
+            R = -100;
+        }
+        System.out.println("Kp: " + (Kp * P));
+        System.out.println("Ki: " + (Ki * I));
+        System.out.println("Kd: " + (Kd * D);
+        System.out.println("R: " + R);
+        System.out.println("Current Error" + current_error);
+
+        return R;
+    }
+}
+
