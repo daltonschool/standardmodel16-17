@@ -120,8 +120,8 @@ public class Vuforia {
         return lastLocation.getTranslation();
     }
 
-    public VectorF getLocationAsString() {
-        return lastLocation.formatAsTransform()
+    public String getLocationAsString() {
+        return lastLocation.formatAsTransform();
     }
 
     public Orientation getOrientation() {
