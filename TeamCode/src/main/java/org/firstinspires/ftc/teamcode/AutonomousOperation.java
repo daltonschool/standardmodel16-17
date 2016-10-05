@@ -108,7 +108,6 @@ public class AutonomousOperation extends LinearOpMode
     private List<VuforiaTrackable> allTrackables;
 
     private OpenGLMatrix lastLocation = null;
-    private int step = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -232,64 +231,6 @@ public class AutonomousOperation extends LinearOpMode
             } else {
                 telemetry.addData("Pos", "I am lost :(");
             }
-
-            /*if (step % 10000 == 0) {
-                Log.i("StandardModel", "step!");
-                ((VuforiaLocalizerImpl_SM)vuforia).gotFrame = false;
-                ((VuforiaLocalizerImpl_SM)vuforia).getFrame = true;
-            }
-            if (((VuforiaLocalizerImpl_SM)vuforia).gotFrame) {
-                Log.i("StandardModel", "gotFrame");
-                if (((VuforiaLocalizerImpl_SM)vuforia).framebuf != null) {
-                    Log.i("StandardModel", "framebuf not null");
-                    ByteBuffer framebuf = ((VuforiaLocalizerImpl_SM) vuforia).framebuf;
-                    //byte[] pixelArray = new byte[framebuf.remaining()];
-                    //framebuf.get(pixelArray, 0, pixelArray.length);
-                    Bitmap b = Bitmap.createBitmap(1280, 720, Bitmap.Config.RGB_565);
-                    b.copyPixelsFromBuffer(framebuf);
-                    //b.getPixels();
-                    //Log.i("StandardModel", "byte len: " + pixelArray.length);
-                }
-                ((VuforiaLocalizerImpl_SM)vuforia).gotFrame = false;
-            }*/
-            step++;
-            //getFrame
-            //State s = null;
-            //Log.i("StandardModel", "num count: " + ((VuforiaLocalizerImpl_SM)vuforia).numCount);
-            //if (((VuforiaLocalizerImpl_SM)vuforia).lastFrame != null) {
-                //((VuforiaLocalizerImpl_SM)vuforia).lastFrame.
-                //Log.i("StandardModel", "# img: " + ((VuforiaLocalizerImpl_SM)vuforia).lastFrame.getNumImages());//((VuforiaLocalizerImpl_SM)vuforia).lastFrame.getImage(0).getWidth());
-                /*synchronized (((VuforiaLocalizerImpl_SM) vuforia).lastFrame) {
-                   // s = ((VuforiaLocalizerImpl_SM) vuforia).lastState;
-                    //DebugLog.LOGD("Thingy", "width: " +  ((VuforiaLocalizerImpl_SM)vuforia).lastFrame.getImage(0).getWidth());
-                }*/
-            //}
-            //Log.i("StandardModel", "TEST");
-
-
-            /*if (s != null) {
-                Image imageRGB565 = null;
-                Frame frame = s.getFrame();
-                for (int i = 0; i < frame.getNumImages(); ++i) {
-                    Image image = frame.getImage(i);
-                    if (image.getFormat() == PIXEL_FORMAT.RGB565) {
-                        imageRGB565 = image;
-                        break;
-                    }
-                }
-                if (imageRGB565 != null) {
-                    ByteBuffer pixels = imageRGB565.getPixels();
-                    byte[] pixelArray = new byte[pixels.remaining()];
-                    pixels.get(pixelArray, 0, pixelArray.length);
-                    int imageWidth = imageRGB565.getWidth();
-                    int imageHeight = imageRGB565.getHeight();
-                    int stride = imageRGB565.getStride();
-                    DebugLog.LOGD("Image", "Image width: " + imageWidth);
-                    DebugLog.LOGD("Image", "Image height: " + imageHeight);
-                    DebugLog.LOGD("Image", "Image stride: " + stride);
-                    DebugLog.LOGD("Image", "First pixel byte: " + pixelArray[0]);
-                }
-            }*/
 
             //leftMotor.setPower(0.25);
             //rightMotor.setPower(0.25);
