@@ -32,7 +32,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.Gravity;
+import android.widget.Toast;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
@@ -44,10 +47,18 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
+import com.vuforia.Frame;
+import com.vuforia.Image;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.State;
+import com.vuforia.Vuforia;
+import com.vuforia.ar.pl.DebugLog;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.ClassFactory_SM;
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -57,7 +68,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.internal.VuforiaLocalizerImpl_SM;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -92,6 +105,7 @@ public class AutonomousOperation extends LinearOpMode
     private Acceleration gravity = null;
     private float distanceDriven = 0;
     private VuforiaLocalizer vuforia;
+    private List<VuforiaTrackable> allTrackables;
 
     private OpenGLMatrix lastLocation = null;
     private int step = 0;
@@ -132,7 +146,7 @@ public class AutonomousOperation extends LinearOpMode
         VuforiaLocalizer.Parameters vuforiaParameters = new VuforiaLocalizer.Parameters(com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId);
         vuforiaParameters.vuforiaLicenseKey = "Aeqqx9n/////AAAAGU44IlIke0wcpp2TXZIm0doq2mr4uV5sFkonVd69btVkAHlcthh2lKkMMI+n0pvfyHG/1YVon/+hvr2sJ14bJp3HFifDm0EDP1lJ0B26oSFaShv339Snwjk53VLnXiIAxRu6ys9uovyitz8dlnnT8j6UHSRV1elViHriLiSJt9URKaUhoe0I0a+0XElImXIuZXN7p8NMMP/LIPK3bHYt3CIMIGQ4fSs1+4/06pqI06ijwsH1SIIZn0tiB4199YwyqLfea3Wi+Tsnwm3IkOhgWCy3JeHiCTs43EmciCH0ldF+2N/XuoFFMMPqe/81vMhdHWuWuQFPtXDK7wYrLNFqZ32YTGyKkhyFaejloP4No76F";
         vuforiaParameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(vuforiaParameters);
+        this.vuforia = ClassFactory_SM.createVuforiaLocalizer_SM(vuforiaParameters);
 
         // vuforia trackables
         VuforiaTrackables ftcTrackables = this.vuforia.loadTrackablesFromAsset("FTC_2016-17");
@@ -149,7 +163,7 @@ public class AutonomousOperation extends LinearOpMode
         VuforiaTrackable gears = ftcTrackables.get(3);
         gears.setName("Gears");
 
-        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+        allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(ftcTrackables);
 
         // units
@@ -211,15 +225,7 @@ public class AutonomousOperation extends LinearOpMode
             telemetry.addData("Status", "Running: " + runtime.toString());
             updateSensors();
 
-            // vuforia updating
-            for (VuforiaTrackable trackable : allTrackables) {
-                telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible() ? "Visible" : "Not Visible");    //
-                //((VuforiaTrackableDefaultListener)trackable.getListener()).
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
-                    lastLocation = robotLocationTransform;
-                }
-            }
+            updateVuforia();
 
             if (lastLocation != null) {
                 telemetry.addData("Pos", lastLocation.formatAsTransform());
@@ -227,25 +233,68 @@ public class AutonomousOperation extends LinearOpMode
                 telemetry.addData("Pos", "I am lost :(");
             }
 
+            /*if (step % 10000 == 0) {
+                Log.i("StandardModel", "step!");
+                ((VuforiaLocalizerImpl_SM)vuforia).gotFrame = false;
+                ((VuforiaLocalizerImpl_SM)vuforia).getFrame = true;
+            }
+            if (((VuforiaLocalizerImpl_SM)vuforia).gotFrame) {
+                Log.i("StandardModel", "gotFrame");
+                if (((VuforiaLocalizerImpl_SM)vuforia).framebuf != null) {
+                    Log.i("StandardModel", "framebuf not null");
+                    ByteBuffer framebuf = ((VuforiaLocalizerImpl_SM) vuforia).framebuf;
+                    //byte[] pixelArray = new byte[framebuf.remaining()];
+                    //framebuf.get(pixelArray, 0, pixelArray.length);
+                    Bitmap b = Bitmap.createBitmap(1280, 720, Bitmap.Config.RGB_565);
+                    b.copyPixelsFromBuffer(framebuf);
+                    //b.getPixels();
+                    //Log.i("StandardModel", "byte len: " + pixelArray.length);
+                }
+                ((VuforiaLocalizerImpl_SM)vuforia).gotFrame = false;
+            }*/
+            step++;
+            //getFrame
+            //State s = null;
+            //Log.i("StandardModel", "num count: " + ((VuforiaLocalizerImpl_SM)vuforia).numCount);
+            //if (((VuforiaLocalizerImpl_SM)vuforia).lastFrame != null) {
+                //((VuforiaLocalizerImpl_SM)vuforia).lastFrame.
+                //Log.i("StandardModel", "# img: " + ((VuforiaLocalizerImpl_SM)vuforia).lastFrame.getNumImages());//((VuforiaLocalizerImpl_SM)vuforia).lastFrame.getImage(0).getWidth());
+                /*synchronized (((VuforiaLocalizerImpl_SM) vuforia).lastFrame) {
+                   // s = ((VuforiaLocalizerImpl_SM) vuforia).lastState;
+                    //DebugLog.LOGD("Thingy", "width: " +  ((VuforiaLocalizerImpl_SM)vuforia).lastFrame.getImage(0).getWidth());
+                }*/
+            //}
+            //Log.i("StandardModel", "TEST");
+
+
+            /*if (s != null) {
+                Image imageRGB565 = null;
+                Frame frame = s.getFrame();
+                for (int i = 0; i < frame.getNumImages(); ++i) {
+                    Image image = frame.getImage(i);
+                    if (image.getFormat() == PIXEL_FORMAT.RGB565) {
+                        imageRGB565 = image;
+                        break;
+                    }
+                }
+                if (imageRGB565 != null) {
+                    ByteBuffer pixels = imageRGB565.getPixels();
+                    byte[] pixelArray = new byte[pixels.remaining()];
+                    pixels.get(pixelArray, 0, pixelArray.length);
+                    int imageWidth = imageRGB565.getWidth();
+                    int imageHeight = imageRGB565.getHeight();
+                    int stride = imageRGB565.getStride();
+                    DebugLog.LOGD("Image", "Image width: " + imageWidth);
+                    DebugLog.LOGD("Image", "Image height: " + imageHeight);
+                    DebugLog.LOGD("Image", "Image stride: " + stride);
+                    DebugLog.LOGD("Image", "First pixel byte: " + pixelArray[0]);
+                }
+            }*/
+
             //leftMotor.setPower(0.25);
             //rightMotor.setPower(0.25);
 
-            /*switch (step) {
-                case 0:
-                    moveForward(5, 0.20);
-                    break;
-                case 1:
-                    turnToHeading(160, 0.15);
-                    distanceDriven = 0.0f;
-                    break;
-                case 2:
-                    moveForward(5, 0.20);
-                    break;
-                case 3:
-                    turnToHeading(20, 0.15);
-                    break;
-            }
-            step++;*/
+            alignToTrackable(allTrackables.indexOf(gears));
 
             telemetry.update();
             //turnToHeading(0, 0.20);
@@ -256,6 +305,54 @@ public class AutonomousOperation extends LinearOpMode
             telemetry.addData("Red  ", colorSensor.red());
             telemetry.addData("Green", colorSensor.green());
             telemetry.addData("Blue ", colorSensor.blue());*/
+        }
+    }
+
+    public void updateVuforia() {
+        // vuforia updating
+        for (VuforiaTrackable trackable : allTrackables) {
+            telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible() ? "Visible" : "Not Visible");    //
+            //((VuforiaTrackableDefaultListener)trackable.getListener()).
+            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+            if (robotLocationTransform != null) {
+                lastLocation = robotLocationTransform;
+            }
+        }
+    }
+
+    public void alignToTrackable(int trackIndex) {
+        while (true) {
+            if (lastLocation == null) {
+                updateVuforia();
+                continue;
+            }
+            VuforiaTrackable track = allTrackables.get(trackIndex);
+            OpenGLMatrix m = lastLocation;
+            VectorF translation = m.getTranslation();
+            Orientation orientation = Orientation.getOrientation(m, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+            boolean orientationGood = ((orientation.thirdAngle > -160 && orientation.thirdAngle < -180) ||
+                                        (orientation.thirdAngle > 160 && orientation.thirdAngle < 180));
+            if (!orientationGood && orientation.thirdAngle < 0) {
+                leftMotors(0.1f);
+                rightMotors(0.05f);
+            } else if (!orientationGood && orientation.thirdAngle > 0) {
+                leftMotors(0.05f);
+                rightMotors(0.1f);
+            } else if (translation.get(0) > -900) {
+                //moveForward(Math.abs((-1100 - translation.get(0)) / 4), 0.2f);
+                leftMotors(0.1f);
+                rightMotors(0.1f);
+            } else {
+                leftMotors(0.0f);
+                rightMotors(0.0f);
+                return;
+            }
+            updateVuforia();
+
+            telemetry.addData("Pos", lastLocation.formatAsTransform());
+            telemetry.addData("Ptest", translation.get(0));
+            telemetry.addData("Test", leftMotor.getCurrentPosition());
+            telemetry.update();
         }
     }
 
