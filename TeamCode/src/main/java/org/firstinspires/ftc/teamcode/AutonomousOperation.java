@@ -71,7 +71,7 @@ import java.util.Locale;
  *
  * This particular OpMode just executes a basic Tank Drive Teleop for a PushBot
  * It includes all the skeletal structure that all iterative OpModes contain.
- *
+ *\
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
@@ -92,6 +92,8 @@ public class AutonomousOperation extends LinearOpMode
     private Acceleration gravity = null;
     private float distanceDriven = 0;
     private VuforiaLocalizer vuforia;
+
+    List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
 
     private OpenGLMatrix lastLocation = null;
     private int step = 0;
@@ -149,7 +151,7 @@ public class AutonomousOperation extends LinearOpMode
         VuforiaTrackable gears = ftcTrackables.get(3);
         gears.setName("Gears");
 
-        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+
         allTrackables.addAll(ftcTrackables);
 
         // units
@@ -207,19 +209,16 @@ public class AutonomousOperation extends LinearOpMode
         // activate vuforia dataset
         ftcTrackables.activate();
 
+//        moveForward(500, .3);
+        driveStraight(.3, 500);
+
+        goToCordinate(-609, 1828);
+
         while (true) {
             telemetry.addData("Status", "Running: " + runtime.toString());
             updateSensors();
 
-            // vuforia updating
-            for (VuforiaTrackable trackable : allTrackables) {
-                telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible() ? "Visible" : "Not Visible");    //
-                //((VuforiaTrackableDefaultListener)trackable.getListener()).
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
-                    lastLocation = robotLocationTransform;
-                }
-            }
+            updateVuforia();
 
             if (lastLocation != null) {
                 telemetry.addData("Pos", lastLocation.formatAsTransform());
@@ -332,6 +331,111 @@ public class AutonomousOperation extends LinearOpMode
         }
         leftMotors(0.0);
         rightMotors(0.0);
+    }
+
+    public void goToCordinate(double goalx, double goaly) {
+        updateVuforia();
+        if (lastLocation == null) {
+            findBeacon();
+        }
+        double xpos = lastLocation.getTranslation().get(0);
+        double ypos = lastLocation.getTranslation().get(1);
+        double angle = Orientation.getOrientation(lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
+        double distance = Math.sqrt((goalx-xpos)*(goalx-xpos) + (goaly-ypos)*(goaly-ypos));
+
+
+        while(distance > 50) {
+            updateVuforia();
+            if (lastLocation == null) {
+                findBeacon();
+            }
+            angle = Orientation.getOrientation(lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
+            xpos = lastLocation.getTranslation().get(0);
+            ypos = lastLocation.getTranslation().get(1);
+            if (Math.abs(Math.tan((xpos-goalx)/(ypos-goaly))*57.2958 - angle) > 5) {
+                turnToHeading((float) Math.tan((xpos-goalx)/(ypos-goaly)), 1);
+            }
+            driveStraight(.3 , distanceToTicks(distance/2));
+            distance = Math.sqrt((goalx-xpos)*(goalx-xpos) + (goaly-ypos)*(goaly-ypos));
+        }
+
+
+
+    }
+
+    public void updateVuforia () {
+        // vuforia updating
+        for (VuforiaTrackable trackable : allTrackables) {
+            telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible() ? "Visible" : "Not Visible");    //
+            //((VuforiaTrackableDefaultListener)trackable.getListener()).
+            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+            if (robotLocationTransform != null) {
+                lastLocation = robotLocationTransform;
+            }
+        }
+    }
+
+    public void driveStraight(double power, double distanceToDrive) {
+
+        double initticks = leftBackMotor.getCurrentPosition();
+
+        double curHeading = AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
+        double initHeading = AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
+        double error_const = 0.04;
+
+        double powerleft = power;
+        double powerright = power;
+
+
+        turnToHeading((float) curHeading + 180, .3);
+
+        double curticks = initticks;
+        while (Math.abs(initticks - curticks) > distanceToTicks(distanceToDrive)) {
+            curHeading = AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
+
+            double error = curHeading - initHeading;
+
+            powerleft = powerleft + error*error_const;
+            powerleft = powerright + error*error_const;
+
+            leftMotors(powerleft);
+            rightMotors(powerright);
+            updateImu();
+
+            curticks = leftBackMotor.getCurrentPosition();
+            updateImu();
+        }
+        leftMotors(0.0);
+        rightMotors(0.0);
+    }
+
+
+    double scale(double d) {
+        if (d > 1) return 1.0;
+        if (d < -1) return -1.0;
+        else return d;
+    }
+
+    int distanceToTicks(double mm) {
+        double ticks = (mm*1120)/(2*3.14*100);
+        return (int) Math.round(ticks);
+    }
+
+    public void findBeacon () {
+        double initHeading = AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
+        double curHeading = initHeading;
+        while (lastLocation == null && Math.abs(curHeading - initHeading) < 160) {
+            turnToHeading((float) curHeading+20, .3);
+            updateImu();
+            curHeading = AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
+        }
+
+        while (lastLocation == null && Math.abs(curHeading - initHeading) < 160) {
+            turnToHeading((float) curHeading-20, .3);
+            updateImu();
+            curHeading = AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
+        }
+
     }
 
 }
