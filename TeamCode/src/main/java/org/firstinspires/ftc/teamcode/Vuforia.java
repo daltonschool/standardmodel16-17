@@ -83,7 +83,7 @@ public class Vuforia {
 
         // phone location on robot
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
-                .translation(mmBotWidth/2,0,0)
+                .translation((mmBotWidth/2) - 50,0,0)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.YZY,
                         AngleUnit.DEGREES, -90, 0, 0));
