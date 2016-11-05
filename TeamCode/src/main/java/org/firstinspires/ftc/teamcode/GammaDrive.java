@@ -36,8 +36,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * Demonstrates empty OpMode
  */
-@TeleOp(name = "BetaDrive", group = "TeleOp")
-public class BetaDrive extends OpMode {
+@TeleOp(name = "GammaDrive", group = "TeleOp")
+public class GammaDrive extends OpMode {
 
 
     DcMotor launchLeft;
@@ -52,6 +52,8 @@ public class BetaDrive extends OpMode {
 
     double powerleft;
     double powerright;
+
+    double launchpower;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -69,6 +71,7 @@ public class BetaDrive extends OpMode {
         outside_nom = hardwareMap.dcMotor.get("outside_nom");
         lift = hardwareMap.dcMotor.get("lift");
 
+        launchpower = .6;
 
 
     }
@@ -98,19 +101,26 @@ public class BetaDrive extends OpMode {
     public void loop() {
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
+        if (gamepad2.dpad_up == true && Math.abs(launchpower) < 1) {
+            launchpower += .1;
+        }
+        if (gamepad2.dpad_down ==  true && Math.abs(launchpower) < 1) {
+            launchpower -= .1;
+        }
+
         //Launch
         if (gamepad1.a == true) {
-            launchRight.setPower(-.5);
-            launchLeft.setPower(.5);
+            launchRight.setPower(launchpower);
+            launchLeft.setPower(-launchpower);
         } else if (gamepad1.b == true) {
-            launchRight.setPower(-.9);
-            launchLeft.setPower(.9);
+            launchRight.setPower(-.4);
+            launchLeft.setPower(.4);
         } else if (gamepad1.x == true) {
-            launchRight.setPower(-1);
-            launchLeft.setPower(1);
-        } else if (gamepad1.y == true){
-            launchRight.setPower(-1);
-            launchLeft.setPower(1);
+            launchRight.setPower(-.6);
+            launchLeft.setPower(.6);
+        } else if (gamepad1.y == true) {
+            launchRight.setPower(.3);
+            launchLeft.setPower(-.3);
         } else {
             launchRight.setPower(0.0);
             launchLeft.setPower(0.0);
@@ -128,35 +138,31 @@ public class BetaDrive extends OpMode {
         rightback.setPower(trim(powerright));
 
 
-        if (gamepad1.dpad_down == true) {
+        if (gamepad2.a == true) {
             inside_nom.setPower(1);
-        } else if (gamepad1.dpad_up == true) {
+        } else if (gamepad2.y == true) {
             inside_nom.setPower(-1);
-        } else if (gamepad1.y == true) {
-            inside_nom.setPower(1);
         } else {
             inside_nom.setPower(0);
         }
 
-        if (gamepad1.dpad_right == true) {
+        if (gamepad2.b == true) {
             outside_nom.setPower(1);
-        } else if (gamepad1.dpad_left == true) {
+        } else if (gamepad2.x == true) {
             outside_nom.setPower(-1);
-        } else if (gamepad1.y == true) {
-            inside_nom.setPower(-1);
-        }else {
+        } else {
             outside_nom.setPower(0);
         }
 
         //Lift
-        if (gamepad1.right_trigger != 0 && gamepad1.left_trigger == 0 && gamepad1.left_bumper == false && gamepad1.right_bumper == false) {
-            lift.setPower(-gamepad1.right_trigger/10);
-        } else if (gamepad1.left_trigger != 0 && gamepad1.right_trigger == 0 && gamepad1.left_bumper == false && gamepad1.right_bumper == false) {
-            lift.setPower(gamepad1.left_trigger/10);
-        } else if (gamepad1.left_trigger == 0 && gamepad1.right_trigger == 0 && gamepad1.left_bumper == true && gamepad1.right_bumper == false) {
-            lift.setPower(.5);
-        } else if (gamepad1.left_trigger == 0 && gamepad1.right_trigger == 0 && gamepad1.left_bumper == false && gamepad1.right_bumper == true) {
+        if (gamepad2.right_trigger != 0 && gamepad2.left_trigger == 0 && gamepad2.left_bumper == false && gamepad2.right_bumper == false) {
             lift.setPower(-.5);
+        } else if (gamepad2.left_trigger != 0 && gamepad2.right_trigger == 0 && gamepad2.left_bumper == false && gamepad2.right_bumper == false) {
+            lift.setPower(-5);
+        } else if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0 && gamepad2.left_bumper == true && gamepad2.right_bumper == false) {
+            lift.setPower(1);
+        } else if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0 && gamepad2.left_bumper == false && gamepad2.right_bumper == true) {
+            lift.setPower(-1);
         } else {
             lift.setPower(0);
         }
