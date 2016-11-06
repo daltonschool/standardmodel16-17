@@ -20,6 +20,11 @@ public class Vuforia {
     private VuforiaLocalizer vuforia;
     private VuforiaTrackables ftcTrackables;
 
+    public VuforiaTrackable wheels;
+    public VuforiaTrackable tools;
+    public VuforiaTrackable legos;
+    public VuforiaTrackable gears;
+
     private OpenGLMatrix lastLocation = null;
 
     public void init() {
@@ -32,16 +37,16 @@ public class Vuforia {
         // vuforia trackables
         ftcTrackables = this.vuforia.loadTrackablesFromAsset("FTC_2016-17");
 
-        VuforiaTrackable wheels = ftcTrackables.get(0);
+        wheels = ftcTrackables.get(0);
         wheels.setName("Wheels");
 
-        VuforiaTrackable tools = ftcTrackables.get(1);
+        tools = ftcTrackables.get(1);
         tools.setName("Tools");
 
-        VuforiaTrackable legos = ftcTrackables.get(2);
+        legos = ftcTrackables.get(2);
         legos.setName("Legos");
 
-        VuforiaTrackable gears = ftcTrackables.get(3);
+        gears = ftcTrackables.get(3);
         gears.setName("Gears");
 
         allTrackables = new ArrayList<VuforiaTrackable>();
@@ -83,7 +88,7 @@ public class Vuforia {
 
         // phone location on robot
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
-                .translation((mmBotWidth/2) - 50,0,0)
+                .translation((mmBotWidth/2) /*- 50 */,0,0)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.YZY,
                         AngleUnit.DEGREES, -90, 0, 0));

@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 
 @Autonomous(name="Autonomous Operation")
 public class AutonomousOperation extends LinearOpMode
@@ -66,7 +67,7 @@ public class AutonomousOperation extends LinearOpMode
         vuforia.init();
 
         // ready to go!
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "READY TO GO");
         telemetry.update();
         waitForStart();
 
@@ -85,50 +86,30 @@ public class AutonomousOperation extends LinearOpMode
                 telemetry.addData("Pos", "I am lost :(");
             }
 
-            /*turnToHeading(10, 0.3f);
-            telemetry.addLine("TURN DONE");
+            moveForward_encoder(2000, 0.3f);
+            telemetry.addLine("MOVE 1 DONE");
             telemetry.update();
-            Thread.sleep(3000);*/
+            Thread.sleep(100);
 
-            moveForward_encoder(5000, 0.3f);
-            telemetry.addLine("MOVE DONE");
+            turnToHeading(55, 0.2f);
+            telemetry.addLine("TURN 1 DONE");
             telemetry.update();
-            Thread.sleep(1000);
+            Thread.sleep(100);
 
-            turnToHeading(65, 0.2f);
+            moveForward_encoder(4000, 0.3f);
+            telemetry.addLine("MOVE 2 DONE");
+            telemetry.update();
+            Thread.sleep(100);
+
+            turnToHeading(75, 0.3f);
             telemetry.addLine("TURN 2 DONE");
             telemetry.update();
-            Thread.sleep(1000);
+            Thread.sleep(100);
 
             /*turnToHeading(90, 0.2f);
-            telemetry.addLine("TURN DONE");
-            telemetry.update();
-            Thread.sleep(3000);
-
-            moveForward_encoder(2500, 0.13f);
-            telemetry.addLine("MOVE PART 2 DONE");
-            telemetry.update();
-            Thread.sleep(3000);
-
-            turnToHeading(0, 0.2f);
             telemetry.addLine("TURN 2 DONE");
             telemetry.update();
-            Thread.sleep(3000);
-
-            moveForward_encoder(2000, 0.13f);
-            telemetry.addLine("MOVE PART 3 DONE");
-            telemetry.update();
-            Thread.sleep(3000);
-
-            turnToHeading(90, 0.2f);
-            telemetry.addLine("TURN 3 DONE");
-            telemetry.update();
-            Thread.sleep(3000);
-
-            moveForward_encoder(1000, 0.13f);
-            telemetry.addLine("MOVE PART 4 DONE");
-            telemetry.update();
-            Thread.sleep(3000);*/
+            Thread.sleep(1000);*/
 
             // align to gears
             telemetry.addLine("TRYING TO ALIGN...");
@@ -161,7 +142,7 @@ public class AutonomousOperation extends LinearOpMode
                 beaconServo.setPosition(0.6274509804);
             }
             telemetry.update();
-            Thread.sleep(500);
+            Thread.sleep(250);
 
             telemetry.addLine("PRESSY PRESS");
             telemetry.update();
@@ -189,6 +170,10 @@ public class AutonomousOperation extends LinearOpMode
         }
     }
 
+    /*public void alignTo(VuforiaTrackable trackable) {
+        trackable.getLocation()
+    }*/
+
     public void alignTest() throws InterruptedException { // only works for gears!!!
         while (true) {
             if (!vuforia.hasLocation()) {
@@ -200,7 +185,7 @@ public class AutonomousOperation extends LinearOpMode
             boolean orientationGood = ((orientation.thirdAngle > -175 && orientation.thirdAngle < -180) ||
                                         (orientation.thirdAngle > 175 && orientation.thirdAngle < 180));
 
-            if (translation.get(0) < -1440) {
+            if (translation.get(0) < -1400) {
                 // we're too close, just stop
                 telemetry.addLine("ALIGNTEST IS DONE");
                 leftMotors(0.0f);
@@ -209,12 +194,12 @@ public class AutonomousOperation extends LinearOpMode
             }
 
             if (!orientationGood && orientation.thirdAngle < 0) {
-                leftMotors(0.05f);
-                rightMotors(0.1f);
-            } else if (!orientationGood && orientation.thirdAngle > 0) {
                 leftMotors(0.1f);
                 rightMotors(0.05f);
-            } else if (translation.get(0) > -1440) {
+            } else if (!orientationGood && orientation.thirdAngle > 0) {
+                leftMotors(0.05f);
+                rightMotors(0.1f);
+            } else if (translation.get(0) > -1400) {
                 //moveForward(Math.abs((-1100 - translation.get(0)) / 4), 0.2f);
                 leftMotors(0.1f);
                 rightMotors(0.1f);
@@ -253,11 +238,11 @@ public class AutonomousOperation extends LinearOpMode
             float distanceTo = Math.abs(targetHeading - currentHeading);
 
             if (distanceTo < 10) {
-                currentSpeed *= 0.10;
+                currentSpeed *= 0.30;
             } else if (distanceTo < 20) {
-                currentSpeed *= 0.25;
+                currentSpeed *= 0.40;
             } else if (distanceTo < 30) {
-                currentSpeed *= 0.50;
+                currentSpeed *= 0.60;
             }
 
             leftMotors((turnLeft ? -currentSpeed : currentSpeed));
@@ -295,8 +280,12 @@ public class AutonomousOperation extends LinearOpMode
     public void moveForward_encoder(double distanceToDrive, double power) throws InterruptedException {
         double startPos = leftMotor.getCurrentPosition();
         while ((leftMotor.getCurrentPosition() - startPos) < distanceToDrive) {
-            leftMotors(power);
-            rightMotors(power);
+            double factor = 1.0f;
+            if ((leftMotor.getCurrentPosition() - startPos) > (distanceToDrive / 2)) {
+                factor = 0.5f;
+            }
+            leftMotors(power * factor);
+            rightMotors(power * factor);
             idle();
             telemetry.addData("curPos", leftMotor.getCurrentPosition());
             telemetry.update();
@@ -346,7 +335,7 @@ public class AutonomousOperation extends LinearOpMode
         beaconServo.setPosition(0.0);
         telemetry.addLine("WAITING FOR SERVO POS");
         telemetry.update();
-        Thread.sleep(5000);
+        Thread.sleep(1000);
         Alliance response;
         if (beaconColor.red() != 0 && beaconColor.red() != 255 && beaconColor.red() > 30) {
             response = Alliance.RED;
