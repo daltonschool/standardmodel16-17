@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.sensors;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory_SM;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -15,6 +15,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.util.ArrayList;
 import java.util.List;
 
+// yes I know that technically vuforia isn't a sensor
+// I don't really care though
 public class Vuforia {
     private List<VuforiaTrackable> allTrackables;
     private VuforiaLocalizer vuforia;
@@ -106,7 +108,6 @@ public class Vuforia {
     }
 
     public void update() {
-// vuforia updating
         for (VuforiaTrackable trackable : allTrackables) {
             //telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible() ? "Visible" : "Not Visible");    //
             //((VuforiaTrackableDefaultListener)trackable.getListener()).

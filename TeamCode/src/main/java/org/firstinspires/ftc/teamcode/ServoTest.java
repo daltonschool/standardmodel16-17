@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="zzzSERVO TEST PROGRAM")
+@Autonomous(name="Servo Test", group="Tests")
 public class ServoTest extends LinearOpMode
 {
     @Override
