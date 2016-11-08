@@ -25,8 +25,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.adafruit.BNO055IMU;
-import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -59,6 +57,9 @@ public class GammaDrive2Test extends OpMode {
 
     double prevtime;
 
+    boolean upprevstate;
+    boolean downprevstate;
+
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -79,6 +80,8 @@ public class GammaDrive2Test extends OpMode {
         launchVoltage = 7;
 
         prevtime = 0;
+
+        upprevstate = false;
 
 
     }
@@ -114,11 +117,19 @@ public class GammaDrive2Test extends OpMode {
             prevtime = runtime.time();
         }
 
-        if (gamepad2.dpad_up == true && Math.abs(launchpower) < 1) {
+        launchpower = trim(launchpower);
+
+        if (gamepad2.dpad_up == true && upprevstate == false) {
             launchVoltage += 1;
+            upprevstate = true;
+        } else {
+            upprevstate = false;
         }
-        if (gamepad2.dpad_down ==  true && Math.abs(launchpower) < 1) {
+        if (gamepad2.dpad_down ==  true && downprevstate == false) {
             launchVoltage -= 1;
+            downprevstate = true;
+        } else {
+            downprevstate = false;
         }
 //
 //        //Launch
