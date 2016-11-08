@@ -60,6 +60,9 @@ public class GammaDrive2Test extends OpMode {
     boolean upprevstate;
     boolean downprevstate;
 
+    double lastuppress;
+    double lastdownpress;
+
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -82,7 +85,10 @@ public class GammaDrive2Test extends OpMode {
         prevtime = 0;
 
         upprevstate = false;
+        downprevstate = false;
 
+        lastuppress = 0;
+        lastdownpress = 0;
 
     }
 
@@ -119,15 +125,17 @@ public class GammaDrive2Test extends OpMode {
 
         launchpower = trim(launchpower);
 
-        if (gamepad2.dpad_up == true && upprevstate == false) {
+        if (gamepad2.dpad_up == true && upprevstate == false && runtime.time() - lastuppress > .5) {
             launchVoltage += 1;
             upprevstate = true;
+            lastuppress = runtime.time();
         } else {
             upprevstate = false;
         }
-        if (gamepad2.dpad_down ==  true && downprevstate == false) {
+        if (gamepad2.dpad_down ==  true && downprevstate == false && runtime.time() - lastdownpress > .5) {
             launchVoltage -= 1;
             downprevstate = true;
+            lastdownpress = runtime.time();
         } else {
             downprevstate = false;
         }
