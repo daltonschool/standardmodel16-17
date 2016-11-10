@@ -39,36 +39,36 @@ public class AutonomousOperation extends LinearOpMode
 
             Robot.update();
 
-            Robot.moveForward_encoder(2000, 0.3f);
+            Robot.moveForward_encoder(2000, 0.5f);
             telemetry.addLine("MOVE 1 DONE");
             telemetry.update();
             Thread.sleep(100);
 
-            Robot.turnToHeading(55, 0.2f);
+            Robot.turnToHeading(55, 0.8f);
             telemetry.addLine("TURN 1 DONE");
             telemetry.update();
             Thread.sleep(100);
 
-            Robot.moveForward_encoder(4000, 0.3f);
+            Robot.moveForward_encoder(4000, 0.5f);
             telemetry.addLine("MOVE 2 DONE");
             telemetry.update();
             Thread.sleep(100);
 
-            Robot.turnToHeading(75, 0.3f);
+            Robot.turnToHeading(75, 0.8f);
             telemetry.addLine("TURN 2 DONE");
             telemetry.update();
             Thread.sleep(100);
-
-            /*turnToHeading(90, 0.2f);
-            telemetry.addLine("TURN 2 DONE");
-            telemetry.update();
-            Thread.sleep(1000);*/
 
             // align to gears
             telemetry.addLine("TRYING TO ALIGN...");
             telemetry.update();
             alignTest();
             Thread.sleep(250);
+
+            Robot.turnToHeading(90, 0.8f);
+            telemetry.addLine("ALIGN TURN DONE");
+            telemetry.update();
+            Thread.sleep(100);
 
             /*for (int i = 0; i < 500; i++) {
                 telemetry.addData("r", beaconColor.red());
@@ -82,10 +82,12 @@ public class AutonomousOperation extends LinearOpMode
             Alliance rightColor = Robot.getBeaconRightColor();
             if (rightColor == currentAlliance) {
                 telemetry.addLine("PRESSING RIGHT");
-                Robot.beaconServo.setPosition(0.0);
+                Robot.beaconLeft.setPosition(0.0);
+                Robot.beaconRight.setPosition(0.0);
             } else {
                 telemetry.addLine("PRESSING LEFT");
-                Robot.beaconServo.setPosition(0.6274509804);
+                Robot.beaconLeft.setPosition(1.0);
+                Robot.beaconRight.setPosition(1.0);
             }
             telemetry.update();
             Thread.sleep(250);
@@ -95,10 +97,10 @@ public class AutonomousOperation extends LinearOpMode
             Robot.moveForward_encoder(400, 0.5f);
             Thread.sleep(250);
 
-            if (rightColor != currentAlliance) {
+            /*if (rightColor != currentAlliance) {
                 Thread.sleep(250);
                 Robot.beaconServo.setPosition(0.65);
-            }
+            }*/
 
             telemetry.addLine("RETREAT");
             telemetry.update();

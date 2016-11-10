@@ -17,7 +17,8 @@ public class Robot {
     public static DcMotor rightMotor;
 
     // Servos
-    public static Servo beaconServo;
+    public static Servo beaconLeft;
+    public static Servo beaconRight;
 
     // Sensors
     public static ColorSensor colorSensor = null;
@@ -46,7 +47,8 @@ public class Robot {
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Servos
-        beaconServo = hardwareMap.servo.get("beacon servo");
+        beaconLeft = hardwareMap.servo.get("beacon left");
+        beaconRight = hardwareMap.servo.get("beacon right");
 
         // Sensors
         // Color
@@ -160,7 +162,8 @@ public class Robot {
 
     // Sensing methods
     public static Alliance getBeaconRightColor() throws InterruptedException {
-        beaconServo.setPosition(0.0);
+        beaconLeft.setPosition(0.0);
+        beaconRight.setPosition(0.0);
         telemetry.addLine("WAITING FOR SERVO POS");
         telemetry.update();
         Thread.sleep(1000);
