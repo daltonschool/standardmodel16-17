@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -11,12 +13,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 @Autonomous(name="Autonomous Operation")
 public class AutonomousOperation extends LinearOpMode
 {
+    public static ColorSensor lineSensor = null;
     private ElapsedTime runtime = new ElapsedTime();
-
     private Alliance currentAlliance = Alliance.RED; // this is hardcoded for now, but should be set somehow (two different opmodes? how is this normally done?)
 
     @Override
     public void runOpMode() throws InterruptedException {
+        lineSensor = hardwareMap.colorSensor.get("color sensor");
+        lineSensor.setI2cAddress(I2cAddr.create8bit(0x4C));
+        lineSensor.enableLed(false);
         telemetry.addData("Status", "Starting...");
         telemetry.update();
 
@@ -100,8 +105,17 @@ public class AutonomousOperation extends LinearOpMode
             //moveForward_encoder(-200, -0.5f);
             Thread.sleep(500);
 
-            telemetry.addLine("THE END");
+            telemetry.addLine("THE END OF PART 1");
             telemetry.update();
+
+            //turn 90 degrees to the right
+            Robot.turnToHeading(270, .7);
+
+            //go forward until the the line is sensed
+            while(onLine()){
+                Robot.moveForward_encoder(20, 0.3f);
+                Robot.idle();
+            }
 
             // press button
             requestOpModeStop();
@@ -114,7 +128,16 @@ public class AutonomousOperation extends LinearOpMode
     /*public void alignTo(VuforiaTrackable trackable) {
         trackable.getLocation()
     }*/
-
+    public boolean onLine() throws InterruptedException{
+        telemetry.addLine("CHECKING VALUE");
+        telemetry.update();
+        Thread.sleep(1000);
+        boolean oL = false;
+        if (lineSensor.green() > 240 &&  lineSensor.blue() > 240 && lineSensor.red() > 240) {
+            oL = true;
+        }
+        return oL;
+    }
     public void alignToTrackable(VuforiaTrackable trackable) {
         while (true) {
             if (!Robot.vuforia.hasLocation()) {
