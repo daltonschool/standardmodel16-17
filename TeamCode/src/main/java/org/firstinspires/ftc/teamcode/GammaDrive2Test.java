@@ -48,6 +48,7 @@ public class GammaDrive2Test extends OpMode {
     DcMotor outside_nom;
     DcMotor lift;
 
+
     double powerleft;
     double powerright;
 
