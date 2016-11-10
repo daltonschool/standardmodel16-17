@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sensors;
+package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory_SM;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
