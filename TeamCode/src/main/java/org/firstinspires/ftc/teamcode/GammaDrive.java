@@ -25,11 +25,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.adafruit.BNO055IMU;
-import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -50,10 +49,26 @@ public class GammaDrive extends OpMode {
     DcMotor outside_nom;
     DcMotor lift;
 
+    Servo bpleft;
+    Servo bpright;
+
     double powerleft;
     double powerright;
 
     double launchpower;
+
+
+    boolean upprevstatelaunchspeed;
+    boolean downprevstatelaunchspeed;
+
+    double lastuppresslaunchspeed;
+    double lastdownpresslaunchspeed;
+
+    boolean prevstatelaunchtoggle;
+
+    double lastpresslaunchtoggle;
+
+    boolean launching;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -71,7 +86,16 @@ public class GammaDrive extends OpMode {
         outside_nom = hardwareMap.dcMotor.get("outside_nom");
         lift = hardwareMap.dcMotor.get("lift");
 
-        launchpower = .6;
+        launchpower = .4;
+
+        bpright = hardwareMap.servo.get("leftBeacon");
+        bpleft = hardwareMap.servo.get("rightBeacon");
+
+        upprevstatelaunchspeed = false;
+        downprevstatelaunchspeed = false;
+
+        lastuppresslaunchspeed = 0;
+        lastdownpresslaunchspeed = 0;
 
 
     }
@@ -101,30 +125,45 @@ public class GammaDrive extends OpMode {
     public void loop() {
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-        if (gamepad2.dpad_up == true && Math.abs(launchpower) < 1) {
-            launchpower += .1;
-        }
-        if (gamepad2.dpad_down ==  true && Math.abs(launchpower) < 1) {
-            launchpower -= .1;
-        }
+        telemetry.addData("Launch Power:", launchpower);
 
         //Launch
-        if (gamepad1.a == true) {
-            launchRight.setPower(launchpower);
-            launchLeft.setPower(-launchpower);
-        } else if (gamepad1.b == true) {
-            launchRight.setPower(-.4);
-            launchLeft.setPower(.4);
-        } else if (gamepad1.x == true) {
-            launchRight.setPower(-.6);
-            launchLeft.setPower(.6);
-        } else if (gamepad1.y == true) {
-            launchRight.setPower(.3);
-            launchLeft.setPower(-.3);
+        if (gamepad2.dpad_up == true && upprevstatelaunchspeed == false && runtime.time() - lastuppresslaunchspeed > .5) {
+            launchpower += .1;
+            upprevstatelaunchspeed = true;
+            lastuppresslaunchspeed = runtime.time();
         } else {
-            launchRight.setPower(0.0);
-            launchLeft.setPower(0.0);
+            upprevstatelaunchspeed = false;
         }
+        if (gamepad2.dpad_down ==  true && downprevstatelaunchspeed == false && runtime.time() - lastdownpresslaunchspeed > .5) {
+            launchpower -= .1;
+            downprevstatelaunchspeed = true;
+            lastdownpresslaunchspeed = runtime.time();
+        } else {
+            downprevstatelaunchspeed = false;
+        }
+
+        if (gamepad1.right_bumper ==  true && prevstatelaunchtoggle == false && runtime.time() - lastpresslaunchtoggle > .5) {
+            launching = !launching;
+            prevstatelaunchtoggle = true;
+            lastpresslaunchtoggle = runtime.time();
+        } else {
+            prevstatelaunchtoggle = false;
+        }
+
+
+        if (launching == true && gamepad1.left_bumper == false) {
+            launchRight.setPower(-launchpower);
+            launchLeft.setPower(launchpower);
+        } else if (launching == false && gamepad1.left_bumper == true){
+            launchRight.setPower(.2);
+            launchLeft.setPower(-.2);
+        } else {
+            launchRight.setPower(0);
+            launchLeft.setPower(0);
+        }
+
+        launchpower = trim(launchpower);
 
         //Drive
 
@@ -155,13 +194,21 @@ public class GammaDrive extends OpMode {
         }
 
         //Lift
-        if (gamepad2.right_trigger != 0 && gamepad2.left_trigger == 0 && gamepad2.left_bumper == false && gamepad2.right_bumper == false) {
-            lift.setPower(-.5);
-        } else if (gamepad2.left_trigger != 0 && gamepad2.right_trigger == 0 && gamepad2.left_bumper == false && gamepad2.right_bumper == false) {
-            lift.setPower(-5);
-        } else if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0 && gamepad2.left_bumper == true && gamepad2.right_bumper == false) {
+        if (gamepad2.right_trigger != 0 && gamepad2.left_trigger == 0) {
+            bpright.setPosition(0);
+        } else {
+            bpright.setPosition(1);
+        }
+
+        if (gamepad2.left_trigger != 0 && gamepad2.right_trigger == 0) {
+            bpleft.setPosition(1);
+        } else {
+            bpleft.setPosition(0);
+        }
+
+        if (gamepad2.left_bumper == true && gamepad2.right_bumper == false) {
             lift.setPower(1);
-        } else if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0 && gamepad2.left_bumper == false && gamepad2.right_bumper == true) {
+        } else if (gamepad2.left_bumper == false && gamepad2.right_bumper == true) {
             lift.setPower(-1);
         } else {
             lift.setPower(0);

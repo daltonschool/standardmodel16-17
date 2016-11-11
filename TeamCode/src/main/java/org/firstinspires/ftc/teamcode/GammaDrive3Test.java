@@ -35,8 +35,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * Demonstrates empty OpMode
  */
-@TeleOp(name = "GammaDrive2Test", group = "TeleOp")
-public class GammaDrive2Test extends OpMode {
+@TeleOp(name = "GammaDrive3Test", group = "TeleOp")
+public class GammaDrive3Test extends OpMode {
 
 
     DcMotor launchLeft;
@@ -82,6 +82,9 @@ public class GammaDrive2Test extends OpMode {
         inside_nom = hardwareMap.dcMotor.get("inside_nom");
         outside_nom = hardwareMap.dcMotor.get("outside_nom");
         lift = hardwareMap.dcMotor.get("lift");
+
+        hardwareMap.dcMotorController.get("Motor Controller 1").setMotorMode(0, DcMotor.RunMode.RUN_USING_ENCODER);
+        hardwareMap.dcMotorController.get("Motor Controller 1").setMotorMode(1, DcMotor.RunMode.RUN_USING_ENCODER);
 
         bpright = hardwareMap.servo.get("leftBeacon");
         bpleft = hardwareMap.servo.get("rightBeacon");
