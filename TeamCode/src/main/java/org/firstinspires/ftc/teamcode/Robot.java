@@ -4,6 +4,7 @@ import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -15,6 +16,14 @@ public class Robot {
     // Motors
     public static DcMotor leftMotor;
     public static DcMotor rightMotor;
+
+    public static DcMotor flywheelLeft;
+    public static DcMotor flywheelRight;
+
+    public static DcMotor nomFront;
+    public static DcMotor nomMiddle;
+
+    public static DcMotor conveyor;
 
     // Servos
     public static Servo beaconLeft;
@@ -45,6 +54,21 @@ public class Robot {
 
         rightMotor = hardwareMap.dcMotor.get("right motor");
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        flywheelLeft = hardwareMap.dcMotor.get("flywheel left");
+        flywheelLeft.setDirection(DcMotor.Direction.FORWARD);
+
+        flywheelRight = hardwareMap.dcMotor.get("flywheel right");
+        flywheelRight.setDirection(DcMotor.Direction.REVERSE);
+
+        nomMiddle = hardwareMap.dcMotor.get("nom middle");
+        nomMiddle.setDirection(DcMotor.Direction.FORWARD);
+
+        nomFront = hardwareMap.dcMotor.get("nom front");
+        nomFront.setDirection(DcMotor.Direction.FORWARD);
+
+        conveyor = hardwareMap.dcMotor.get("conveyor");
+        conveyor.setDirection(DcMotor.Direction.FORWARD);
 
         // Servos
         beaconLeft = hardwareMap.servo.get("beacon left");
@@ -99,6 +123,9 @@ public class Robot {
         float currentHeading = imu.getHeading();
         boolean turnLeft = (targetHeading - currentHeading > 0 ? true : false);
         while (true) {
+            telemetry.addData("hdg", currentHeading);
+            telemetry.update();
+
             double currentSpeed = power;
             float distanceTo = Math.abs(targetHeading - currentHeading);
 

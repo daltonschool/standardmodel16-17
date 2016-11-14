@@ -56,7 +56,7 @@ public class Vuforia {
 
         // units
         float mmPerInch        = 25.4f;
-        float mmBotWidth       = 15.5f * mmPerInch;
+        float mmBotWidth       = 18f * mmPerInch;
         float mmFTCFieldWidth  = (12*12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
 
         // place beacons on field
@@ -90,7 +90,7 @@ public class Vuforia {
 
         // phone location on robot
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
-                .translation((mmBotWidth/2) /*- 50 */,0,0)
+                .translation((mmBotWidth/2) + 50 ,0,0)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.YZY,
                         AngleUnit.DEGREES, -90, 0, 0));

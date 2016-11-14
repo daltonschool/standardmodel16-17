@@ -19,9 +19,6 @@ public class AutonomousOperation extends LinearOpMode
 
     @Override
     public void runOpMode() throws InterruptedException {
-        lineSensor = hardwareMap.colorSensor.get("color sensor");
-        lineSensor.setI2cAddress(I2cAddr.create8bit(0x4C));
-        lineSensor.enableLed(false);
         telemetry.addData("Status", "Starting...");
         telemetry.update();
 
@@ -39,22 +36,41 @@ public class AutonomousOperation extends LinearOpMode
 
             Robot.update();
 
-            Robot.moveForward_encoder(2000, 0.5f);
-            telemetry.addLine("MOVE 1 DONE");
-            telemetry.update();
-            Thread.sleep(100);
+            Robot.beaconLeft.setPosition(0.0);
+            Robot.beaconRight.setPosition(0.0);
 
-            Robot.turnToHeading(55, 0.8f);
+            Robot.nomMiddle.setPower(1.0f);
+
+            Robot.moveForward_encoder(2100, 0.6f);
+            telemetry.addLine("MOVE 1 DONE!");
+            telemetry.update();
+            Thread.sleep(101);
+
+            Robot.flywheelLeft.setPower(0.4f);
+            Robot.flywheelRight.setPower(0.4f);
+
+            Thread.sleep(500);
+
+            Robot.conveyor.setPower(1.0f);
+            telemetry.addLine("CONVEYOR!");
+            telemetry.update();
+            Thread.sleep(3000);
+            Robot.conveyor.setPower(0.0f);
+            Robot.flywheelLeft.setPower(0.0f);
+            Robot.flywheelRight.setPower(0.0f);
+            Robot.nomMiddle.setPower(0.0f);
+
+            Robot.turnToHeading(40, 0.6f);
             telemetry.addLine("TURN 1 DONE");
             telemetry.update();
             Thread.sleep(100);
 
-            Robot.moveForward_encoder(4000, 0.5f);
+            Robot.moveForward_encoder(3500, 0.5f);
             telemetry.addLine("MOVE 2 DONE");
             telemetry.update();
             Thread.sleep(100);
 
-            Robot.turnToHeading(75, 0.8f);
+            Robot.turnToHeading(90, 0.5f);
             telemetry.addLine("TURN 2 DONE");
             telemetry.update();
             Thread.sleep(100);
@@ -65,18 +81,18 @@ public class AutonomousOperation extends LinearOpMode
             alignTest();
             Thread.sleep(250);
 
-            Robot.turnToHeading(90, 0.8f);
+            /*Robot.turnToHeading(90, 0.8f);
             telemetry.addLine("ALIGN TURN DONE");
             telemetry.update();
-            Thread.sleep(100);
+            Thread.sleep(100);*/
 
-            /*for (int i = 0; i < 500; i++) {
-                telemetry.addData("r", beaconColor.red());
-                telemetry.addData("g", beaconColor.green());
-                telemetry.addData("b", beaconColor.blue());
+            for (int i = 0; i < 5000; i++) {
+                telemetry.addData("r", Robot.beaconColor.red());
+                telemetry.addData("g", Robot.beaconColor.green());
+                telemetry.addData("b", Robot.beaconColor.blue());
                 telemetry.update();
                 Thread.sleep(1);
-            }*/
+            }
 
             // determine beacon color
             Alliance rightColor = Robot.getBeaconRightColor();
@@ -110,14 +126,14 @@ public class AutonomousOperation extends LinearOpMode
             telemetry.addLine("THE END OF PART 1");
             telemetry.update();
 
-            //turn 90 degrees to the right
+            /*//turn 90 degrees to the right
             Robot.turnToHeading(270, .7);
 
             //go forward until the the line is sensed
             while(onLine()){
                 Robot.moveForward_encoder(20, 0.3f);
                 Robot.idle();
-            }
+            }*/
 
             // press button
             requestOpModeStop();
@@ -158,10 +174,10 @@ public class AutonomousOperation extends LinearOpMode
             }
             VectorF translation = Robot.vuforia.getLocation();
             Orientation orientation = Robot.vuforia.getOrientation();
-            boolean orientationGood = ((orientation.thirdAngle > -175 && orientation.thirdAngle < -180) ||
-                                        (orientation.thirdAngle > 175 && orientation.thirdAngle < 180));
+            boolean orientationGood = ((orientation.thirdAngle > -5 && orientation.thirdAngle < 0) ||
+                                        (orientation.thirdAngle > 0 && orientation.thirdAngle < 5));
 
-            if (translation.get(0) < -1400) {
+            if (translation.get(0) < -1000) {
                 // we're too close, just stop
                 telemetry.addLine("ALIGNTEST IS DONE");
                 Robot.leftMotors(0.0f);
@@ -169,16 +185,16 @@ public class AutonomousOperation extends LinearOpMode
                 return;
             }
 
+
             if (!orientationGood && orientation.thirdAngle < 0) {
-                Robot.leftMotors(0.1f);
-                Robot.rightMotors(0.05f);
+                Robot.leftMotors(0.2f);
+                Robot.rightMotors(0.5f);
             } else if (!orientationGood && orientation.thirdAngle > 0) {
-                Robot.leftMotors(0.05f);
-                Robot.rightMotors(0.1f);
-            } else if (translation.get(0) > -1400) {
-                //moveForward(Math.abs((-1100 - translation.get(0)) / 4), 0.2f);
-                Robot.leftMotors(0.1f);
-                Robot.rightMotors(0.1f);
+                Robot.leftMotors(0.5f);
+                Robot.rightMotors(0.2f);
+            } else if (translation.get(0) > -1000) {
+                Robot.leftMotors(0.5f);
+                Robot.rightMotors(0.5f);
             } else {
                 telemetry.addLine("ALIGNTEST IS DONE");
                 Robot.leftMotors(0.0f);
@@ -191,6 +207,7 @@ public class AutonomousOperation extends LinearOpMode
             telemetry.addData("Ptest", translation.get(0));
             telemetry.addData("Still going", (translation.get(0) > -1400));
             telemetry.addData("Test", Robot.leftMotor.getCurrentPosition());
+            telemetry.addData("Second Angle", orientation.secondAngle);
             telemetry.update();
             Robot.idle();
         }
