@@ -130,10 +130,14 @@ public class AutonomousOperation extends LinearOpMode
             Robot.turnToHeading(270, .7);
 
             //go forward until the the line is sensed
-            while(onLine()){
-                Robot.moveForward_encoder(20, 0.3f);
+            while(!(lineSensor.green() > 240 &&  lineSensor.blue() > 240 && lineSensor.red() > 240)) {
+                Robot.leftMotors(0.2f);
+                Robot.rightMotors(0.2f);
+                Robot.update();
                 Robot.idle();
             }*/
+            Robot.leftMotors(0.0f);
+            Robot.rightMotors(0.0f);
 
             // press button
             requestOpModeStop();

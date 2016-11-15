@@ -30,7 +30,7 @@ public class Robot {
     public static Servo beaconRight;
 
     // Sensors
-    public static ColorSensor colorSensor = null;
+    public static ColorSensor lineSensor = null;
     public static ColorSensor beaconColor = null;
 
     public static IMU imu = null;
