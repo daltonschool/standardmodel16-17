@@ -12,7 +12,7 @@ public class ColorTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         waitForStart();
         Utils.showToast("Beacon color test", 0);
-        ColorSensor c = hardwareMap.colorSensor.get("beacon color");
+        ColorSensor c = hardwareMap.colorSensor.get("x color");
         c.setI2cAddress(I2cAddr.create8bit(0x4C));
         c.enableLed(false);
         while (opModeIsActive()) {

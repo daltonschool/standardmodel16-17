@@ -49,30 +49,30 @@ public class Robot {
         telemetry = opMode.telemetry;
 
         // Motors
-        leftMotor = hardwareMap.dcMotor.get("left motor");
+        leftMotor = hardwareMap.dcMotor.get("drive_right");
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        rightMotor = hardwareMap.dcMotor.get("right motor");
+        rightMotor = hardwareMap.dcMotor.get("drive_left");
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        flywheelLeft = hardwareMap.dcMotor.get("flywheel left");
+        flywheelLeft = hardwareMap.dcMotor.get("launch_left");
         flywheelLeft.setDirection(DcMotor.Direction.FORWARD);
 
-        flywheelRight = hardwareMap.dcMotor.get("flywheel right");
+        flywheelRight = hardwareMap.dcMotor.get("launch_right");
         flywheelRight.setDirection(DcMotor.Direction.REVERSE);
 
-        nomMiddle = hardwareMap.dcMotor.get("nom middle");
+        nomMiddle = hardwareMap.dcMotor.get("inside_nom");
         nomMiddle.setDirection(DcMotor.Direction.FORWARD);
 
-        nomFront = hardwareMap.dcMotor.get("nom front");
+        nomFront = hardwareMap.dcMotor.get("outside_nom");
         nomFront.setDirection(DcMotor.Direction.FORWARD);
 
-        conveyor = hardwareMap.dcMotor.get("conveyor");
+        conveyor = hardwareMap.dcMotor.get("lift");
         conveyor.setDirection(DcMotor.Direction.FORWARD);
 
         // Servos
-        beaconLeft = hardwareMap.servo.get("beacon left");
-        beaconRight = hardwareMap.servo.get("beacon right");
+        beaconLeft = hardwareMap.servo.get("leftBeacon");
+        beaconRight = hardwareMap.servo.get("rightBeacon");
 
         // Sensors
         // Color

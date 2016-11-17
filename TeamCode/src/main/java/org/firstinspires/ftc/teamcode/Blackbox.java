@@ -12,8 +12,12 @@ public class Blackbox {
     public static String logFilePath;
 
     public static void init() {
+        File logDir = new File("/sdcard/blackbox");
+        if (!logDir.exists()) {
+            logDir.mkdir();
+        }
         logFilePath = getPathToFile();
-        saveTextToFile("Log " + getPrettyTime());
+        saveTextToFile("Log " + getPrettyTime() + "\n");
         log("STRT", "Logging ready.");
     }
 
