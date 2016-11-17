@@ -10,26 +10,32 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 
-@Autonomous(name="Autonomous Operation")
-public class AutonomousOperation extends LinearOpMode
+public abstract class AutonomousOperation extends LinearOpMode
 {
     public static ColorSensor lineSensor = null;
     private ElapsedTime runtime = new ElapsedTime();
-    private Alliance currentAlliance = Alliance.RED; // this is hardcoded for now, but should be set somehow (two different opmodes? how is this normally done?)
+
+    public abstract Alliance getCurrentAlliance();
 
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Starting...");
         telemetry.update();
 
+        Blackbox.init();
+        Blackbox.log("INFO", "Current alliance: " + (getCurrentAlliance() == Alliance.RED ? "red" : "blue"));
+
         Robot.init(this);
 
         // ready to go!
+        Blackbox.log("INFO", "READY TO GO!");
         telemetry.addData("Status", "READY TO GO");
         telemetry.update();
         waitForStart();
 
         Robot.start();
+
+        Blackbox.log("INFO", "Started!");
 
         while (true) {
             telemetry.addData("Status", "Running: " + runtime.toString());
@@ -40,42 +46,52 @@ public class AutonomousOperation extends LinearOpMode
             Robot.beaconRight.setPosition(0.0);
 
             Robot.nomMiddle.setPower(1.0f);
+            Blackbox.log("INFO", "Servos reset, nom ON");
 
             Robot.moveForward_encoder(2100, 0.6f);
+            Blackbox.log("INFO", "Move 1 done");
             telemetry.addLine("MOVE 1 DONE!");
             telemetry.update();
             Thread.sleep(101);
 
             Robot.flywheelLeft.setPower(0.4f);
             Robot.flywheelRight.setPower(0.4f);
+            Blackbox.log("INFO", "Flywheels ON");
 
             Thread.sleep(500);
 
             Robot.conveyor.setPower(1.0f);
+            Blackbox.log("INFO", "Conveyor ON");
             telemetry.addLine("CONVEYOR!");
             telemetry.update();
             Thread.sleep(3000);
+
             Robot.conveyor.setPower(0.0f);
             Robot.flywheelLeft.setPower(0.0f);
             Robot.flywheelRight.setPower(0.0f);
             Robot.nomMiddle.setPower(0.0f);
+            Blackbox.log("INFO", "Flywheel, conveyor, and nom OFF");
 
-            Robot.turnToHeading(40, 0.6f);
+            Robot.turnToHeading((getCurrentAlliance() == Alliance.RED ? -40 : 40), 0.6f);
+            Blackbox.log("INFO", "Turn 1 done");
             telemetry.addLine("TURN 1 DONE");
             telemetry.update();
             Thread.sleep(100);
 
             Robot.moveForward_encoder(3500, 0.5f);
+            Blackbox.log("INFO", "Move 2 done");
             telemetry.addLine("MOVE 2 DONE");
             telemetry.update();
             Thread.sleep(100);
 
-            Robot.turnToHeading(90, 0.5f);
+            Robot.turnToHeading((getCurrentAlliance() == Alliance.RED ? -90 : 90), 0.5f);
+            Blackbox.log("INFO", "Turn 2 done");
             telemetry.addLine("TURN 2 DONE");
             telemetry.update();
             Thread.sleep(100);
 
             // align to gears
+            Blackbox.log("INFO", "Starting Vuforia alignment...");
             telemetry.addLine("TRYING TO ALIGN...");
             telemetry.update();
             alignTest();
@@ -94,13 +110,17 @@ public class AutonomousOperation extends LinearOpMode
                 Thread.sleep(1);
             }
 
+            Blackbox.log("INFO", "Beacon color sensor: r: " + Robot.beaconColor.red() + ", g: " + Robot.beaconColor.green() + ", b: " + Robot.beaconColor.blue());
+
             // determine beacon color
             Alliance rightColor = Robot.getBeaconRightColor();
-            if (rightColor == currentAlliance) {
+            if (rightColor == getCurrentAlliance()) {
+                Blackbox.log("INFO", "Pressing RIGHT");
                 telemetry.addLine("PRESSING RIGHT");
                 Robot.beaconLeft.setPosition(0.0);
                 Robot.beaconRight.setPosition(0.0);
             } else {
+                Blackbox.log("INFO", "Pressing LEFT");
                 telemetry.addLine("PRESSING LEFT");
                 Robot.beaconLeft.setPosition(1.0);
                 Robot.beaconRight.setPosition(1.0);
@@ -108,7 +128,8 @@ public class AutonomousOperation extends LinearOpMode
             telemetry.update();
             Thread.sleep(250);
 
-            telemetry.addLine("PRESSY PRESS");
+            Blackbox.log("INFO", "Pressing button");
+            telemetry.addLine("PRESSING BUTTON");
             telemetry.update();
             Robot.moveForward_encoder(400, 0.5f);
             Thread.sleep(250);
@@ -118,10 +139,14 @@ public class AutonomousOperation extends LinearOpMode
                 Robot.beaconServo.setPosition(0.65);
             }*/
 
+            Blackbox.log("INFO", "Retreating");
             telemetry.addLine("RETREAT");
             telemetry.update();
-            //moveForward_encoder(-200, -0.5f);
+            Robot.leftMotors(-0.3f);
+            Robot.rightMotors(-0.3f);
             Thread.sleep(500);
+            Robot.leftMotors(0.0f);
+            Robot.rightMotors(0.0f);
 
             telemetry.addLine("THE END OF PART 1");
             telemetry.update();
@@ -138,6 +163,8 @@ public class AutonomousOperation extends LinearOpMode
             }*/
             Robot.leftMotors(0.0f);
             Robot.rightMotors(0.0f);
+
+            Blackbox.log("INFO", "Complete!");
 
             // press button
             requestOpModeStop();
@@ -183,6 +210,7 @@ public class AutonomousOperation extends LinearOpMode
 
             if (translation.get(0) < -1000) {
                 // we're too close, just stop
+                Blackbox.log("WARN", "We're too close, cancelling alignment!");
                 telemetry.addLine("ALIGNTEST IS DONE");
                 Robot.leftMotors(0.0f);
                 Robot.rightMotors(0.0f);
@@ -200,6 +228,7 @@ public class AutonomousOperation extends LinearOpMode
                 Robot.leftMotors(0.5f);
                 Robot.rightMotors(0.5f);
             } else {
+                Blackbox.log("INFO", "Alignment complete!");
                 telemetry.addLine("ALIGNTEST IS DONE");
                 Robot.leftMotors(0.0f);
                 Robot.rightMotors(0.0f);
