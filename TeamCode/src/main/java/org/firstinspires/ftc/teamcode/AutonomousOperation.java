@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.vuforia.CameraDevice;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -22,6 +23,7 @@ public abstract class AutonomousOperation extends LinearOpMode
     private ElapsedTime runtime = new ElapsedTime();
 
     public abstract Alliance getCurrentAlliance();
+    public abstract boolean onlyShoots();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -47,6 +49,8 @@ public abstract class AutonomousOperation extends LinearOpMode
 
         Robot.start();
 
+        CameraDevice.getInstance().setFlashTorchMode(true);
+
         Blackbox.log("INFO", "Started!");
 
         while (true) {
@@ -54,20 +58,32 @@ public abstract class AutonomousOperation extends LinearOpMode
 
             Robot.update();
 
+            if (onlyShoots()) {
+                Thread.sleep(10000);
+            }
+
             Robot.beaconLeft.setPosition(0.0);
             Robot.beaconRight.setPosition(0.0);
 
             Robot.nomMiddle.setPower(1.0f);
             Blackbox.log("INFO", "Servos reset, nom ON");
 
-            Robot.moveForward_encoder(2300, 0.6f);
+            if (onlyShoots()) {
+                Robot.moveForward_encoder(2800, 0.55f);
+            } else {
+                if (getCurrentAlliance() == Alliance.RED) {
+                    Robot.moveForward_encoder(2250, 0.55f);
+                } else {
+                    Robot.moveForward_encoder(2500, 0.55f);
+                }
+            }
             Blackbox.log("INFO", "Move 1 done");
             telemetry.addLine("MOVE 1 DONE!");
             telemetry.update();
             Thread.sleep(101);
 
-            Robot.flywheelLeft.setPower(0.4f);
-            Robot.flywheelRight.setPower(0.4f);
+            Robot.flywheelLeft.setPower(0.35f);
+            Robot.flywheelRight.setPower(0.35f);
             Blackbox.log("INFO", "Flywheels ON");
 
             Thread.sleep(500);
@@ -84,37 +100,66 @@ public abstract class AutonomousOperation extends LinearOpMode
             Robot.nomMiddle.setPower(0.0f);
             Blackbox.log("INFO", "Flywheel, conveyor, and nom OFF");
 
+            if (onlyShoots()) {
+                // we're done
+                telemetry.addLine("SHOTS DONE");
+                telemetry.update();
+                Blackbox.log("INFO", "Shots complete - we are done.");
+                requestOpModeStop();
+                return;
+            }
+
             Robot.turnToHeading((getCurrentAlliance() == Alliance.RED ? 40 : -40), 0.6f);
             Blackbox.log("INFO", "Turn 1 done");
             telemetry.addLine("TURN 1 DONE");
             telemetry.update();
             Thread.sleep(100);
 
-            Robot.moveForward_encoder(3450, 0.5f);
+            if (getCurrentAlliance() == Alliance.RED) {
+                Robot.moveForward_encoder(3450, 0.5f);
+            } else {
+                Robot.moveForward_encoder(3450, 0.5f);
+            }
             Blackbox.log("INFO", "Move 2 done");
             telemetry.addLine("MOVE 2 DONE");
             telemetry.update();
             Thread.sleep(100);
 
-            Robot.turnToHeading((getCurrentAlliance() == Alliance.RED ? 90 : -90), 0.6f);
+            Robot.turnToHeading((getCurrentAlliance() == Alliance.RED ? 90 : -81), 0.6f);
             Blackbox.log("INFO", "Turn 2 done");
             telemetry.addLine("TURN 2 DONE");
             telemetry.update();
             Thread.sleep(100);
 
+            Thread.sleep(1000);
+
             // align to gears
             Blackbox.log("INFO", "Starting Vuforia alignment...");
             telemetry.addLine("TRYING TO ALIGN...");
             telemetry.update();
-            alignTest((getCurrentAlliance() == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.legos));
+            alignTest((getCurrentAlliance() == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels));
             Thread.sleep(250);
+
+            if (getCurrentAlliance() == Alliance.BLUE) {
+                // HACK
+                telemetry.addLine("HACKY THING");
+                telemetry.update();
+                Robot.moveForward_encoder(1000, 0.5f);
+                Thread.sleep(500);
+            } else {
+                // HACK
+                telemetry.addLine("HACKY THING");
+                telemetry.update();
+                Robot.moveForward_encoder(450, 0.5f);
+                Thread.sleep(500);
+            }
 
             /*Robot.turnToHeading(90, 0.8f);
             telemetry.addLine("ALIGN TURN DONE");
             telemetry.update();
             Thread.sleep(100);*/
 
-            for (int i = 0; i < 2000; i++) {
+            for (int i = 0; i < 1000; i++) {
                 telemetry.addData("r", Robot.beaconColor.red());
                 telemetry.addData("g", Robot.beaconColor.green());
                 telemetry.addData("b", Robot.beaconColor.blue());
@@ -126,6 +171,20 @@ public abstract class AutonomousOperation extends LinearOpMode
 
             // determine beacon color
             Alliance rightColor = Robot.getBeaconRightColor();
+            if (rightColor == Alliance.UNKNOWN) {
+                telemetry.addLine("ABANDONING BEACON!");
+                telemetry.update();
+                Blackbox.log("CRIT", "COULD NOT DETERMINE BEACON COLOR!!!");
+                Blackbox.log("CRIT", "ABANDONING BEACON!!!");
+                Robot.leftMotors(-0.4f);
+                Robot.rightMotors(-0.4f);
+                Thread.sleep(1000);
+                Robot.leftMotors(0.0f);
+                Robot.rightMotors(0.0f);
+                veryEnd();
+                requestOpModeStop();
+                return;
+            }
             if (rightColor == getCurrentAlliance()) {
                 Blackbox.log("INFO", "Pressing RIGHT");
                 telemetry.addLine("PRESSING RIGHT");
@@ -143,8 +202,11 @@ public abstract class AutonomousOperation extends LinearOpMode
             Blackbox.log("INFO", "Pressing button");
             telemetry.addLine("PRESSING BUTTON");
             telemetry.update();
-            Robot.moveForward_encoder(400, 0.5f);
-            Thread.sleep(250);
+            Robot.leftMotors(0.5f);
+            Robot.rightMotors(0.5f);
+            Thread.sleep(1500);
+            Robot.leftMotors(0.0f);
+            Robot.rightMotors(0.0f);
 
             /*if (rightColor != currentAlliance) {
                 Thread.sleep(250);
@@ -153,6 +215,24 @@ public abstract class AutonomousOperation extends LinearOpMode
 
             Blackbox.log("INFO", "Retreating");
             telemetry.addLine("RETREAT");
+            telemetry.update();
+            Robot.leftMotors(-0.3f);
+            Robot.rightMotors(-0.3f);
+            Thread.sleep(500);
+            Robot.leftMotors(0.0f);
+            Robot.rightMotors(0.0f);
+
+            Blackbox.log("INFO", "Pressing button 2");
+            telemetry.addLine("PRESSING BUTTON 2");
+            telemetry.update();
+            Robot.leftMotors(0.5f);
+            Robot.rightMotors(0.5f);
+            Thread.sleep(1500);
+            Robot.leftMotors(0.0f);
+            Robot.rightMotors(0.0f);
+
+            Blackbox.log("INFO", "Retreating 2");
+            telemetry.addLine("RETREAT 2");
             telemetry.update();
             Robot.leftMotors(-0.3f);
             Robot.rightMotors(-0.3f);
@@ -178,12 +258,38 @@ public abstract class AutonomousOperation extends LinearOpMode
 
             Blackbox.log("INFO", "Complete!");
 
+            veryEnd();
+
             // press button
             requestOpModeStop();
 
             telemetry.update();
             Robot.idle();
+
+            return;
         }
+    }
+
+    public void veryEnd() throws InterruptedException {
+        if (getCurrentAlliance() == Alliance.RED) {
+            Robot.leftMotors(-0.6f);
+            Robot.rightMotors(-0.5f);
+        } else {
+            Robot.leftMotors(-0.5f);
+            Robot.rightMotors(-0.6f);
+        }
+        Thread.sleep(1500);
+        Robot.leftMotors(0.0f);
+        Robot.rightMotors(0.0f);
+
+        Thread.sleep(1500);
+
+        Robot.leftMotors(-0.5f);
+        Robot.rightMotors(0.5f);
+        Thread.sleep(1500);
+        Robot.leftMotors(0.0f);
+        Robot.rightMotors(0.0f);
+
     }
 
     /*public void alignTo(VuforiaTrackable trackable) {
@@ -210,6 +316,12 @@ public abstract class AutonomousOperation extends LinearOpMode
     }
 
     public void alignTest(VuforiaTrackable trackable) throws InterruptedException {
+        Thread.sleep(200);
+        Robot.vuforia.update();
+        Thread.sleep(200);
+        Robot.vuforia.update();
+        Thread.sleep(200);
+        Robot.vuforia.update();
         while (true) {
             if (!Robot.vuforia.hasLocation()) {
                 Robot.vuforia.update();
@@ -226,43 +338,51 @@ public abstract class AutonomousOperation extends LinearOpMode
             if (trackable.getName() == "Gears") {
                 targetPosition = -1150;
             } else {
-                targetPosition = -400;
+                targetPosition = -600;
             }
 
             if (translation.get(0) < targetPosition) {
                 // we're too close, just stop
                 Blackbox.log("WARN", "We're too close, cancelling alignment!");
                 telemetry.addLine("ALIGNTEST IS DONE");
+                telemetry.addData("stat", "DONE2");
                 Robot.leftMotors(0.0f);
                 Robot.rightMotors(0.0f);
                 return;
             }
 
 
-            if (!orientationGood && orientation.thirdAngle < 0) {
+            if (!orientationGood && orientation.thirdAngle < targetAngle) {
+                telemetry.addData("stat", "RIGHT");
                 Robot.leftMotors(0.1f);
-                Robot.rightMotors(0.6f);
-            } else if (!orientationGood && orientation.thirdAngle > 0) {
-                Robot.leftMotors(0.6f);
+                Robot.rightMotors(0.4f);
+            } else if (!orientationGood && orientation.thirdAngle > targetAngle) {
+                telemetry.addData("stat", "LEFT");
+                Robot.leftMotors(0.4f);
                 Robot.rightMotors(0.1f);
-            } else if (translation.get(0) > targetPosition) {
+            } else if (translation.get(0) < targetPosition) {
+                telemetry.addData("stat", "" +
+                        "'[]FORWARD");
                 Robot.leftMotors(0.5f);
                 Robot.rightMotors(0.5f);
             } else {
+                telemetry.addData("stat", "DONE2");
                 Blackbox.log("INFO", "Alignment complete!");
                 telemetry.addLine("ALIGNTEST IS DONE");
                 Robot.leftMotors(0.0f);
                 Robot.rightMotors(0.0f);
                 return;
             }
-            Robot.update();
 
             telemetry.addData("Pos", Robot.vuforia.getLocationAsString());
             telemetry.addData("Ptest", translation.get(0));
-            telemetry.addData("Still going", (translation.get(0) > targetPosition));
+            telemetry.addData("Target", targetPosition);
+            telemetry.addData("Still going", (translation.get(0) < targetPosition));
             telemetry.addData("Test", Robot.leftMotor.getCurrentPosition());
-            telemetry.addData("Second Angle", orientation.secondAngle);
+            telemetry.addData("Orientation good?", orientationGood);
+            telemetry.addData("Target angle", targetAngle);
             telemetry.update();
+            Robot.update();
             Robot.idle();
         }
     }

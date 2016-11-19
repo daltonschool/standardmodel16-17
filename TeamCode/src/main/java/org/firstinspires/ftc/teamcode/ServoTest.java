@@ -9,18 +9,26 @@ public class ServoTest extends LinearOpMode
 {
     @Override
     public void runOpMode() throws InterruptedException {
-        Servo servo;
-        servo = hardwareMap.servo.get("beacon servo");
+        Servo beaconLeft = hardwareMap.servo.get("leftBeacon");
+        Servo beaconRight = hardwareMap.servo.get("rightBeacon");
 
         waitForStart();
 
-        servo.setPosition(0.0);
+        Utils.showToast("Sensing mode", 0);
+        beaconLeft.setPosition(0.0f);
+        beaconRight.setPosition(0.0f);
         Thread.sleep(3000);
-        servo.setPosition(1.0);
+
+        Utils.showToast("Pressing left", 0);
+        beaconLeft.setPosition(1.0f);
+        beaconRight.setPosition(1.0f);
         Thread.sleep(3000);
-        servo.setPosition(0.5);
+
+        Utils.showToast("Pressing right", 0);
+        beaconLeft.setPosition(0.0f);
+        beaconRight.setPosition(0.0f);
         Thread.sleep(3000);
-        servo.setPosition(1.0);
-        Thread.sleep(3000);
+
+        requestOpModeStop();
     }
 }

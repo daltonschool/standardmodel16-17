@@ -195,7 +195,9 @@ public class Robot {
         telemetry.update();
         Thread.sleep(1000);
         Alliance response;
-        if (beaconColor.red() != 0 && beaconColor.red() != 255 && beaconColor.red() > 30) {
+        if ((beaconColor.red() == beaconColor.blue()) || (beaconColor.red() == 0 && beaconColor.blue() == 255) || (beaconColor.blue() == 0 && beaconColor.red() == 255)) {
+            response = Alliance.UNKNOWN;
+        } else if (beaconColor.red() > beaconColor.blue()) {
             response = Alliance.RED;
         } else {
             response = Alliance.BLUE;
