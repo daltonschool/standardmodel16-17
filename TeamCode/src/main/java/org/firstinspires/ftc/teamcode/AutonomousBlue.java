@@ -7,5 +7,4 @@ public class AutonomousBlue extends AutonomousOperation {
     public Alliance getCurrentAlliance() {
         return Alliance.BLUE;
     }
-    public boolean onlyShoots() { return true; }
 }

@@ -23,7 +23,6 @@ public abstract class AutonomousOperation extends LinearOpMode
     private ElapsedTime runtime = new ElapsedTime();
 
     public abstract Alliance getCurrentAlliance();
-    public abstract boolean onlyShoots();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -34,6 +33,13 @@ public abstract class AutonomousOperation extends LinearOpMode
         Blackbox.log("INFO", "Current alliance: " + (getCurrentAlliance() == Alliance.RED ? "red" : "blue"));
 
         Robot.init(this);
+
+        OptionManager.init();
+        // TODO: loop this
+        telemetry.addData("Start delay?", OptionManager.currentOptions.startDelay);
+        Blackbox.log("INFO", "Start delay: " + OptionManager.currentOptions.startDelay);
+        telemetry.addData("Shots only?", OptionManager.currentOptions.shotsOnly);
+        Blackbox.log("INFO", "Shots only: " + OptionManager.currentOptions.shotsOnly);
 
         // ready to go!
         Blackbox.log("INFO", "READY TO GO!");
@@ -58,7 +64,7 @@ public abstract class AutonomousOperation extends LinearOpMode
 
             Robot.update();
 
-            if (onlyShoots()) {
+            if (OptionManager.currentOptions.startDelay) {
                 Thread.sleep(10000);
             }
 
@@ -68,7 +74,7 @@ public abstract class AutonomousOperation extends LinearOpMode
             Robot.nomMiddle.setPower(1.0f);
             Blackbox.log("INFO", "Servos reset, nom ON");
 
-            if (onlyShoots()) {
+            if (OptionManager.currentOptions.shotsOnly) {
                 Robot.moveForward_encoder(2800, 0.55f);
             } else {
                 if (getCurrentAlliance() == Alliance.RED) {
@@ -100,7 +106,7 @@ public abstract class AutonomousOperation extends LinearOpMode
             Robot.nomMiddle.setPower(0.0f);
             Blackbox.log("INFO", "Flywheel, conveyor, and nom OFF");
 
-            if (onlyShoots()) {
+            if (OptionManager.currentOptions.shotsOnly) {
                 // we're done
                 telemetry.addLine("SHOTS DONE");
                 telemetry.update();
