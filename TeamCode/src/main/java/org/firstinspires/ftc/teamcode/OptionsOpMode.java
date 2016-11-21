@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import java.io.IOException;
+import org.firstinspires.ftc.teamcode.options.OptionsHTTPD;
 
-import fi.iki.elonen.NanoHTTPD;
+import java.io.IOException;
 
 @Autonomous(name="Options")
 public class OptionsOpMode extends LinearOpMode {

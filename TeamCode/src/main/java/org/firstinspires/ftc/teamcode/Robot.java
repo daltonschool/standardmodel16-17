@@ -1,15 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.content.Context;
+
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.sensors.IMU;
+import org.firstinspires.ftc.teamcode.sensors.Vuforia;
 
 public class Robot {
 
@@ -43,10 +46,14 @@ public class Robot {
     // The original opmode.
     public static LinearOpMode opMode;
 
+    // The app context
+    public static Context appContext;
+
     public static void init(LinearOpMode om) {
         opMode = om;
         HardwareMap hardwareMap = opMode.hardwareMap;
         telemetry = opMode.telemetry;
+        appContext = hardwareMap.appContext;
 
         // Motors
         leftMotor = hardwareMap.dcMotor.get("drive_right");

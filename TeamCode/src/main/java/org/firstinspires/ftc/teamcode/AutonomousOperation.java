@@ -1,11 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.util.Log;
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.vuforia.CameraDevice;
 
@@ -16,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.teamcode.options.OptionManager;
 
 public abstract class AutonomousOperation extends LinearOpMode
 {
@@ -341,7 +338,7 @@ public abstract class AutonomousOperation extends LinearOpMode
             boolean orientationGood = ((orientation.thirdAngle > (targetAngle - 5) && orientation.thirdAngle < targetAngle) ||
                                         (orientation.thirdAngle > targetAngle && orientation.thirdAngle < (targetAngle + 5)));
             int targetPosition = 0;
-            if (trackable.getName() == "Gears") {
+            if (trackable.getName().equals("Gears")) {
                 targetPosition = -1150;
             } else {
                 targetPosition = -600;
