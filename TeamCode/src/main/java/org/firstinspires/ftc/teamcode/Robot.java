@@ -212,41 +212,4 @@ public class Robot {
         return response;
     }
 
-    // Other
-    /*public void lineFollower() throws InterruptedException {
-
-        // hsvValues is an array that will hold the hue, saturation, and value information.
-        float hsvValues[] = {0F, 0F, 0F};
-
-        // values is a reference to the hsvValues array.
-        final float values[] = hsvValues;
-        Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
-        double whiteLineIntensityValue = 23.6; //Replace with value that we get
-        double blackMatIntensityValue = 1.24;  //Also do that here
-        double targetIntensity = whiteLineIntensityValue + blackMatIntensityValue / 2; //Get tarrget value
-
-        while (true) //change to run until called
-        {
-            if (Math.abs(hsvValues[2] - targetIntensity) <= 5) //if on line
-            {
-                moveForward(1, .3);
-            } else {
-                int i = 0;
-                while (hsvValues[2] - targetIntensity > 5 || i < 90) {
-                    turnToHeading((imu.getHeading() + 5), .3);
-                    i++;
-                }
-                turnToHeading((imu.getHeading() - (i * 5)), .3);
-                while (hsvValues[2] - targetIntensity > 5 || i < 90) {
-                    turnToHeading((imu.getHeading() - 5), .3);
-                    i++;
-                }
-            }
-//            else
-//            {
-//                System.out.println("3Error");
-//                break;
-//            }
-        }
-    }*/
 }
