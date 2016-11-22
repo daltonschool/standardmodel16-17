@@ -25,7 +25,6 @@ public class LineFollowingTask extends Task {
     double Kp = 0;
     double Kd = 0;
 
-
     @Override
     public void init() {
     }
@@ -50,21 +49,24 @@ public class LineFollowingTask extends Task {
             double rightMotorSpeed = rightBaseSpeed + motorSpeed;
             double leftMotorSpeed = leftBaseSpeed - motorSpeed;
 
-            if (rightMotorSpeed > rightMaxSpeed ) rightMotorSpeed = rightMaxSpeed; // prevent the motor from going beyond max speed
-            if (leftMotorSpeed > leftMaxSpeed ) leftMotorSpeed = leftMaxSpeed; // prevent the motor from going beyond max speed
-            if (rightMotorSpeed < 0) rightMotorSpeed = 0; // keep the motor speed positive
-            if (leftMotorSpeed < 0) leftMotorSpeed = 0; // keep the motor speed positive
+            if (rightMotorSpeed > rightMaxSpeed )
+                rightMotorSpeed = rightMaxSpeed; // prevent the motor from going beyond max speed
+            if (leftMotorSpeed > leftMaxSpeed )
+                leftMotorSpeed = leftMaxSpeed; // prevent the motor from going beyond max speed
+            if (rightMotorSpeed < 0)
+                rightMotorSpeed = 0; // keep the motor speed positive
+            if (leftMotorSpeed < 0)
+                leftMotorSpeed = 0; // keep the motor speed positive
 
-            {
-                rightMotors(rightMotorSpeed);
-                leftMotors(leftMotorSpeed);
-            }
-
-            //
+            rightMotors(rightMotorSpeed);
+            leftMotors(leftMotorSpeed);
 
             if (done) {
+                rightMotors(0);
+                leftMotors(0);
                 break linefollow;
             }
         }
+
     }
 }
