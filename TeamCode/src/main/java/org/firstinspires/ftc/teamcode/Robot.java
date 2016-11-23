@@ -49,6 +49,9 @@ public class Robot {
     // The app context
     public static Context appContext;
 
+    // The current alliance
+    public static Alliance currentAlliance;
+
     public static void init(LinearOpMode om) {
         opMode = om;
         HardwareMap hardwareMap = opMode.hardwareMap;

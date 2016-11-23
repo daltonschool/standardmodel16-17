@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.options.OptionManager;
 import org.firstinspires.ftc.teamcode.sensors.Vuforia;
 import org.firstinspires.ftc.teamcode.tasks.AlignmentTask;
+import org.firstinspires.ftc.teamcode.tasks.ButtonPressTask;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
 
 import java.util.ArrayList;
@@ -25,11 +26,15 @@ public abstract class TaskedOperation extends LinearOpMode {
         // set up options
         OptionManager.init();
 
+        // set up alliance
+        Robot.currentAlliance = getCurrentAlliance();
+
         // TODO: print out options for verification
 
         // set up tasks
         ArrayList<Task> tasks = new ArrayList<Task>();
         tasks.add(new AlignmentTask(Robot.vuforia.gears));
+        tasks.add(new ButtonPressTask(null));
 
         // init tasks
         for (Task t : tasks) {
