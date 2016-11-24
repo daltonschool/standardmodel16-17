@@ -10,7 +10,7 @@ public class PIDController {
     double total_integral;
     double lastErr;
     long previous_time = System.currentTimeMillis();
-    
+
     public double Step( double cError ) {
         long current_time = System.currentTimeMillis();
         double time_diff = (current_time - previous_time);
