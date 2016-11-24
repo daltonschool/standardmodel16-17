@@ -85,8 +85,8 @@ public class Robot {
         beaconRight = hardwareMap.servo.get("rightBeacon");
 
         // Sensors
-        // Color
-        //colorSensor = hardwareMap.colorSensor.get("color sensor");
+        // colorSensor = hardwareMap.colorSensor.get("color sensor");
+        lineSensor = hardwareMap.colorSensor.get("line sensor");
         beaconColor = hardwareMap.colorSensor.get("beacon color");
         beaconColor.setI2cAddress(I2cAddr.create8bit(0x4C));
         beaconColor.enableLed(false);

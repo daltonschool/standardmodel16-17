@@ -34,7 +34,7 @@ public class StopOnLineTask extends Task {
             Robot.rightMotors(0.2f);
             Robot.update();
             Robot.idle();
-            double colorVal = lineSensor.green() + lineSensor.blue() + lineSensor.red();
+            double colorVal = (lineSensor.green() + lineSensor.blue() + lineSensor.red())/3;
             if (colorVal>240) {
                 oL = true;
             }

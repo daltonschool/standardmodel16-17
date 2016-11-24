@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.options.OptionManager;
 
 public abstract class AutonomousOperation extends LinearOpMode
 {
-    public static ColorSensor lineSensor = null;
     private ElapsedTime runtime = new ElapsedTime();
 
     public abstract Alliance getCurrentAlliance();
@@ -111,7 +110,6 @@ public abstract class AutonomousOperation extends LinearOpMode
                 requestOpModeStop();
                 return;
             }
-
             Robot.turnToHeading((getCurrentAlliance() == Alliance.RED ? 40 : -40), 0.6f);
             Blackbox.log("INFO", "Turn 1 done");
             telemetry.addLine("TURN 1 DONE");
