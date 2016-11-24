@@ -3,9 +3,10 @@ package org.firstinspires.ftc.teamcode;
 public class PIDController {
     //Date previous_time = new Date();
     double total_integral = 0;
-    double P = .15;
-    double I = 0;
-    double D = 0;
+    double P = .15; //increase until there is a lot of overshooting
+    double D = 0; //increase until the overshooting is reduced to an acceptable level
+    double I = 0; //increase until the final error is equal to zero.
+
     //long d1 = previous_time.getTime();
     long previous_time =  System.nanoTime();
 
@@ -33,11 +34,11 @@ public class PIDController {
         else if (R < -100) {
             R = -100;
         }
-        System.out.println("Kp: " + (Kp * P));
-        System.out.println("Ki: " + (Ki * I));
-        System.out.println("Kd: " + (Kd * D));
-        System.out.println("R: " + R);
-        System.out.println("Current Error" + current_error);
+        Robot.telemetry.addData("Kp: ", (Kp * P));
+        Robot.telemetry.addData("Ki: ", (Ki * I));
+        Robot.telemetry.addData("Kd: ", (Kd * D));
+        Robot.telemetry.addData("R: ", R);
+        Robot.telemetry.addData("Current Error", current_error);
 
         return R;
     }

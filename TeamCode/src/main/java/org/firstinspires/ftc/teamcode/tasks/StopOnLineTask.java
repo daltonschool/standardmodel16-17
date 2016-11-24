@@ -7,6 +7,8 @@ import org.firstinspires.ftc.teamcode.Blackbox;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Utils;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.sensors.ColorSensors;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 /**
@@ -16,7 +18,8 @@ public class StopOnLineTask extends Task {
     public StopOnLineTask(Object e) {
         super(e);
     }
-    public static ColorSensor lineSensor = null;
+    ColorSensors obj1 = new ColorSensors();
+    double colorVal;
 
     @Override
     public void init() {
@@ -25,8 +28,8 @@ public class StopOnLineTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
-//      telemetry.addLine("CHECKING VALUE");
-//      telemetry.update();
+        Robot.telemetry.addLine("CHECKING VALUE");
+        Robot.telemetry.update();
         Thread.sleep(1000);
         boolean oL = false;
         while (!oL) {
@@ -34,7 +37,8 @@ public class StopOnLineTask extends Task {
             Robot.rightMotors(0.2f);
             Robot.update();
             Robot.idle();
-            double colorVal = (lineSensor.green() + lineSensor.blue() + lineSensor.red())/3;
+            colorVal = obj1.getColorSensorVal("ls1");
+
             if (colorVal>240) {
                 oL = true;
             }
