@@ -31,18 +31,13 @@ public class StopOnLineTask extends Task {
         Robot.telemetry.addLine("CHECKING VALUE");
         Robot.telemetry.update();
         Thread.sleep(1000);
-        boolean oL = false;
-        while (!oL) {
-            Robot.leftMotors(0.2f);
-            Robot.rightMotors(0.2f);
+        while (!(colorVal>.5)) { //REPLACE WITH CORRECT THRESHOLD VALUE
+            Robot.leftMotors(0.8f);
+            Robot.rightMotors(0.8f);
             Robot.update();
-            Robot.idle();
             colorVal = obj1.getColorSensorVal("ls1");
-
-            if (colorVal>240) {
-                oL = true;
-            }
         }
+        Robot.idle();
         Robot.leftMotors(0.0f);
         Robot.rightMotors(0.0f);
     }
