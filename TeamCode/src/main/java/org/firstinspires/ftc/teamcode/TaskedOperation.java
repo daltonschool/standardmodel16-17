@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.vuforia.CameraDevice;
 
 import org.firstinspires.ftc.teamcode.options.OptionManager;
 import org.firstinspires.ftc.teamcode.sensors.Vuforia;
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.tasks.AlignmentTask;
 import org.firstinspires.ftc.teamcode.tasks.ButtonPressTask;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public abstract class TaskedOperation extends LinearOpMode {
@@ -29,7 +31,16 @@ public abstract class TaskedOperation extends LinearOpMode {
         // set up alliance
         Robot.currentAlliance = getCurrentAlliance();
 
-        // TODO: print out options for verification
+        // print out options for verification
+        Field[] fields = OptionManager.getOptionFields();
+        for (Field f : fields) {
+            try {
+                telemetry.addData(OptionManager.getPrettyName(f.getName()), f.get(OptionManager.currentOptions));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                telemetry.addData(OptionManager.getPrettyName(f.getName()), "IllegalAccessException");
+            }
+        }
 
         // set up tasks
         ArrayList<Task> tasks = new ArrayList<Task>();
@@ -56,7 +67,9 @@ public abstract class TaskedOperation extends LinearOpMode {
                 Blackbox.log("TASK", "Current task: " + (taskIndex + 1));
                 telemetry.addData("Current task: ", taskIndex + 1);
 
+                CameraDevice.getInstance().setFlashTorchMode(false);
                 t.run();
+                CameraDevice.getInstance().setFlashTorchMode(false);
 
                 Robot.update();
                 Robot.idle();
@@ -67,6 +80,10 @@ public abstract class TaskedOperation extends LinearOpMode {
             Blackbox.log("INFO", "All tasks completed.");
             telemetry.addData("Status", "All tasks completed.");
             telemetry.update();
+
+            requestOpModeStop();
+            return;
         }
+
     }
 }

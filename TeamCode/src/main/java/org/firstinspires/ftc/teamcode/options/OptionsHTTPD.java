@@ -21,8 +21,7 @@ public class OptionsHTTPD extends NanoHTTPD {
                 "<form action='/set' method='GET'>";
 
         Options currentOptions = OptionManager.load();
-        Class c = Options.class;
-        Field[] fields = c.getDeclaredFields();
+        Field[] fields = OptionManager.getOptionFields();
         for (Field f : fields) {
             if (f.getName().equals("$change")) {
                 // idk what this is, ignore it
@@ -65,8 +64,7 @@ public class OptionsHTTPD extends NanoHTTPD {
         } else if (session.getUri().equals("/set")) {
             Map<String, String> parms = session.getParms();
             Options newOptions = new Options();
-            Class c = Options.class;
-            Field[] fields = c.getDeclaredFields();
+            Field[] fields = OptionManager.getOptionFields();
             Log.i("options", parms.toString());
             for (Field f : fields) {
                 if (f.getName().equals("$change")) {

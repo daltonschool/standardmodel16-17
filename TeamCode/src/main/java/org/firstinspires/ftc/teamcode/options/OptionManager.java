@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 public class OptionManager {
     public static Options currentOptions;
@@ -61,5 +62,11 @@ public class OptionManager {
             default:
                 return field;
         }
+    }
+
+    public static Field[] getOptionFields() {
+        Options newOptions = new Options();
+        Class c = Options.class;
+        return c.getDeclaredFields();
     }
 }
