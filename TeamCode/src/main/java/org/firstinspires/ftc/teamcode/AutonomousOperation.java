@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.options.OptionManager;
 
 public abstract class AutonomousOperation extends LinearOpMode
 {
-    public static ColorSensor lineSensor = null;
     private ElapsedTime runtime = new ElapsedTime();
 
     public abstract Alliance getCurrentAlliance();
@@ -111,7 +110,6 @@ public abstract class AutonomousOperation extends LinearOpMode
                 requestOpModeStop();
                 return;
             }
-
             Robot.turnToHeading((getCurrentAlliance() == Alliance.RED ? 40 : -40), 0.6f);
             Blackbox.log("INFO", "Turn 1 done");
             telemetry.addLine("TURN 1 DONE");
@@ -246,16 +244,6 @@ public abstract class AutonomousOperation extends LinearOpMode
             telemetry.addLine("THE END OF PART 1");
             telemetry.update();
 
-            /*//turn 90 degrees to the right
-            Robot.turnToHeading(270, .7);
-
-            //go forward until the the line is sensed
-            while(!(lineSensor.green() > 240 &&  lineSensor.blue() > 240 && lineSensor.red() > 240)) {
-                Robot.leftMotors(0.2f);
-                Robot.rightMotors(0.2f);
-                Robot.update();
-                Robot.idle();
-            }*/
             Robot.leftMotors(0.0f);
             Robot.rightMotors(0.0f);
 
@@ -298,16 +286,6 @@ public abstract class AutonomousOperation extends LinearOpMode
     /*public void alignTo(VuforiaTrackable trackable) {
         trackable.getLocation()
     }*/
-    public boolean onLine() throws InterruptedException{
-        telemetry.addLine("CHECKING VALUE");
-        telemetry.update();
-        Thread.sleep(1000);
-        boolean oL = false;
-        if (lineSensor.green() > 240 &&  lineSensor.blue() > 240 && lineSensor.red() > 240) {
-            oL = true;
-        }
-        return oL;
-    }
     public void alignToTrackable(VuforiaTrackable trackable) {
         while (true) {
             if (!Robot.vuforia.hasLocation()) {

@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.tasks;
 
+import android.graphics.Color;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-
+import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.Utils;
+import org.firstinspires.ftc.teamcode.sensors.ColorSensors;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
-
+import org.firstinspires.ftc.teamcode.Robot;
 import static org.firstinspires.ftc.teamcode.Robot.leftMotors;
 import static org.firstinspires.ftc.teamcode.Robot.rightMotors;
 
@@ -16,55 +18,57 @@ public class LineFollowingTask extends Task {
     public LineFollowingTask(Object e) {
         super(e);
     }
-    public static ColorSensor lineSensor = null;
-    double lastError = 0;
-    double rightBaseSpeed = .5;
-    double leftBaseSpeed = .5;
-    double rightMaxSpeed = 1;
-    double leftMaxSpeed = 1;
-    double Kp = 0;
-    double Kd = 0;
-
+    ColorSensors obj1 = new ColorSensors();
 
     @Override
     public void init() {
+
     }
 
     @Override
-    public void run() throws InterruptedException {
-        linefollow:
-        while (true) { //change to condition to check if it close enough to read the beacon color
-            double colorVal = lineSensor.green() + lineSensor.blue() + lineSensor.red();
-            boolean done = false;
-            double whiteLineIntensityValue = 23.6; //Replace with value that we get
-            double blackMatIntensityValue = 1.24;  //Also do that here
-            double targetIntensity = whiteLineIntensityValue + blackMatIntensityValue / 2; //Get tarrget value
+    public void run()  {
+        //to set correct right side color
+        Alliance rightColor;
+        if (Robot.beaconColor.red() == Robot.beaconColor.blue()) {
+            rightColor = Alliance.UNKNOWN;
+        } else if (Robot.beaconColor.red() > Robot.beaconColor.blue()) {
+            rightColor = Alliance.RED;
+        } else {
+            rightColor = Alliance.BLUE;
+        }
 
+        //actual line following code
+        while (rightColor == Alliance.UNKNOWN) {
+            //gets values of the 2 sensors
+            double sensorVal_1 = obj1.getColorSensorVal("ls1");
+            double sensorVal_2 = obj1.getColorSensorVal("ls2");
 
-           // int position = qtrrc.readLine(sensors); // get calibrated readings along with the line position, refer to the QTR Sensors Arduino Library for more details on line position.
-            double error = colorVal;
+            //is values of the mat and line
+            double whiteLineIntensityValue = 1.0; //REPLACE WITH CORRECT VALUE
+            double blackMatIntensityValue = 0.0;  //ALSO REPLACE HERE
 
-            double motorSpeed = Kp * error + Kd * (error - lastError);
-            lastError = error;
+            //threshold of when the sensor is reading while and when it is reading black
+            double thresholdVal = (whiteLineIntensityValue + blackMatIntensityValue)/2; //REPLACE WITH DERIVED VALUE
 
-            double rightMotorSpeed = rightBaseSpeed + motorSpeed;
-            double leftMotorSpeed = leftBaseSpeed - motorSpeed;
-
-            if (rightMotorSpeed > rightMaxSpeed ) rightMotorSpeed = rightMaxSpeed; // prevent the motor from going beyond max speed
-            if (leftMotorSpeed > leftMaxSpeed ) leftMotorSpeed = leftMaxSpeed; // prevent the motor from going beyond max speed
-            if (rightMotorSpeed < 0) rightMotorSpeed = 0; // keep the motor speed positive
-            if (leftMotorSpeed < 0) leftMotorSpeed = 0; // keep the motor speed positive
-
-            {
-                rightMotors(rightMotorSpeed);
-                leftMotors(leftMotorSpeed);
+            //simple logic for line following
+            if(sensorVal_1 < thresholdVal && sensorVal_2 < thresholdVal) { //if on course (black and black)
+                rightMotors(.8);
+                leftMotors(.8);
             }
-
-            //
-
-            if (done) {
-                break linefollow;
+            else if(sensorVal_1 > thresholdVal && sensorVal_2 < thresholdVal){ //if needs to turn left (white and black)
+                rightMotors(.8);
+                leftMotors(-.8);
+            }
+            else if(sensorVal_1 < thresholdVal && sensorVal_2 > thresholdVal){ //if needs to turn right
+                rightMotors(-.8);
+                leftMotors(.8);
+            }
+            else {
+                Robot.telemetry.addData("Error", "I am lost");
+                Robot.telemetry.update();
             }
         }
+        rightMotors(0);
+        leftMotors(0);
     }
 }
