@@ -46,10 +46,13 @@ public class AlignmentTask extends Task {
             Robot.telemetry.addData("leftLine", Utils.getColorString(Robot.leftLineColor));
             Robot.telemetry.addData("rightLine", Utils.getColorString(Robot.rightLineColor));
             Robot.telemetry.addData("dist", Robot.frontDist.getLightDetected());
+            Robot.telemetry.addData("targetDist", targetPosition);
             if (Robot.vuforia.hasLocation()) {
                 Robot.telemetry.addData("vufDist", Robot.vuforia.getLocationAsString());
+                Robot.telemetry.addData("vufDistA", Robot.vuforia.getLocation().get(0));
             } else {
                 Robot.telemetry.addData("vufDist", "no");
+                Robot.telemetry.addData("vufDistA", "no");
             }
 
             if (Robot.leftLineColor.blue() == Robot.rightLineColor.blue()) {
@@ -66,6 +69,7 @@ public class AlignmentTask extends Task {
             if (Robot.vuforia.hasLocation() && Robot.vuforia.getLocation().get(0) < -1300) {
                 Robot.leftMotors(0.0f);
                 Robot.rightMotors(0.0f);
+                Thread.sleep(2000);
                 return;
             }
 

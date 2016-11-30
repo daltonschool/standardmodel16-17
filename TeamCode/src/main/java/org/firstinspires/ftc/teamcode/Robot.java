@@ -82,7 +82,7 @@ public class Robot {
         nomFront.setDirection(DcMotor.Direction.FORWARD);
 
         conveyor = hardwareMap.dcMotor.get("lift");
-        conveyor.setDirection(DcMotor.Direction.FORWARD);
+        conveyor.setDirection(DcMotor.Direction.REVERSE);
 
         // Servos
         beaconLeft = hardwareMap.servo.get("leftBeacon");

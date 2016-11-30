@@ -7,6 +7,11 @@ import org.firstinspires.ftc.teamcode.options.OptionManager;
 import org.firstinspires.ftc.teamcode.sensors.Vuforia;
 import org.firstinspires.ftc.teamcode.tasks.AlignmentTask;
 import org.firstinspires.ftc.teamcode.tasks.ButtonPressTask;
+import org.firstinspires.ftc.teamcode.tasks.LineFollowingTask;
+import org.firstinspires.ftc.teamcode.tasks.MoveForwardTask;
+import org.firstinspires.ftc.teamcode.tasks.MoveUntilLineTask;
+import org.firstinspires.ftc.teamcode.tasks.ShootTask;
+import org.firstinspires.ftc.teamcode.tasks.TurnToHeadingTask;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
 
 import java.lang.reflect.Field;
@@ -44,7 +49,24 @@ public abstract class TaskedOperation extends LinearOpMode {
 
         // set up tasks
         ArrayList<Task> tasks = new ArrayList<Task>();
+        //tasks.add(new LineFollowingTask(null));
+        tasks.add(new MoveForwardTask(2000));
+        tasks.add(new ShootTask(null));
+
+        // first beacon
+        tasks.add(new TurnToHeadingTask(55));
+        tasks.add(new MoveUntilLineTask(null));
+        tasks.add(new TurnToHeadingTask(80));
         tasks.add(new AlignmentTask(Robot.vuforia.gears));
+        tasks.add(new ButtonPressTask(null));
+
+        // go to second beacon
+        tasks.add(new TurnToHeadingTask(19));
+        tasks.add(new MoveForwardTask(2200));
+        tasks.add(new MoveUntilLineTask(null));
+        tasks.add(new MoveForwardTask(300));
+        tasks.add(new TurnToHeadingTask(80));
+        tasks.add(new AlignmentTask(Robot.vuforia.tools));
         tasks.add(new ButtonPressTask(null));
 
         // init tasks
@@ -60,6 +82,10 @@ public abstract class TaskedOperation extends LinearOpMode {
         waitForStart();
 
         Robot.start();
+        Robot.beaconLeft.setPosition(0.0);
+        Robot.beaconRight.setPosition(0.0);
+
+        Robot.nomMiddle.setPower(1.0f);
 
         while (opModeIsActive()) {
             int taskIndex = 0;

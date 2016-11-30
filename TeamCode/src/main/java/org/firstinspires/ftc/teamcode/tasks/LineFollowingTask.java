@@ -13,9 +13,6 @@ import static org.firstinspires.ftc.teamcode.Robot.leftMotors;
 import static org.firstinspires.ftc.teamcode.Robot.rightMotors;
 import static org.firstinspires.ftc.teamcode.Robot.vuforia;
 
-/**
- * Created by student on 11/21/16.
- */
 public class LineFollowingTask extends Task {
     public LineFollowingTask(Object e) {
         super(e);
@@ -31,9 +28,12 @@ public class LineFollowingTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
+        ColorSensor rightLine = Robot.rightLineColor;
+        ColorSensor leftLine = Robot.leftLineColor;
+
         double whiteLineIntensityValue = 50.0; //REPLACE WITH CORRECT VALUE
         double blackMatIntensityValue = 0.0;
-        double sensorVal_1 = obj1.getAlphaVal("right line color");
+        double sensorVal_1 = rightLine.alpha();
 //        double sensorVal_2 = obj1.getAlphaVal("ls2");
         errorR = sensorVal_1 - ((whiteLineIntensityValue+blackMatIntensityValue)/2);
         double leftPower = .2;
@@ -42,7 +42,7 @@ public class LineFollowingTask extends Task {
         //actual line following code
         while (!(Robot.vuforia.hasLocation() && Robot.vuforia.getLocation().get(0) < -1300) ){
             //gets values of the 2 sensors
-            sensorVal_1 = obj1.getAlphaVal("right line color");
+            sensorVal_1 = rightLine.alpha();
 //            sensorVal_2 = obj1.getAlphaVal("left line color");
 
             if(sensorVal_1 > 30) {
@@ -51,8 +51,8 @@ public class LineFollowingTask extends Task {
                 rightPower = obj2.Step(errorR);
             }
             else if(sensorVal_1 < 20){ //if needs to turn left (white and black)
-                rightMotors(.8);
-                leftMotors(-.8);
+                //rightMotors(.8);
+                //leftMotors(.8);
             }
             else {
                 //both are in between 20 and 30 so both are seeing the line
