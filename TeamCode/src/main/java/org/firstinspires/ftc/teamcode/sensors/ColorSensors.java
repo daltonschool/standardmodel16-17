@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.sensors;
 
 import android.graphics.Color;
+import android.os.StrictMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -23,6 +24,12 @@ public class ColorSensors extends OpMode{
         Color.RGBToHSV((cSensor.red() * 255) / 800, (cSensor.green() * 255) / 800, (cSensor.blue() * 255) / 800, hsvValues);
         return hsvValues[1];
     }
+
+    public double getAlphaVal (String cSensorName) {
+        cSensor = hardwareMap.colorSensor.get(cSensorName);
+        return cSensor.alpha();
+    }
+
     @Override
     public void loop() {
 
