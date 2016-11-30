@@ -60,7 +60,7 @@ public class LineFollowingTask extends Task {
                 rightPower = .2;
             }
             rightMotors(rightPower);
-            leftMotors(leftPower);
+            leftMotors(-leftPower);
             Robot.idle();
         }
         rightMotors(0);
