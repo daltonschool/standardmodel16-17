@@ -20,6 +20,12 @@ public class LineFollowingTask extends Task {
     ColorSensors obj1 = new ColorSensors();
     PIDController obj2 = new PIDController(.1,.1,.1);
     double errorR;
+    double sensorVal_1;
+    double sensorVal_2;
+    double whiteLineIntensityValue = 50.0; //REPLACE WITH CORRECT VALUE
+    double blackMatIntensityValue = 0.0;
+    double leftPower = .2;
+    double rightPower = .2;
 
     @Override
     public void init() {
@@ -30,21 +36,17 @@ public class LineFollowingTask extends Task {
     public void run() throws InterruptedException {
         ColorSensor rightLine = Robot.rightLineColor;
         ColorSensor leftLine = Robot.leftLineColor;
-
-        double whiteLineIntensityValue = 50.0; //REPLACE WITH CORRECT VALUE
-        double blackMatIntensityValue = 0.0;
-        double sensorVal_1 = rightLine.alpha();
-//        double sensorVal_2 = obj1.getAlphaVal("ls2");
+        sensorVal_1 = obj1.getAlphaVal("right line color");
+        sensorVal_2 = obj1.getAlphaVal("left line color");
         errorR = sensorVal_1 - ((whiteLineIntensityValue+blackMatIntensityValue)/2);
-        double leftPower = .2;
-        double rightPower = .2;
-
         //actual line following code
         while (!(Robot.vuforia.hasLocation() && Robot.vuforia.getLocation().get(0) < -1300) ){
             //gets values of the 2 sensors
-            sensorVal_1 = rightLine.alpha();
-//            sensorVal_2 = obj1.getAlphaVal("left line color");
-
+            sensorVal_1 = obj1.getAlphaVal("right line color");
+            Robot.telemetry.addData("rightSensorValue: ", obj1.getAlphaVal("right line color"));
+            Robot.telemetry.update();
+            Robot.update();
+//            sensorVal_2 = csValues.getAlphaVal("left line color");
             if(sensorVal_1 > 30) {
                 //the right sensor is seeing white it needs
                 leftPower = obj2.Step(errorR);
@@ -55,12 +57,12 @@ public class LineFollowingTask extends Task {
                 //leftMotors(.8);
             }
             else {
-                //both are in between 20 and 30 so both are seeing the line
+                //both are in between 20 and 30 so it is seeing the line
                 leftPower = .2;
                 rightPower = .2;
             }
             rightMotors(rightPower);
-            leftMotors(-leftPower);
+            leftMotors(leftPower);
             Robot.idle();
         }
         rightMotors(0);
