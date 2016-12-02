@@ -47,26 +47,28 @@ public abstract class TaskedOperation extends LinearOpMode {
             }
         }
 
+        int blueNegativeFactor = (Robot.currentAlliance == Alliance.BLUE ? -1 : 1);
+
         // set up tasks
         ArrayList<Task> tasks = new ArrayList<Task>();
         //tasks.add(new LineFollowingTask(null));
-        tasks.add(new MoveForwardTask(2000));
+        tasks.add(new MoveForwardTask(2100));
         tasks.add(new ShootTask(null));
 
         // first beacon
-        tasks.add(new TurnToHeadingTask(55));
+        tasks.add(new TurnToHeadingTask(48 * blueNegativeFactor));
         tasks.add(new MoveUntilLineTask(null));
-        tasks.add(new TurnToHeadingTask(80));
-        tasks.add(new AlignmentTask(Robot.vuforia.gears));
+        tasks.add(new TurnToHeadingTask(80 * blueNegativeFactor));
+        tasks.add(new AlignmentTask((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
         tasks.add(new ButtonPressTask(null));
 
         // go to second beacon
-        tasks.add(new TurnToHeadingTask(19));
+        tasks.add(new TurnToHeadingTask(16 * blueNegativeFactor));
         tasks.add(new MoveForwardTask(2200));
         tasks.add(new MoveUntilLineTask(null));
         tasks.add(new MoveForwardTask(300));
-        tasks.add(new TurnToHeadingTask(80));
-        tasks.add(new AlignmentTask(Robot.vuforia.tools));
+        tasks.add(new TurnToHeadingTask(80 * blueNegativeFactor));
+        tasks.add(new AlignmentTask((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
         tasks.add(new ButtonPressTask(null));
 
         // init tasks

@@ -20,7 +20,7 @@ public class ShootTask extends Task {
         Robot.flywheelLeft.setPower(0.35f);
         Robot.flywheelRight.setPower(0.35f);
 
-        Thread.sleep(500);
+        Thread.sleep(1500);
 
         Robot.conveyor.setPower(1.0f);
 

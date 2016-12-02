@@ -79,7 +79,7 @@ public class ButtonPressTask extends Task {
         // retreat
         Robot.leftMotors(-0.5f);
         Robot.rightMotors(-0.5f);
-        Thread.sleep(500);
+        Thread.sleep(350);
         Robot.leftMotors(0.0f);
         Robot.rightMotors(0.0f);
     }

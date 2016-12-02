@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 public class OptionManager {
@@ -51,6 +52,18 @@ public class OptionManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Option getOptionAnnotationForField(Field f) {
+        Option annotation = null;
+        for (Annotation a : f.getAnnotations()) {
+            if (a instanceof Option) {
+                // we found it! set the variable and escape
+                annotation = (Option)a;
+                break;
+            }
+        }
+        return annotation; // if we get here without having found it, we will just return null
     }
 
     public static String getPrettyName(String field) {
