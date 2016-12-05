@@ -15,7 +15,7 @@ public class StopOnLineTask extends Task {
     }
     ColorSensors csValues = new ColorSensors();
     PIDController pidObject =  new PIDController(.1, .1, .1);
-    double colorVal = csValues.getColorSensorVal("ls1");;
+    double colorVal = csValues.getColorSensorVal("right line color");;
     double speed = .8;
     double errorR;
 
@@ -28,7 +28,7 @@ public class StopOnLineTask extends Task {
     public void run() throws InterruptedException {
         while (colorVal < 20) {
             errorR = colorVal - 25;
-            colorVal = csValues.getColorSensorVal("ls1");
+            colorVal = csValues.getColorSensorVal("right line color");
             Robot.leftMotors(speed);
             Robot.rightMotors(speed);
             speed = pidObject.Step(errorR);

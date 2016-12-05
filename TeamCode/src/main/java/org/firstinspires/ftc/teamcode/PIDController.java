@@ -10,37 +10,74 @@ public class PIDController {
     double total_integral;
     double lastErr;
     long previous_time = System.currentTimeMillis();
+    int SampleTime = 1000; //1 sec
 
-    public PIDController (double a, double b, double c) {
+    public void Compute(double cError) {
+        long current_time = System.currentTimeMillis();
+
+        int timeChange = safeLongToInt(current_time - previous_time);
+        if (timeChange >= SampleTime) {
+            /*Compute all the working error variables*/
+            double time_diff = (current_time - previous_time);
+            double current_error = cError;
+            total_integral += cError;
+            double error_difference = (current_error - lastErr);
+            Kp = current_error;
+            Ki = total_integral;
+            Kd = error_difference;
+
+            /*Compute PID Output*/
+            double R = P * Kp + I * Ki + D * Kd;
+
+            /*Remember some variables for next time*/
+            lastErr = cError;
+            previous_time = current_time;
+        }
+    }
+
+    public void SetTunings(double a, double b, double c) {
         P = a;
         I = b;
         D = c;
     }
 
-    public double Step( double cError ) {
-        long current_time = System.currentTimeMillis();
-        double time_diff = (current_time - previous_time);
-        double current_error = cError;
-        total_integral += (current_error * time_diff);
-        double error_difference = (current_error - lastErr) / time_diff;
-        Kp = current_error;
-        Ki = total_integral;
-        Kd = error_difference;
-        double R = P * Kp + I * Ki + D * Kd;
-        lastErr = current_error;
-        previous_time = current_time;
-        if (R > 100) {
-            R = 100;
+    public void SetSampleTime(int NewSampleTime) {
+        if (NewSampleTime > 0) {
+            double ratio = (double) NewSampleTime / (double) SampleTime;
+            I *= ratio;
+            D /= ratio;
+            SampleTime = NewSampleTime;
         }
-        else if (R < -100) {
-            R = -100;
-        }
+    }
 
-        Robot.telemetry.addData("Kp: ", (Kp));
-        Robot.telemetry.addData("Ki: ", (Ki));
-        Robot.telemetry.addData("Kd: ", (Kd));
-        Robot.telemetry.addData("R: ", R);
-        Robot.telemetry.addData("Current Error", current_error);
-        return R;
+    public static int safeLongToInt(long l) {
+        if (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException
+                    (l + " cannot be cast to int without changing its value.");
+        }
+        return (int) l;
     }
 }
+//
+//        double error_difference = (current_error - lastErr) / time_diff;
+//        Kp = current_error;
+//        Ki = total_integral;
+//        Kd = error_difference;
+//        double R = P * Kp + I * Ki + D * Kd;
+//        lastErr = current_error;
+//        previous_time = current_time;
+//        if (R > 1) {
+//            R = 1;
+//        }
+//        else if (R < -1) {
+//            R = -1;
+//        }
+//
+//        Robot.telemetry.addData("Kp: ", (Kp));
+//        Robot.telemetry.addData("Ki: ", (Ki));
+//        Robot.telemetry.addData("Kd: ", (Kd));
+//        Robot.telemetry.addData("R: ", R);
+//        Robot.telemetry.addData("Current Error", current_error);
+//        return R;
+//    }
+//}
