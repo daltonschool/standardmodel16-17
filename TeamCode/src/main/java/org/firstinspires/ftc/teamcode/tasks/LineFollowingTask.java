@@ -1,24 +1,25 @@
 package org.firstinspires.ftc.teamcode.tasks;
-
-import android.graphics.Color;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.sensors.ColorSensors;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
-import org.firstinspires.ftc.teamcode.Robot;
+
+import static java.lang.Thread.sleep;
+import static org.firstinspires.ftc.teamcode.Robot.idle;
 import static org.firstinspires.ftc.teamcode.Robot.leftMotors;
 import static org.firstinspires.ftc.teamcode.Robot.rightMotors;
 
-/**
- * Created by student on 11/21/16.
- */
 public class LineFollowingTask extends Task {
     public LineFollowingTask(Object e) {
         super(e);
     }
     ColorSensors obj1 = new ColorSensors();
+    //PIDController pidObject = new PIDController(.1,.1,.15);
+    double leftPower = .2;
+    double rightPower = .2;
+    double errorR = 0.0;
+    //double errorL = 0.0;
+    double Kp = (1 - leftPower) / (25);
 
     @Override
     public void init() {
@@ -26,49 +27,41 @@ public class LineFollowingTask extends Task {
     }
 
     @Override
-    public void run()  {
-        //to set correct right side color
-        Alliance rightColor;
-        if (Robot.beaconColor.red() == Robot.beaconColor.blue()) {
-            rightColor = Alliance.UNKNOWN;
-        } else if (Robot.beaconColor.red() > Robot.beaconColor.blue()) {
-            rightColor = Alliance.RED;
-        } else {
-            rightColor = Alliance.BLUE;
-        }
-
-        //actual line following code
-        while (rightColor == Alliance.UNKNOWN) {
-            //gets values of the 2 sensors
-            double sensorVal_1 = obj1.getColorSensorVal("ls1");
-            double sensorVal_2 = obj1.getColorSensorVal("ls2");
-
-            //is values of the mat and line
-            double whiteLineIntensityValue = 1.0; //REPLACE WITH CORRECT VALUE
-            double blackMatIntensityValue = 0.0;  //ALSO REPLACE HERE
-
-            //threshold of when the sensor is reading while and when it is reading black
-            double thresholdVal = (whiteLineIntensityValue + blackMatIntensityValue)/2; //REPLACE WITH DERIVED VALUE
-
-            //simple logic for line following
-            if(sensorVal_1 < thresholdVal && sensorVal_2 < thresholdVal) { //if on course (black and black)
-                rightMotors(.8);
-                leftMotors(.8);
-            }
-            else if(sensorVal_1 > thresholdVal && sensorVal_2 < thresholdVal){ //if needs to turn left (white and black)
-                rightMotors(.8);
-                leftMotors(-.8);
-            }
-            else if(sensorVal_1 < thresholdVal && sensorVal_2 > thresholdVal){ //if needs to turn right
-                rightMotors(-.8);
-                leftMotors(.8);
-            }
-            else {
-                Robot.telemetry.addData("Error", "I am lost");
-                Robot.telemetry.update();
-            }
-        }
+    public void run() throws InterruptedException {
         rightMotors(0);
         leftMotors(0);
+        sleep(50);
+        while(true) {
+            Robot.update();
+            Robot.telemetry.addData("rightSensorValue: ", obj1.getAlphaVal("right line color"));
+            Robot.telemetry.update();
+            leftPower = .2;
+            rightPower= .2;
+            errorR = obj1.getAlphaVal("right line color") - 25;
+            if (obj1.getAlphaVal("right line color") > 30) {
+                leftPower = leftPower * (1 + (Kp * errorR));
+                rightPower = rightPower * (1 - (Kp * errorR));
+            }
+            else if (obj1.getAlphaVal("right line color") < 20) {
+                rightPower = rightPower * (1 - (Kp * errorR));
+                leftPower = leftPower * (1 + (Kp * errorR));
+
+            }
+            else {
+                leftPower = .2;
+                rightPower = .2;
+            }
+            leftMotors(leftPower);
+            rightMotors(rightPower);
+            sleep(50);
+            if (Robot.vuforia.hasLocation() && Robot.vuforia.getLocation().get(0) < -1300) {
+                Robot.leftMotors(0.0f);
+                Robot.rightMotors(0.0f);
+                Thread.sleep(2000);
+                return;
+            }
+            Robot.telemetry.update();
+            idle();
+        }
     }
 }

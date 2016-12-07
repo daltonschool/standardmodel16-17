@@ -25,7 +25,7 @@ public class ButtonPressTask extends Task {
         Robot.beaconRight.setPosition(0.0);
         Robot.telemetry.addLine("WAITING FOR SERVO POS");
         Robot.telemetry.update();
-        Thread.sleep(100);
+        Thread.sleep(500);
 
         // find the right color
         Alliance rightColor;
@@ -67,12 +67,19 @@ public class ButtonPressTask extends Task {
             Robot.beaconRight.setPosition(1.0);
         }
         Robot.telemetry.update();
-        Thread.sleep(100);
+        Thread.sleep(500);
 
         // move forwards
         Robot.leftMotors(0.5f);
         Robot.rightMotors(0.5f);
         Thread.sleep(1500);
+        Robot.leftMotors(0.0f);
+        Robot.rightMotors(0.0f);
+
+        // retreat
+        Robot.leftMotors(-0.5f);
+        Robot.rightMotors(-0.5f);
+        Thread.sleep(350);
         Robot.leftMotors(0.0f);
         Robot.rightMotors(0.0f);
     }

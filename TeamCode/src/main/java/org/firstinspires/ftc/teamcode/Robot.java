@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -33,10 +34,13 @@ public class Robot {
     public static Servo beaconRight;
 
     // Sensors
-    public static ColorSensor lineSensor = null;
     public static ColorSensor beaconColor = null;
+    public static ColorSensor leftLineColor = null;
+    public static ColorSensor rightLineColor = null;
 
     public static IMU imu = null;
+
+    public static OpticalDistanceSensor frontDist;
 
     public static Vuforia vuforia;
 
@@ -78,22 +82,29 @@ public class Robot {
         nomFront.setDirection(DcMotor.Direction.FORWARD);
 
         conveyor = hardwareMap.dcMotor.get("lift");
-        conveyor.setDirection(DcMotor.Direction.FORWARD);
+        conveyor.setDirection(DcMotor.Direction.REVERSE);
 
         // Servos
         beaconLeft = hardwareMap.servo.get("leftBeacon");
         beaconRight = hardwareMap.servo.get("rightBeacon");
 
         // Sensors
-        // colorSensor = hardwareMap.colorSensor.get("color sensor");
-        lineSensor = hardwareMap.colorSensor.get("line sensor");
+        // Color
         beaconColor = hardwareMap.colorSensor.get("beacon color");
-        beaconColor.setI2cAddress(I2cAddr.create8bit(0x4C));
         beaconColor.enableLed(false);
+        leftLineColor = hardwareMap.colorSensor.get("left line color");
+        leftLineColor.setI2cAddress(I2cAddr.create8bit(0x6C));
+        leftLineColor.enableLed(true);
+        rightLineColor = hardwareMap.colorSensor.get("right line color");
+        rightLineColor.setI2cAddress(I2cAddr.create8bit(0x4C));
+        rightLineColor.enableLed(true);
 
         // IMU
         imu = new IMU();
         imu.init(hardwareMap.get(BNO055IMU.class, "imu"));
+
+        // Front distance
+        frontDist = hardwareMap.opticalDistanceSensor.get("front dist");
 
         // Vuforia
         vuforia = new Vuforia();

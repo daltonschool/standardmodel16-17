@@ -12,13 +12,19 @@ public class ColorTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         waitForStart();
         Utils.showToast("Beacon color test", 0);
-        ColorSensor c = hardwareMap.colorSensor.get("beacon color");
-        c.setI2cAddress(I2cAddr.create8bit(0x4C));
-        c.enableLed(false);
+        ColorSensor leftLineColor = hardwareMap.colorSensor.get("left line color");
+        leftLineColor.setI2cAddress(I2cAddr.create8bit(0x6C));
+        leftLineColor.enableLed(true);
+        ColorSensor rightLineColor = hardwareMap.colorSensor.get("right line color");
+        rightLineColor.setI2cAddress(I2cAddr.create8bit(0x4C));
+        rightLineColor.enableLed(true);
         while (opModeIsActive()) {
-            telemetry.addData("r", c.red());
-            telemetry.addData("g", c.green());
-            telemetry.addData("b", c.blue());
+            telemetry.addData("left-r", leftLineColor.red());
+            telemetry.addData("left-g", leftLineColor.green());
+            telemetry.addData("left-b", leftLineColor.blue());
+            telemetry.addData("right-r", rightLineColor.red());
+            telemetry.addData("right-g", rightLineColor.green());
+            telemetry.addData("right-b", rightLineColor.blue());
 
             telemetry.update();
             idle();

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.google.gson.Gson;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.robocol.Command;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -27,6 +28,10 @@ public class Utils {
 
     public static Orientation matrixToOrientation(OpenGLMatrix location) {
         return Orientation.getOrientation(location, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+    }
+
+    public static String getColorString(ColorSensor sensor) {
+        return "(" + sensor.red() + ", " + sensor.green() + ", " + sensor.blue() + ")";
     }
 }
 
