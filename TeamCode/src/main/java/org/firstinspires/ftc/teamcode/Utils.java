@@ -3,6 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.google.gson.Gson;
 import com.qualcomm.robotcore.robocol.Command;
 
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.internal.AppUtil;
 import org.firstinspires.ftc.robotcore.internal.network.NetworkConnectionHandler;
 
@@ -18,6 +23,10 @@ public class Utils {
         Gson g = new Gson();
         Command toastCmd = new Command("CMD_SHOW_TOAST", g.toJson(showToastExtra));
         NetworkConnectionHandler.getInstance().sendCommand(toastCmd);
+    }
+
+    public static Orientation matrixToOrientation(OpenGLMatrix location) {
+        return Orientation.getOrientation(location, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
     }
 }
 

@@ -127,6 +127,8 @@ public class GammaDrive extends OpMode {
 
         telemetry.addData("Launch Power:", launchpower);
 
+        telemetry.update();
+
         //Launch
         if (gamepad2.dpad_up == true && upprevstatelaunchspeed == false && runtime.time() - lastuppresslaunchspeed > .5) {
             launchpower += .1;
@@ -194,13 +196,13 @@ public class GammaDrive extends OpMode {
         }
 
         //Lift
-        if (gamepad2.right_trigger != 0 && gamepad2.left_trigger == 0) {
+        if (gamepad2.right_trigger != 0) {
             bpright.setPosition(0);
         } else {
             bpright.setPosition(1);
         }
 
-        if (gamepad2.left_trigger != 0 && gamepad2.right_trigger == 0) {
+        if (gamepad2.left_trigger != 0) {
             bpleft.setPosition(1);
         } else {
             bpleft.setPosition(0);

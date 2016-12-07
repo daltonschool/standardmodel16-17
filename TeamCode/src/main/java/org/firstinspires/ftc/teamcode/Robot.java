@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.content.Context;
+
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -9,6 +11,8 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.sensors.IMU;
+import org.firstinspires.ftc.teamcode.sensors.Vuforia;
 
 public class Robot {
 
@@ -16,11 +20,20 @@ public class Robot {
     public static DcMotor leftMotor;
     public static DcMotor rightMotor;
 
+    public static DcMotor flywheelLeft;
+    public static DcMotor flywheelRight;
+
+    public static DcMotor nomFront;
+    public static DcMotor nomMiddle;
+
+    public static DcMotor conveyor;
+
     // Servos
-    public static Servo beaconServo;
+    public static Servo beaconLeft;
+    public static Servo beaconRight;
 
     // Sensors
-    public static ColorSensor colorSensor = null;
+    public static ColorSensor lineSensor = null;
     public static ColorSensor beaconColor = null;
 
     public static IMU imu = null;
@@ -33,24 +46,47 @@ public class Robot {
     // The original opmode.
     public static LinearOpMode opMode;
 
+    // The app context
+    public static Context appContext;
+
+    // The current alliance
+    public static Alliance currentAlliance;
+
     public static void init(LinearOpMode om) {
         opMode = om;
         HardwareMap hardwareMap = opMode.hardwareMap;
         telemetry = opMode.telemetry;
+        appContext = hardwareMap.appContext;
 
         // Motors
-        leftMotor = hardwareMap.dcMotor.get("left motor");
+        leftMotor = hardwareMap.dcMotor.get("drive_right");
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        rightMotor = hardwareMap.dcMotor.get("right motor");
+        rightMotor = hardwareMap.dcMotor.get("drive_left");
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
 
+        flywheelLeft = hardwareMap.dcMotor.get("launch_left");
+        flywheelLeft.setDirection(DcMotor.Direction.FORWARD);
+
+        flywheelRight = hardwareMap.dcMotor.get("launch_right");
+        flywheelRight.setDirection(DcMotor.Direction.REVERSE);
+
+        nomMiddle = hardwareMap.dcMotor.get("inside_nom");
+        nomMiddle.setDirection(DcMotor.Direction.FORWARD);
+
+        nomFront = hardwareMap.dcMotor.get("outside_nom");
+        nomFront.setDirection(DcMotor.Direction.FORWARD);
+
+        conveyor = hardwareMap.dcMotor.get("lift");
+        conveyor.setDirection(DcMotor.Direction.FORWARD);
+
         // Servos
-        beaconServo = hardwareMap.servo.get("beacon servo");
+        beaconLeft = hardwareMap.servo.get("leftBeacon");
+        beaconRight = hardwareMap.servo.get("rightBeacon");
 
         // Sensors
-        // Color
-        //colorSensor = hardwareMap.colorSensor.get("color sensor");
+        // colorSensor = hardwareMap.colorSensor.get("color sensor");
+        lineSensor = hardwareMap.colorSensor.get("line sensor");
         beaconColor = hardwareMap.colorSensor.get("beacon color");
         beaconColor.setI2cAddress(I2cAddr.create8bit(0x4C));
         beaconColor.enableLed(false);
@@ -97,6 +133,9 @@ public class Robot {
         float currentHeading = imu.getHeading();
         boolean turnLeft = (targetHeading - currentHeading > 0 ? true : false);
         while (true) {
+            telemetry.addData("hdg", currentHeading);
+            telemetry.update();
+
             double currentSpeed = power;
             float distanceTo = Math.abs(targetHeading - currentHeading);
 
@@ -160,12 +199,15 @@ public class Robot {
 
     // Sensing methods
     public static Alliance getBeaconRightColor() throws InterruptedException {
-        beaconServo.setPosition(0.0);
+        beaconLeft.setPosition(0.0);
+        beaconRight.setPosition(0.0);
         telemetry.addLine("WAITING FOR SERVO POS");
         telemetry.update();
         Thread.sleep(1000);
         Alliance response;
-        if (beaconColor.red() != 0 && beaconColor.red() != 255 && beaconColor.red() > 30) {
+        if ((beaconColor.red() == beaconColor.blue()) || (beaconColor.red() == 0 && beaconColor.blue() == 255) || (beaconColor.blue() == 0 && beaconColor.red() == 255)) {
+            response = Alliance.UNKNOWN;
+        } else if (beaconColor.red() > beaconColor.blue()) {
             response = Alliance.RED;
         } else {
             response = Alliance.BLUE;
@@ -173,41 +215,4 @@ public class Robot {
         return response;
     }
 
-    // Other
-    /*public void lineFollower() throws InterruptedException {
-
-        // hsvValues is an array that will hold the hue, saturation, and value information.
-        float hsvValues[] = {0F, 0F, 0F};
-
-        // values is a reference to the hsvValues array.
-        final float values[] = hsvValues;
-        Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
-        double whiteLineIntensityValue = 23.6; //Replace with value that we get
-        double blackMatIntensityValue = 1.24;  //Also do that here
-        double targetIntensity = whiteLineIntensityValue + blackMatIntensityValue / 2; //Get tarrget value
-
-        while (true) //change to run until called
-        {
-            if (Math.abs(hsvValues[2] - targetIntensity) <= 5) //if on line
-            {
-                moveForward(1, .3);
-            } else {
-                int i = 0;
-                while (hsvValues[2] - targetIntensity > 5 || i < 90) {
-                    turnToHeading((imu.getHeading() + 5), .3);
-                    i++;
-                }
-                turnToHeading((imu.getHeading() - (i * 5)), .3);
-                while (hsvValues[2] - targetIntensity > 5 || i < 90) {
-                    turnToHeading((imu.getHeading() - 5), .3);
-                    i++;
-                }
-            }
-//            else
-//            {
-//                System.out.println("3Error");
-//                break;
-//            }
-        }
-    }*/
 }
