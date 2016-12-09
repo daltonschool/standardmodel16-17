@@ -31,8 +31,6 @@ public class AlignmentTask extends Task {
     @Override
     public void run() throws InterruptedException {
         CameraDevice.getInstance().setFlashTorchMode(true);
-        Robot.leftLineColor.enableLed(true);
-        Robot.rightLineColor.enableLed(true);
         VuforiaTrackable trackable = (VuforiaTrackable) extra;
 
         OpenGLMatrix targetLocation = trackable.getLocation();
@@ -40,11 +38,14 @@ public class AlignmentTask extends Task {
         Orientation targetOrientation = Utils.matrixToOrientation(targetLocation);
         //targetOrientation.thirdAngle
 
+        int targetColor = 25;
+        float baseSpeed = 0.075f;
+
         while (true) {
             Robot.update();
 
-            Robot.telemetry.addData("leftLine", Utils.getColorString(Robot.leftLineColor));
-            Robot.telemetry.addData("rightLine", Utils.getColorString(Robot.rightLineColor));
+            Robot.telemetry.addData("leftLine", Robot.leftLineColor.whiteReading());
+            Robot.telemetry.addData("rightLine", Robot.rightLineColor.whiteReading());
             Robot.telemetry.addData("dist", Robot.frontDist.getLightDetected());
             Robot.telemetry.addData("targetDist", targetPosition);
             if (Robot.vuforia.hasLocation()) {
@@ -55,21 +56,26 @@ public class AlignmentTask extends Task {
                 Robot.telemetry.addData("vufDistA", "no");
             }
 
-            if (Robot.leftLineColor.blue() == Robot.rightLineColor.blue()) {
-                Robot.leftMotors(0.2f);
-                Robot.rightMotors(0.2f);
-            } else if (Robot.leftLineColor.blue() > Robot.rightLineColor.blue()) {
+            int leftReading = Robot.leftLineColor.whiteReading();
+            int rightReading = Robot.rightLineColor.whiteReading();
+
+            if (leftReading == rightReading) {
+                Robot.leftMotors(0.3f);
+                Robot.rightMotors(0.3f);
+            } else if (leftReading > rightReading) {
                 Robot.leftMotors(0.0f);
-                Robot.rightMotors(0.4f);
-            } else if (Robot.leftLineColor.blue() < Robot.rightLineColor.blue()) {
-                Robot.leftMotors(0.4f);
+                Robot.rightMotors(0.4f * Math.max(0.25f, Math.min(0.9f, ((leftReading - rightReading) * 0.1f))));
+            } else if (leftReading < rightReading) {
+                Robot.leftMotors(0.4f * Math.max(0.25f, Math.min(0.9f, ((rightReading - leftReading) * 0.1f))));
                 Robot.rightMotors(0.0f);
             }
-
             if (Robot.vuforia.hasLocation() && Robot.vuforia.getLocation().get(0) < -1300) {
+                Robot.telemetry.addData("vufDist", Robot.vuforia.getLocationAsString());
+                Robot.telemetry.addData("vufDistA", Robot.vuforia.getLocation().get(0));
+                Robot.telemetry.update();
                 Robot.leftMotors(0.0f);
                 Robot.rightMotors(0.0f);
-                Thread.sleep(2000);
+                Thread.sleep(1000);
                 return;
             }
 

@@ -47,7 +47,7 @@ public class ButtonPressTask extends Task {
             // back up
             Robot.leftMotors(-0.4f);
             Robot.rightMotors(-0.4f);
-            Thread.sleep(1000);
+            Thread.sleep(500);
             Robot.leftMotors(0.0f);
             Robot.rightMotors(0.0f);
 

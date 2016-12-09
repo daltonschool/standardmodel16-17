@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,7 +15,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.sensors.IMU;
+import org.firstinspires.ftc.teamcode.sensors.MRColorSensor;
 import org.firstinspires.ftc.teamcode.sensors.Vuforia;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public class Robot {
 
@@ -35,8 +41,8 @@ public class Robot {
 
     // Sensors
     public static ColorSensor beaconColor = null;
-    public static ColorSensor leftLineColor = null;
-    public static ColorSensor rightLineColor = null;
+    public static MRColorSensor leftLineColor = null;
+    public static MRColorSensor rightLineColor = null;
 
     public static IMU imu = null;
 
@@ -61,6 +67,7 @@ public class Robot {
         HardwareMap hardwareMap = opMode.hardwareMap;
         telemetry = opMode.telemetry;
         appContext = hardwareMap.appContext;
+
 
         // Motors
         leftMotor = hardwareMap.dcMotor.get("drive_right");
@@ -92,12 +99,8 @@ public class Robot {
         // Color
         beaconColor = hardwareMap.colorSensor.get("beacon color");
         beaconColor.enableLed(false);
-        leftLineColor = hardwareMap.colorSensor.get("left line color");
-        leftLineColor.setI2cAddress(I2cAddr.create8bit(0x6C));
-        leftLineColor.enableLed(true);
-        rightLineColor = hardwareMap.colorSensor.get("right line color");
-        rightLineColor.setI2cAddress(I2cAddr.create8bit(0x4C));
-        rightLineColor.enableLed(true);
+        leftLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("left line color"), I2cAddr.create8bit(0x6C));
+        rightLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("right line color"), I2cAddr.create8bit(0x4C));
 
         // IMU
         imu = new IMU();
