@@ -4,18 +4,20 @@ import org.firstinspires.ftc.teamcode.PIDController;
 import org.firstinspires.ftc.teamcode.Robot;
 
 import org.firstinspires.ftc.teamcode.sensors.ColorSensors;
+import org.firstinspires.ftc.teamcode.sensors.MRColorSensor;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
 
-/*
+
 public class StopOnLineTask extends Task {
     public StopOnLineTask(Object e) {
         super(e);
     }
-    ColorSensors csValues = new ColorSensors();
-    PIDController pidObject =  new PIDController(.1, .1, .1);
-    double colorVal = csValues.getColorSensorVal("right line color");;
+    //MRColorSensor rightColorSensor = new ColorSensors();
+    PIDController pidObject =  new PIDController();
+    byte colorVal;
     double speed = .8;
     double errorR;
+    double startPos = Robot.leftMotor.getCurrentPosition();
 
     @Override
     public void init() {
@@ -24,13 +26,18 @@ public class StopOnLineTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
+        pidObject.SetTunings(.1,.1,.1);
+        pidObject.SetSampleTime(50);
+        colorVal = Robot.rightLineColor.whiteReading();
         while (colorVal < 20) {
-            errorR = colorVal - 25;
-            colorVal = csValues.getColorSensorVal("right line color");
+            errorR = colorVal - 10;
+            colorVal = Robot.rightLineColor.whiteReading();
             Robot.leftMotors(speed);
             Robot.rightMotors(speed);
-            speed = pidObject.Step(errorR);
-            Robot.telemetry.addData("rightSensorValue: ", Robot.leftLineColor.blue());
+            pidObject.Compute(4 feet - (Robot.leftMotor.getCurrentPosition() - startPos));
+            pidObject.SetOutputLimits(-1,1);
+            speed = pidObject.getOutput();
+            Robot.telemetry.addData("rightSensorValue: ", Robot.rightLineColor.whiteReading());
             Robot.telemetry.update();
             Robot.update();
             Robot.idle();
@@ -39,4 +46,3 @@ public class StopOnLineTask extends Task {
         Robot.rightMotors(0.0f);
     }
 }
-*/
