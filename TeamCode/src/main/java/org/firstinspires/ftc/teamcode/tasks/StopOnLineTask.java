@@ -34,7 +34,7 @@ public class StopOnLineTask extends Task {
             colorVal = Robot.rightLineColor.whiteReading();
             Robot.leftMotors(speed);
             Robot.rightMotors(speed);
-            pidObject.Compute(4 feet - (Robot.leftMotor.getCurrentPosition() - startPos));
+            pidObject.Compute(5200 - (Robot.leftMotor.getCurrentPosition() - startPos));
             pidObject.SetOutputLimits(-1,1);
             speed = pidObject.getOutput();
             Robot.telemetry.addData("rightSensorValue: ", Robot.rightLineColor.whiteReading());
