@@ -13,7 +13,7 @@ public class LineFollowingTask extends Task {
     public LineFollowingTask(Object e) {
         super(e);
     }
-    ColorSensors obj1 = new ColorSensors();
+    //ColorSensors obj1 = new ColorSensors();
     //PIDController pidObject = new PIDController(.1,.1,.15);
     double leftPower = .2;
     double rightPower = .2;
@@ -33,16 +33,16 @@ public class LineFollowingTask extends Task {
         sleep(50);
         while(true) {
             Robot.update();
-            Robot.telemetry.addData("rightSensorValue: ", obj1.getAlphaVal("right line color"));
+            Robot.telemetry.addData("rightSensorValue: ", Robot.rightLineColor.whiteReading());
             Robot.telemetry.update();
             leftPower = .2;
             rightPower= .2;
-            errorR = obj1.getAlphaVal("right line color") - 25;
-            if (obj1.getAlphaVal("right line color") > 30) {
+            errorR = Robot.rightLineColor.whiteReading() - 15;
+            if (Robot.rightLineColor.whiteReading() > 20) {
                 leftPower = leftPower * (1 + (Kp * errorR));
                 rightPower = rightPower * (1 - (Kp * errorR));
             }
-            else if (obj1.getAlphaVal("right line color") < 20) {
+            else if (Robot.rightLineColor.whiteReading() < 10) {
                 rightPower = rightPower * (1 - (Kp * errorR));
                 leftPower = leftPower * (1 + (Kp * errorR));
 
