@@ -15,17 +15,20 @@ public class MoveUntilLineTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
-        Robot.leftMotors(0.25f);
-        Robot.rightMotors(0.25f);
+        Robot.leftMotors(0.18f);
+        Robot.rightMotors(0.18f);
 
-        while (Robot.leftLineColor.blue() < 1) {
-            Robot.telemetry.addData("leftLineBlue", Robot.leftLineColor.blue());
+        byte whiteReading = Robot.leftLineColor.whiteReading();
+        while (whiteReading < 5) {
+            Robot.telemetry.addData("leftWhiteReading", whiteReading);
             Robot.telemetry.update();
             Robot.update();
             Robot.idle();
+
+            whiteReading = Robot.leftLineColor.whiteReading();
         }
 
         Robot.leftMotors(0.0f);
-        Robot.leftMotors(0.0f);
+        Robot.rightMotors(0.0f);
     }
 }

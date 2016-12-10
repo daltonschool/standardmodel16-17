@@ -68,6 +68,12 @@ public class GammaDrive extends OpMode {
 
     double lastpresslaunchtoggle;
 
+    boolean leftprevstatebeaconhitter;
+    boolean rightprevstatebeaconhitter;
+
+    boolean rightout;
+    boolean leftout;
+
     boolean launching;
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -97,7 +103,10 @@ public class GammaDrive extends OpMode {
         lastuppresslaunchspeed = 0;
         lastdownpresslaunchspeed = 0;
 
-
+        rightprevstatebeaconhitter = false;
+        leftprevstatebeaconhitter = false;
+        rightout = false;
+        leftout = false;
     }
 
     /*
@@ -123,6 +132,8 @@ public class GammaDrive extends OpMode {
      */
     @Override
     public void loop() {
+
+
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
         telemetry.addData("Launch Power:", launchpower);
@@ -196,16 +207,31 @@ public class GammaDrive extends OpMode {
         }
 
         //Lift
-        if (gamepad2.right_trigger != 0) {
+        if (gamepad2.right_trigger > .5  && rightprevstatebeaconhitter == false) {
+            rightout = !rightout;
+            rightprevstatebeaconhitter = true;
+        } else {
+            rightprevstatebeaconhitter = false;
+        }
+
+        if (gamepad2.left_trigger > .5 && leftprevstatebeaconhitter == false) {
+            leftout = !leftout;
+            leftprevstatebeaconhitter = true;
+        } else {
+            leftprevstatebeaconhitter = false;
+        }
+
+        if (rightout == true ){
             bpright.setPosition(0);
         } else {
             bpright.setPosition(1);
         }
 
-        if (gamepad2.left_trigger != 0) {
-            bpleft.setPosition(1);
-        } else {
+        if (leftout == true ) {
             bpleft.setPosition(0);
+        } else {
+
+            bpleft.setPosition(1);
         }
 
         if (gamepad2.left_bumper == true && gamepad2.right_bumper == false) {

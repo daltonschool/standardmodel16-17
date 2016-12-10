@@ -74,6 +74,10 @@ public class PIDController {
             total_integral= outMin;
     }
 
+    public double getOutput() {
+        return R;
+    }
+
     public static int safeLongToInt(long l) {
         if (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE) {
             throw new IllegalArgumentException

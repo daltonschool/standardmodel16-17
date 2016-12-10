@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.google.gson.Gson;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.robocol.Command;
 
@@ -11,6 +12,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.internal.AppUtil;
 import org.firstinspires.ftc.robotcore.internal.network.NetworkConnectionHandler;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 public class Utils {
 
