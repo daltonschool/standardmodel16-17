@@ -82,5 +82,9 @@ public class ButtonPressTask extends Task {
         Thread.sleep(350);
         Robot.leftMotors(0.0f);
         Robot.rightMotors(0.0f);
+
+        // reset
+        Robot.beaconLeft.setPosition(0.0);
+        Robot.beaconRight.setPosition(0.0);
     }
 }

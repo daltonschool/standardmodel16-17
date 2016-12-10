@@ -13,13 +13,13 @@ import org.firstinspires.ftc.teamcode.sensors.MRColorSensor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-@Autonomous(name="Beacon Color Test", group="Tests")
+@Autonomous(name="Color Test", group="Tests")
 public class ColorTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
         waitForStart();
-        Utils.showToast("Beacon color test", 0);
+        Utils.showToast("Color test", 0);
 
         /*ColorSensor leftLineColor = hardwareMap.colorSensor.get("left line color");
         leftLineColor.setI2cAddress(I2cAddr.create8bit(0x6C));
@@ -30,6 +30,8 @@ public class ColorTest extends LinearOpMode {
 
         MRColorSensor leftLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("left line color"), I2cAddr.create8bit(0x6C));
         MRColorSensor rightLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("right line color"), I2cAddr.create8bit(0x4C));
+        ColorSensor beaconColor = hardwareMap.colorSensor.get("beacon color");
+        beaconColor.enableLed(false);
 
         while (opModeIsActive()) {
             /*telemetry.addData("left-r", leftLineColor.red());
@@ -46,6 +48,9 @@ public class ColorTest extends LinearOpMode {
 
             telemetry.addData("left-w", leftLineColor.whiteReading());
             telemetry.addData("right-w", rightLineColor.whiteReading());
+            telemetry.addData("beaconColor-r", beaconColor.red());
+            telemetry.addData("beaconColor-g", beaconColor.green());
+            telemetry.addData("beaconColor-b", beaconColor.blue());
 
             telemetry.update();
             idle();

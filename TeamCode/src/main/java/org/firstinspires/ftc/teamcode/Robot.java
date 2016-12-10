@@ -154,9 +154,9 @@ public class Robot {
             float distanceTo = Math.abs(targetHeading - currentHeading);
 
             if (distanceTo < 10) {
-                currentSpeed *= 0.30;
-            } else if (distanceTo < 20) {
                 currentSpeed *= 0.40;
+            } else if (distanceTo < 20) {
+                currentSpeed *= 0.50;
             } else if (distanceTo < 30) {
                 currentSpeed *= 0.60;
             }
@@ -196,7 +196,14 @@ public class Robot {
 
     public static void moveForward_encoder(double distanceToDrive, double power) throws InterruptedException {
         double startPos = leftMotor.getCurrentPosition();
-        while ((leftMotor.getCurrentPosition() - startPos) < distanceToDrive) {
+        boolean negative = (distanceToDrive < 0);
+        if (negative) {
+            power *= -1;
+        }
+        while (
+                (!negative && leftMotor.getCurrentPosition() - startPos < distanceToDrive) ||
+                (negative && leftMotor.getCurrentPosition() - startPos > distanceToDrive)
+        ) {
             double factor = 1.0f;
             if ((leftMotor.getCurrentPosition() - startPos) > (distanceToDrive / 2)) {
                 factor = 0.5f;

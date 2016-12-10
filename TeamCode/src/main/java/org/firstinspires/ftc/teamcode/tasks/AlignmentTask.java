@@ -22,10 +22,7 @@ public class AlignmentTask extends Task {
 
     @Override
     public void init() {
-        VuforiaTrackable trackable = (VuforiaTrackable) extra;
-
-        Blackbox.log("VUFO", trackable.getLocation().formatAsTransform());
-
+        //VuforiaTrackable trackable = (VuforiaTrackable) extra;
     }
 
     @Override
@@ -37,6 +34,10 @@ public class AlignmentTask extends Task {
         float targetPosition = targetLocation.getTranslation().get(0) - 200;
         Orientation targetOrientation = Utils.matrixToOrientation(targetLocation);
         //targetOrientation.thirdAngle
+
+        if (trackable.getName().equals("Gears") || trackable.getName().equals("Tools")) {
+            targetPosition = -1230;
+        }
 
         int targetColor = 25;
         float baseSpeed = 0.075f;
@@ -59,17 +60,19 @@ public class AlignmentTask extends Task {
             int leftReading = Robot.leftLineColor.whiteReading();
             int rightReading = Robot.rightLineColor.whiteReading();
 
-            if (leftReading == rightReading) {
-                Robot.leftMotors(0.3f);
-                Robot.rightMotors(0.3f);
+            if (leftReading == rightReading || leftReading - 1 == rightReading || leftReading + 1 == rightReading) {
+                Robot.leftMotors(0.4f);
+                Robot.rightMotors(0.4f);
             } else if (leftReading > rightReading) {
-                Robot.leftMotors(0.0f);
-                Robot.rightMotors(0.4f * Math.max(0.25f, Math.min(0.9f, ((leftReading - rightReading) * 0.1f))));
+                float calculated = 0.4f * Math.max(0.5f, Math.min(0.9f, ((leftReading - rightReading) * 0.05f)));
+                Robot.leftMotors(calculated / 2);
+                Robot.rightMotors(calculated);
             } else if (leftReading < rightReading) {
-                Robot.leftMotors(0.4f * Math.max(0.25f, Math.min(0.9f, ((rightReading - leftReading) * 0.1f))));
-                Robot.rightMotors(0.0f);
+                float calculated = 0.4f * Math.max(0.5f, Math.min(0.9f, ((rightReading - leftReading) * 0.05f)));
+                Robot.leftMotors(calculated);
+                Robot.rightMotors(calculated / 2);
             }
-            if (Robot.vuforia.hasLocation() && Robot.vuforia.getLocation().get(0) < -1300) {
+            if (Robot.vuforia.hasLocation() && Robot.vuforia.getLocation().get(0) < targetPosition) {
                 Robot.telemetry.addData("vufDist", Robot.vuforia.getLocationAsString());
                 Robot.telemetry.addData("vufDistA", Robot.vuforia.getLocation().get(0));
                 Robot.telemetry.update();

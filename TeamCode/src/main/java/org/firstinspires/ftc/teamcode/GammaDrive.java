@@ -138,6 +138,8 @@ public class GammaDrive extends OpMode {
 
         telemetry.addData("Launch Power:", launchpower);
 
+        telemetry.addData("Right Encoder Value", rightback.getCurrentPosition());
+
         //Launch
         if (gamepad2.dpad_up == true && upprevstatelaunchspeed == false && runtime.time() - lastuppresslaunchspeed > .5) {
             launchpower += .1;

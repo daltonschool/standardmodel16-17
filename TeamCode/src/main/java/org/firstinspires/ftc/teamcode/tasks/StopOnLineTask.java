@@ -21,7 +21,7 @@ public class StopOnLineTask extends Task {
 
     @Override
     public void init() {
-        Robot.turnToHeading(270, .7);
+        //Robot.turnToHeading(270, .7);
     }
 
     @Override
