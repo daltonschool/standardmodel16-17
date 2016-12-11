@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.sensors.IMU;
@@ -49,6 +50,8 @@ public class Robot {
     public static OpticalDistanceSensor frontDist;
 
     public static Vuforia vuforia;
+
+    public static VoltageSensor voltageSensor;
 
     // Telemetry
     public static Telemetry telemetry;
@@ -112,6 +115,9 @@ public class Robot {
         // Vuforia
         vuforia = new Vuforia();
         vuforia.init();
+
+        // Voltage
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
     }
 
     public static void start() {
@@ -154,11 +160,11 @@ public class Robot {
             float distanceTo = Math.abs(targetHeading - currentHeading);
 
             if (distanceTo < 10) {
-                currentSpeed *= 0.40;
+                currentSpeed *= 0.30;
             } else if (distanceTo < 20) {
-                currentSpeed *= 0.50;
+                currentSpeed *= 0.40;
             } else if (distanceTo < 30) {
-                currentSpeed *= 0.60;
+                currentSpeed *= 0.50;
             }
 
             leftMotors((turnLeft ? -currentSpeed : currentSpeed));

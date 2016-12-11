@@ -25,10 +25,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -139,6 +142,8 @@ public class GammaDrive extends OpMode {
         telemetry.addData("Launch Power:", launchpower);
 
         telemetry.addData("Right Encoder Value", rightback.getCurrentPosition());
+        VoltageSensor v = hardwareMap.voltageSensor.iterator().next();
+        telemetry.addData(v.getDeviceName() + " voltage: ", v.getVoltage());
 
         //Launch
         if (gamepad2.dpad_up == true && upprevstatelaunchspeed == false && runtime.time() - lastuppresslaunchspeed > .5) {

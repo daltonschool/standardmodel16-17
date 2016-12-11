@@ -22,8 +22,42 @@ public class MRColorSensor {
         _device.write(0x03, new byte[] { 0x00 });
     }
 
+    public boolean ping() {
+        return true;
+    }
+
+    public byte firmwareRevision() {
+        return _device.read8(0x00);
+    }
+
+    public byte manufacturer() {
+        return _device.read8(0x01);
+    }
+
+    public byte sensorIDCode() {
+        return _device.read8(0x02);
+    }
+
+    public void blackLevelCalibration() {
+        _device.write8(0x03, 0x42);
+    }
+
+    public void whiteBalanceCalibration() {
+        _device.write8(0x03, 0x43);
+    }
+
     public byte whiteReading() {
         // TODO: care about the msb too
         return _device.read8(0x14);
+    }
+
+    public byte redReading() {
+        // TODO: care about the msb too
+        return _device.read8(0x0E);
+    }
+
+    public byte blueReading() {
+        // TODO: care about the msb too
+        return _device.read8(0x12);
     }
 }

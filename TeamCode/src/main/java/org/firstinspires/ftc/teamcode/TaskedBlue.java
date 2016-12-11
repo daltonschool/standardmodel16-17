@@ -7,4 +7,7 @@ public class TaskedBlue extends TaskedOperation {
     public Alliance getCurrentAlliance() {
         return Alliance.BLUE;
     }
+    public boolean isASpookster() {
+        return false;
+    }
 }
