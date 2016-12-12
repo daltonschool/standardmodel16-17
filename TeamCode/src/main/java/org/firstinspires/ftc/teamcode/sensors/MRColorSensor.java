@@ -20,6 +20,7 @@ public class MRColorSensor extends Sensor {
         }
 
         _device.engage();
+        //_device.setReadWindow(new I2cDeviceSynch.ReadWindow().);
     }
 
     @Override
@@ -56,6 +57,11 @@ public class MRColorSensor extends Sensor {
     public void init() {
         // turn on the led
         _device.write(0x03, new byte[] { 0x00 });
+    }
+
+    @Override
+    public void update() {
+
     }
 
     public void blackLevelCalibration() {

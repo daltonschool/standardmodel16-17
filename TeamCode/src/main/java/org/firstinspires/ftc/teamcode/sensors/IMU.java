@@ -85,6 +85,7 @@ public class IMU extends Sensor {
         return Math.round(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
     }
 
+    @Override
     public void update() {
         angles = _imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
         gravity = _imu.getGravity();

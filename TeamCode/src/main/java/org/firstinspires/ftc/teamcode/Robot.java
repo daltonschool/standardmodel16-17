@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.sensors.IMU;
 import org.firstinspires.ftc.teamcode.sensors.MRColorSensor;
+import org.firstinspires.ftc.teamcode.sensors.PhoneGyro;
 import org.firstinspires.ftc.teamcode.sensors.Sensor;
 import org.firstinspires.ftc.teamcode.sensors.Vuforia;
 
@@ -49,6 +50,7 @@ public class Robot {
     public static MRColorSensor rightLineColor = null;
 
     public static IMU imu = null;
+    public static PhoneGyro phoneGyro = null;
 
     public static OpticalDistanceSensor frontDist;
 
@@ -118,6 +120,10 @@ public class Robot {
         //imu.init();
         sensors.add(imu);
 
+        // Phone gyroscope
+        phoneGyro = new PhoneGyro();
+        sensors.add(phoneGyro);
+
         // Front distance
         frontDist = hardwareMap.opticalDistanceSensor.get("front dist");
 
@@ -136,8 +142,9 @@ public class Robot {
 
     public static void update() {
         // update sensors
-        imu.update();
-        vuforia.update();
+        for (Sensor s : sensors) {
+            s.update();
+        }
 
         // and telemetry
         telemetry.update();
@@ -164,6 +171,7 @@ public class Robot {
         boolean turnLeft = (targetHeading - currentHeading > 0 ? true : false);
         while (true) {
             telemetry.addData("hdg", currentHeading);
+            telemetry.addData("phoneHdg", Robot.phoneGyro.getHeading());
             telemetry.update();
 
             double currentSpeed = power;

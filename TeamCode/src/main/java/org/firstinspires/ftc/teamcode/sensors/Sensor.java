@@ -11,4 +11,5 @@ public abstract class Sensor {
     public abstract String uniqueName();
 
     public abstract void init();
+    public abstract void update();
 }

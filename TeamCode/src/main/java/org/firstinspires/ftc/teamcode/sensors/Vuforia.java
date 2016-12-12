@@ -137,6 +137,7 @@ public class Vuforia extends Sensor{
         ftcTrackables.activate();
     }
 
+    @Override
     public void update() {
         for (VuforiaTrackable trackable : allTrackables) {
             //telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible() ? "Visible" : "Not Visible");    //
