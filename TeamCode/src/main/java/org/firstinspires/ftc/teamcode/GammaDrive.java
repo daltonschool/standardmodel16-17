@@ -144,6 +144,7 @@ public class GammaDrive extends OpMode {
         telemetry.addData("Right Encoder Value", rightback.getCurrentPosition());
         VoltageSensor v = hardwareMap.voltageSensor.iterator().next();
         telemetry.addData(v.getDeviceName() + " voltage: ", v.getVoltage());
+        telemetry.update();
 
         //Launch
         if (gamepad2.dpad_up == true && upprevstatelaunchspeed == false && runtime.time() - lastuppresslaunchspeed > .5) {
@@ -270,7 +271,3 @@ public class GammaDrive extends OpMode {
         return number;
     }
 }
-
-
-
-

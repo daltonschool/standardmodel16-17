@@ -28,6 +28,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -48,6 +49,8 @@ public class GammaDrive2Test extends OpMode {
     DcMotor outside_nom;
     DcMotor lift;
 
+    Servo bpleft;
+    Servo bpright;
 
     double powerleft;
     double powerright;
@@ -80,6 +83,8 @@ public class GammaDrive2Test extends OpMode {
         outside_nom = hardwareMap.dcMotor.get("outside_nom");
         lift = hardwareMap.dcMotor.get("lift");
 
+        bpright = hardwareMap.servo.get("leftBeacon");
+        bpleft = hardwareMap.servo.get("rightBeacon");
 
         launchVoltage = 7;
 
@@ -158,6 +163,18 @@ public class GammaDrive2Test extends OpMode {
 //            launchRight.setPower(0.0);
 //            launchLeft.setPower(0.0);
 //        }
+
+        if (gamepad1.right_bumper == true) {
+            bpright.setPosition(1);
+        } else if (gamepad1.right_trigger >= .5) {
+            bpright.setPosition(0);
+        }
+
+        if (gamepad1.left_bumper == true) {
+            bpleft.setPosition(0);
+        } else if (gamepad1.left_trigger >= .5) {
+            bpleft.setPosition(1);
+        }
 
         telemetry.addData("Voltage:", hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage());
 

@@ -5,11 +5,15 @@ import org.firstinspires.ftc.teamcode.Robot;
 
 import org.firstinspires.ftc.teamcode.taskutil.Task;
 
-
+/*
 public class StopOnLineTask extends Task {
     public StopOnLineTask(Object e) {
         super(e);
     }
+    ColorSensors csValues = new ColorSensors();
+    PIDController pidObject =  new PIDController();
+
+    double colorVal = csValues.getColorSensorVal("right line color");
     PIDController pidObject =  new PIDController();
     byte colorVal;
     double speed = .8;
@@ -43,3 +47,4 @@ public class StopOnLineTask extends Task {
         Robot.rightMotors(0.0f);
     }
 }
+*/
