@@ -53,6 +53,12 @@ public class OptionManager {
             e.printStackTrace();
         }
     }
+    
+    public static Field[] getOptionFields() {
+        Options newOptions = new Options();
+        Class c = Options.class;
+        return c.getDeclaredFields();
+    }
 
     public static Option getOptionAnnotationForField(Field f) {
         Option annotation = null;
@@ -66,20 +72,20 @@ public class OptionManager {
         return annotation; // if we get here without having found it, we will just return null
     }
 
-    public static String getPrettyName(String field) {
-        switch (field) {
-            case "shotsOnly":
-                return "Shots only mode";
-            case "startDelay":
-                return "10 sec start delay";
-            default:
-                return field;
+    public static Field getFieldFromName(String fieldName) {
+        for (Field f : getOptionFields()) {
+            if (f.getName().equals(fieldName)) {
+                return f;
+            }
         }
+        return null;
     }
 
-    public static Field[] getOptionFields() {
-        Options newOptions = new Options();
-        Class c = Options.class;
-        return c.getDeclaredFields();
+    public static String getPrettyName(String field) {
+        Field f = getFieldFromName(field);
+        if (f == null) {
+            return "(null)";
+        }
+        return getOptionAnnotationForField(f).prettyName();
     }
 }

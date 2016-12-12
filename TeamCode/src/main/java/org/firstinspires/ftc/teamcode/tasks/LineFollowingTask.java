@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode.tasks;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.sensors.ColorSensors;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
 
 public class LineFollowingTask extends Task {
     public LineFollowingTask(Object e) {
         super(e);
     }
-    //ColorSensors obj1 = new ColorSensors();
     //PIDController pidObject = new PIDController(.1,.1,.15);
     double leftPower = .2;
     double rightPower = .2;

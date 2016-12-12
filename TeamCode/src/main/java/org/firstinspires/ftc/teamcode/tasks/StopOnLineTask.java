@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.tasks;
 import org.firstinspires.ftc.teamcode.PIDController;
 import org.firstinspires.ftc.teamcode.Robot;
 
-import org.firstinspires.ftc.teamcode.sensors.ColorSensors;
-import org.firstinspires.ftc.teamcode.sensors.MRColorSensor;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
 
 
@@ -12,7 +10,6 @@ public class StopOnLineTask extends Task {
     public StopOnLineTask(Object e) {
         super(e);
     }
-    //MRColorSensor rightColorSensor = new ColorSensors();
     PIDController pidObject =  new PIDController();
     byte colorVal;
     double speed = .8;

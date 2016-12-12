@@ -5,37 +5,57 @@ import com.qualcomm.robotcore.hardware.I2cAddressableDevice;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 
-public class MRColorSensor {
+import org.firstinspires.ftc.teamcode.Utils;
+
+public class MRColorSensor extends Sensor {
     public I2cDeviceSynch _device;
-    public I2cAddr address;
+    public I2cAddr _address;
 
-    public MRColorSensor(I2cDeviceSynch device, I2cAddr addr) {
+    public MRColorSensor(I2cDeviceSynch device, I2cAddr address) {
         _device = device;
+        _address = address;
 
-        if (addr != null) {
-            _device.setI2cAddress(addr);
+        if (address != null) {
+            _device.setI2cAddress(address);
         }
 
         _device.engage();
-
-        // turn on the led
-        _device.write(0x03, new byte[] { 0x00 });
     }
 
+    @Override
     public boolean ping() {
         return true;
     }
 
+    @Override
     public byte firmwareRevision() {
         return _device.read8(0x00);
     }
 
+    @Override
     public byte manufacturer() {
         return _device.read8(0x01);
     }
 
+    @Override
     public byte sensorIDCode() {
         return _device.read8(0x02);
+    }
+
+    @Override
+    public String name() {
+        return "Modern Robotics Color Sensor";
+    }
+
+    @Override
+    public String uniqueName() {
+        return name() + " @ " + Utils.intToHexString(_address.get8Bit());
+    }
+
+    @Override
+    public void init() {
+        // turn on the led
+        _device.write(0x03, new byte[] { 0x00 });
     }
 
     public void blackLevelCalibration() {

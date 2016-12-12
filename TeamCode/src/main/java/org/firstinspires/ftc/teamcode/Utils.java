@@ -38,6 +38,10 @@ public class Utils {
     public static String getColorString(ColorSensor sensor) {
         return "(" + sensor.red() + ", " + sensor.green() + ", " + sensor.blue() + ")";
     }
+
+    public static String intToHexString(int i) {
+        return Integer.toHexString(i);
+    }
 }
 
 class ShowToastExtra {

@@ -17,7 +17,7 @@ import java.util.List;
 
 // yes I know that technically vuforia isn't a sensor
 // I don't really care though
-public class Vuforia {
+public class Vuforia extends Sensor{
     private List<VuforiaTrackable> allTrackables;
     private VuforiaLocalizer vuforia;
     private VuforiaTrackables ftcTrackables;
@@ -28,6 +28,36 @@ public class Vuforia {
     public VuforiaTrackable gears;
 
     private OpenGLMatrix lastLocation = null;
+
+    @Override
+    public boolean ping() {
+        return true;
+    }
+
+    @Override
+    public byte firmwareRevision() {
+        return 0x01;
+    }
+
+    @Override
+    public byte manufacturer() {
+        return 0x42;
+    }
+
+    @Override
+    public byte sensorIDCode() {
+        return 0x00;
+    }
+
+    @Override
+    public String name() {
+        return "Vuforia";
+    }
+
+    @Override
+    public String uniqueName() {
+        return name();
+    }
 
     public void init() {
         // vuforia init

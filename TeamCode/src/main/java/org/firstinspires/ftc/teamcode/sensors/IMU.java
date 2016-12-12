@@ -13,13 +13,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 /**
  * IMU = fancy name for accelerometer, gyroscope, and compass combo
  */
-public class IMU {
+public class IMU extends Sensor {
     private Orientation angles = null;
     private Acceleration gravity = null;
 
     private BNO055IMU _imu;
 
-    public void init(BNO055IMU imu) {
+    public IMU(BNO055IMU imu) {
+        _imu = imu;
+    }
+
+    @Override
+    public void init() {
         BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
         imuParameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         imuParameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -28,8 +33,37 @@ public class IMU {
         imuParameters.loggingTag          = "IMU";
         imuParameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-        _imu = imu;
         _imu.initialize(imuParameters);
+    }
+
+    @Override
+    public boolean ping() {
+        return true;
+    }
+
+    @Override
+    public byte firmwareRevision() {
+        return 0;
+    }
+
+    @Override
+    public byte manufacturer() {
+        return 0;
+    }
+
+    @Override
+    public byte sensorIDCode() {
+        return 0;
+    }
+
+    @Override
+    public String name() {
+        return "BNO055 IMU";
+    }
+
+    @Override
+    public String uniqueName() {
+        return name();
     }
 
     public Orientation getZYXOrientation() {

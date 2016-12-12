@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.Util;
 import com.vuforia.CameraDevice;
 
 import org.firstinspires.ftc.teamcode.options.OptionManager;
+import org.firstinspires.ftc.teamcode.sensors.Sensor;
 import org.firstinspires.ftc.teamcode.sensors.Vuforia;
 import org.firstinspires.ftc.teamcode.tasks.AlignmentTask;
 import org.firstinspires.ftc.teamcode.tasks.ButtonPressTask;
@@ -30,14 +32,63 @@ public abstract class TaskedOperation extends LinearOpMode {
         Blackbox.init();
         Blackbox.log("INFO", "Current alliance: " + (getCurrentAlliance() == Alliance.RED ? "red" : "blue"));
 
+        telemetry.addData("Status", "Starting robot...");
+        telemetry.update();
+
         // set up robot
         Robot.init(this);
+
+        telemetry.addData("Status", "Starting options...");
+        telemetry.update();
 
         // set up options
         OptionManager.init();
 
         // set up alliance
         Robot.currentAlliance = getCurrentAlliance();
+
+        // check all sensors
+        Blackbox.log("SENSOR", "=== Sensor map ===");
+        telemetry.addData("Status", "Starting sensors...");
+        telemetry.update();
+        int passedSensors = 0;
+        int failedSensors = 0;
+        for (Sensor s : Robot.sensors) {
+            Blackbox.log("SENSOR", s.uniqueName());
+            if (s.ping()) {
+                // yay
+                s.init();
+                Blackbox.log("SENSOR", "FW: " + Utils.intToHexString(s.firmwareRevision()) + ", MFG: " + Utils.intToHexString(s.manufacturer()) + ", CODE: " + Utils.intToHexString(s.sensorIDCode()));
+                Blackbox.log("SENSOR", "PASS");
+                passedSensors++;
+            } else {
+                // uh oh
+                Blackbox.log("SENSOR", "FAIL");
+                telemetry.addData("Failure #" + (failedSensors + 1), s.uniqueName());
+                failedSensors++;
+            }
+        }
+
+        Blackbox.log("SENSOR", passedSensors + " sensor(s) passed / " + failedSensors + " sensor(s) failed");
+
+        if (failedSensors > 0) {
+            // oh no
+            Blackbox.log("SENSOR", "SENSOR FAILURE");
+            telemetry.addData("Status", "SENSOR FAILURE");
+            telemetry.addLine(passedSensors + " other sensors passed");
+            telemetry.update();
+            while (true) {
+                idle();
+            }
+        }
+
+        Blackbox.log("INFO", "Calibrating black level...");
+        telemetry.addData("Status", "Calibrating black level...");
+        telemetry.update();
+
+        Robot.leftLineColor.blackLevelCalibration();
+        Robot.rightLineColor.blackLevelCalibration();
+        Thread.sleep(2000);
 
         // print out options for verification
         Field[] fields = OptionManager.getOptionFields();
@@ -102,15 +153,6 @@ public abstract class TaskedOperation extends LinearOpMode {
         for (Task t : tasks) {
             t.init();
         }
-
-        // calibrate
-        Blackbox.log("INFO", "Calibrating for black level...");
-        telemetry.addData("Status", "Calibrating for black level...");
-        telemetry.update();
-
-        Robot.leftLineColor.blackLevelCalibration();
-        Robot.rightLineColor.blackLevelCalibration();
-        Thread.sleep(2000);
 
 
         // we're ready

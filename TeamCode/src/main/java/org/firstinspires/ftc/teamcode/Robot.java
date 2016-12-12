@@ -17,10 +17,13 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.sensors.IMU;
 import org.firstinspires.ftc.teamcode.sensors.MRColorSensor;
+import org.firstinspires.ftc.teamcode.sensors.Sensor;
 import org.firstinspires.ftc.teamcode.sensors.Vuforia;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 
 public class Robot {
 
@@ -53,6 +56,9 @@ public class Robot {
 
     public static VoltageSensor voltageSensor;
 
+    // Sensor list
+    public static ArrayList<Sensor> sensors;
+
     // Telemetry
     public static Telemetry telemetry;
 
@@ -70,7 +76,7 @@ public class Robot {
         HardwareMap hardwareMap = opMode.hardwareMap;
         telemetry = opMode.telemetry;
         appContext = hardwareMap.appContext;
-
+        sensors = new ArrayList<Sensor>();
 
         // Motors
         leftMotor = hardwareMap.dcMotor.get("drive_right");
@@ -103,18 +109,22 @@ public class Robot {
         beaconColor = hardwareMap.colorSensor.get("beacon color");
         beaconColor.enableLed(false);
         leftLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("left line color"), I2cAddr.create8bit(0x6C));
+        sensors.add(leftLineColor);
         rightLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("right line color"), I2cAddr.create8bit(0x4C));
+        sensors.add(rightLineColor);
 
         // IMU
-        imu = new IMU();
-        imu.init(hardwareMap.get(BNO055IMU.class, "imu"));
+        imu = new IMU(hardwareMap.get(BNO055IMU.class, "imu"));
+        //imu.init();
+        sensors.add(imu);
 
         // Front distance
         frontDist = hardwareMap.opticalDistanceSensor.get("front dist");
 
         // Vuforia
         vuforia = new Vuforia();
-        vuforia.init();
+        sensors.add(vuforia);
+        //vuforia.init();
 
         // Voltage
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
