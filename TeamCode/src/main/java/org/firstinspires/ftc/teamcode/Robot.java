@@ -121,8 +121,8 @@ public class Robot {
         sensors.add(imu);
 
         // Phone gyroscope
-        phoneGyro = new PhoneGyro();
-        sensors.add(phoneGyro);
+        //phoneGyro = new PhoneGyro();
+        //sensors.add(phoneGyro);
 
         // Front distance
         frontDist = hardwareMap.opticalDistanceSensor.get("front dist");
@@ -171,11 +171,14 @@ public class Robot {
         boolean turnLeft = (targetHeading - currentHeading > 0 ? true : false);
         while (true) {
             telemetry.addData("hdg", currentHeading);
-            telemetry.addData("phoneHdg", Robot.phoneGyro.getHeading());
+            //telemetry.addData("phoneHdg", Robot.phoneGyro.getHeading());
             telemetry.update();
 
             double currentSpeed = power;
             float distanceTo = Math.abs(targetHeading - currentHeading);
+            double minimumSpeed = 0.3f;
+            double minimumLeftSpeed = (turnLeft ? -minimumSpeed : minimumSpeed);
+            double minimumRightSpeed = (turnLeft ? minimumSpeed : -minimumSpeed);
 
             if (distanceTo < 10) {
                 currentSpeed *= 0.30;
@@ -185,15 +188,19 @@ public class Robot {
                 currentSpeed *= 0.50;
             }
 
-            leftMotors((turnLeft ? -currentSpeed : currentSpeed));
-            rightMotors((turnLeft ? currentSpeed : -currentSpeed));
+            leftMotors(Math.max(minimumLeftSpeed, (turnLeft ? -currentSpeed : currentSpeed)));
+            rightMotors(Math.max(minimumRightSpeed, (turnLeft ? currentSpeed : -currentSpeed)));
 
             imu.update();
             currentHeading = imu.getHeading();
 
-            if (turnLeft && targetHeading < currentHeading) {
+            turnLeft = (targetHeading - currentHeading > 0 ? true : false);
+            /*if (turnLeft && targetHeading < currentHeading) {
                 break;
             } else if (!turnLeft && targetHeading > currentHeading) {
+                break;
+            }*/
+            if (targetHeading == currentHeading) {
                 break;
             }
         }

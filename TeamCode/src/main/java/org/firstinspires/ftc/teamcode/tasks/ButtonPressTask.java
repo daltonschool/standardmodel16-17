@@ -44,7 +44,7 @@ public class ButtonPressTask extends Task {
             Robot.beaconRight.setPosition(1.0);
         }
         Robot.telemetry.update();
-        Thread.sleep(500);
+        Thread.sleep(1000);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class ButtonPressTask extends Task {
         // retreat
         Robot.leftMotors(-0.5f);
         Robot.rightMotors(-0.5f);
-        Thread.sleep(350);
+        Thread.sleep(700);
         Robot.leftMotors(0.0f);
         Robot.rightMotors(0.0f);
 
@@ -100,7 +100,7 @@ public class ButtonPressTask extends Task {
         Thread.sleep(500);
 
         rightColor = getBeaconColor();
-        int timesTried = 0;
+        /*int timesTried = 0;
         while (rightColor != Robot.currentAlliance) {
             extendArmBasedOnRightColor(rightColor);
 
@@ -133,7 +133,7 @@ public class ButtonPressTask extends Task {
                 Robot.telemetry.update();
                 return;
             }
-        }
+        }*/
 
         // reset
         Robot.beaconLeft.setPosition(0.0);

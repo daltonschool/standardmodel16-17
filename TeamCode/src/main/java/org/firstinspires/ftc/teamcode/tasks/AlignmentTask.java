@@ -40,9 +40,9 @@ public class AlignmentTask extends Task {
         double maxRobotDistance = 0.016;
 
         if (trackable.getName().equals("Gears")) {
-            targetPosition = -1330;
+            targetPosition = -1290;
         } else if (trackable.getName().equals("Tools")) {
-            targetPosition = -1230;
+            targetPosition = -1290;
         } else if (trackable.getName().equals("Legos")) {
             targetPosition = -660;
         } else if (trackable.getName().equals("Wheels")) {
@@ -114,8 +114,6 @@ public class AlignmentTask extends Task {
                                 (!negativeField && Robot.vuforia.hasLocation() && Robot.vuforia.getLocation().get(0) > targetPosition) ||
                                 (Robot.frontDist.getLightDetected() > maxRobotDistance)
                         ) {
-                    Log.i("stopped", "stopped!!!!");
-                    Log.i("stopped", "stopped!!!!");
                     Log.i("stopped", "stopped!!!!");
                     if (Robot.vuforia.hasLocation()) {
                         Robot.telemetry.addData("vufDist", Robot.vuforia.getLocationAsString());

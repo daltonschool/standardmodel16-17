@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.tasks.LineFollowingTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveForwardTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveUntilLineTask;
 import org.firstinspires.ftc.teamcode.tasks.ShootTask;
+import org.firstinspires.ftc.teamcode.tasks.SpookyTestTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnToHeadingTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnUntilLineTask;
 import org.firstinspires.ftc.teamcode.tasks.VuforiaAlignmentTask;
@@ -60,6 +61,7 @@ public abstract class TaskedOperation extends LinearOpMode {
                 s.init();
                 Blackbox.log("SENSOR", "FW: " + Utils.intToHexString(s.firmwareRevision()) + ", MFG: " + Utils.intToHexString(s.manufacturer()) + ", CODE: " + Utils.intToHexString(s.sensorIDCode()));
                 Blackbox.log("SENSOR", "PASS");
+                s.update();
                 passedSensors++;
             } else {
                 // uh oh
@@ -88,11 +90,14 @@ public abstract class TaskedOperation extends LinearOpMode {
 
         Robot.leftLineColor.blackLevelCalibration();
         Robot.rightLineColor.blackLevelCalibration();
-        Thread.sleep(2000);
+        Thread.sleep(500);
 
         // print out options for verification
         Field[] fields = OptionManager.getOptionFields();
         for (Field f : fields) {
+            if (OptionManager.getPrettyName(f.getName()).equals("(null)")) {
+                continue;
+            }
             try {
                 telemetry.addData(OptionManager.getPrettyName(f.getName()), f.get(OptionManager.currentOptions));
             } catch (IllegalAccessException e) {
@@ -102,7 +107,7 @@ public abstract class TaskedOperation extends LinearOpMode {
         }
 
         int blueNegativeFactor = (Robot.currentAlliance == Alliance.BLUE ? -1 : 1);
-        int firstTurn = (Robot.currentAlliance == Alliance.RED ? 48 : 42);
+        int firstTurn = (Robot.currentAlliance == Alliance.RED ? 65 : 65);
 
         boolean shooting = true;
         boolean getBeacons = true;
@@ -121,18 +126,22 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new TurnToHeadingTask(firstTurn * blueNegativeFactor));
             tasks.add(new MoveForwardTask(1400));
             tasks.add(new MoveUntilLineTask(null));
-            tasks.add(new TurnToHeadingTask(80 * blueNegativeFactor));
+            tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             tasks.add(new AlignmentTask((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
+            tasks.add(new MoveForwardTask(450));
             //tasks.add(new MoveForwardTask(-200));
             tasks.add(new ButtonPressTask(null));
 
             // go to second beacon
-            tasks.add(new TurnToHeadingTask(20 * blueNegativeFactor));
+            tasks.add(new TurnToHeadingTask(-5 * blueNegativeFactor));
             tasks.add(new MoveForwardTask(2200));
             tasks.add(new MoveUntilLineTask(null));
-            tasks.add(new MoveForwardTask(250));
+            tasks.add(new MoveForwardTask(220));
             tasks.add(new TurnUntilLineTask(null));
+            tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             tasks.add(new AlignmentTask((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
+            tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+            //tasks.add(new MoveForwardTask(220));
             tasks.add(new ButtonPressTask(null));
         }
 /*
@@ -146,7 +155,7 @@ public abstract class TaskedOperation extends LinearOpMode {
             Blackbox.log("INFO", "we have a spookster!!!");
             Blackbox.log("INFO", "we have a spookster!!!");
             tasks.clear();
-            tasks.add(new AlignmentTask(Robot.vuforia.wheels));
+            tasks.add(new SpookyTestTask(null));
         }
 
         // init tasks

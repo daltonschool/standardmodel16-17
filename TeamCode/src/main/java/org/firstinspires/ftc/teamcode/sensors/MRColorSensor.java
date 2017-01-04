@@ -25,6 +25,9 @@ public class MRColorSensor extends Sensor {
 
     @Override
     public boolean ping() {
+        if (manufacturer() != 0x4d || sensorIDCode() != 0x43) {
+            return false;
+        }
         return true;
     }
 

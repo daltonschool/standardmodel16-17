@@ -62,7 +62,8 @@ public class OptionManager {
 
     public static Option getOptionAnnotationForField(Field f) {
         Option annotation = null;
-        for (Annotation a : f.getAnnotations()) {
+        Annotation[] annotations = f.getDeclaredAnnotations();
+        for (Annotation a : annotations) {
             if (a instanceof Option) {
                 // we found it! set the variable and escape
                 annotation = (Option)a;
@@ -86,6 +87,10 @@ public class OptionManager {
         if (f == null) {
             return "(null)";
         }
-        return getOptionAnnotationForField(f).prettyName();
+        Option o = getOptionAnnotationForField(f);
+        if (o == null) {
+            return "(null)";
+        }
+        return o.prettyName();
     }
 }

@@ -31,7 +31,7 @@ public class MoveUntilLineTask extends Task {
 
         //byte redReading = checkingColorSensor.redReading();
         //byte blueReading = checkingColorSensor.blueReading();
-        int whiteReading = (int)checkingColorSensor.whiteReading() - (int)6;
+        int whiteReading = ((Byte)checkingColorSensor.whiteReading()).intValue() - (int)6;
         while ((whiteReading < 5)) {// || (blueReading > 10 && redReading < 10) || (redReading > 10 && blueReading < 10)) {
             //Robot.telemetry.addData("leftRedReading", redReading);
             //Robot.telemetry.addData("leftBlueReading", blueReading);

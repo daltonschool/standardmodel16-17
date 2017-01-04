@@ -4,6 +4,7 @@ import android.content.Context;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
@@ -108,9 +109,12 @@ public class PhoneGyro extends Sensor implements SensorEventListener {
         timestamp = event.timestamp;
         float[] deltaRotationMatrix = new float[9];
         SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
+
         float[] rotations = new float[3];
         SensorManager.getOrientation(deltaRotationMatrix, rotations);
-        
+        /*Log.i("test", "rotations[0] = " + Math.toDegrees(rotations[0]));
+        Log.i("test", "rotations[1] = " + Math.toDegrees(rotations[1]));
+        Log.i("test", "rotations[2] = " + Math.toDegrees(rotations[2]));*/
     }
 
     @Override
