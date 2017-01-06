@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -48,6 +49,7 @@ public class Robot {
     public static ColorSensor beaconColor = null;
     public static MRColorSensor leftLineColor = null;
     public static MRColorSensor rightLineColor = null;
+    public static ModernRoboticsI2cRangeSensor range = null;
 
     public static IMU imu = null;
     public static PhoneGyro phoneGyro = null;
@@ -120,6 +122,8 @@ public class Robot {
         //imu.init();
         sensors.add(imu);
 
+        range = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
+
         // Phone gyroscope
         //phoneGyro = new PhoneGyro();
         //sensors.add(phoneGyro);
@@ -181,11 +185,14 @@ public class Robot {
             double minimumRightSpeed = (turnLeft ? minimumSpeed : -minimumSpeed);
 
             if (distanceTo < 10) {
-                currentSpeed *= 0.30;
+                currentSpeed *= 0.20;
+                currentSpeed = Math.min(currentSpeed, 0.3f);
             } else if (distanceTo < 20) {
-                currentSpeed *= 0.40;
+                currentSpeed *= 0.30;
+                currentSpeed = Math.min(currentSpeed, 0.35f);
             } else if (distanceTo < 30) {
-                currentSpeed *= 0.50;
+                currentSpeed *= 0.40;
+                currentSpeed = Math.min(currentSpeed, 0.4f);
             }
 
             leftMotors(Math.max(minimumLeftSpeed, (turnLeft ? -currentSpeed : currentSpeed)));

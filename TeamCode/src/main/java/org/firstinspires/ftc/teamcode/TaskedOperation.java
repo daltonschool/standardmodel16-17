@@ -9,7 +9,9 @@ import org.firstinspires.ftc.teamcode.sensors.Sensor;
 import org.firstinspires.ftc.teamcode.sensors.Vuforia;
 import org.firstinspires.ftc.teamcode.tasks.AlignmentTask;
 import org.firstinspires.ftc.teamcode.tasks.ButtonPressTask;
+import org.firstinspires.ftc.teamcode.tasks.FlywheelEngageTask;
 import org.firstinspires.ftc.teamcode.tasks.LineFollowingTask;
+import org.firstinspires.ftc.teamcode.tasks.MoveForwardFastInaccurateTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveForwardTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveUntilLineTask;
 import org.firstinspires.ftc.teamcode.tasks.ShootTask;
@@ -54,21 +56,26 @@ public abstract class TaskedOperation extends LinearOpMode {
         telemetry.update();
         int passedSensors = 0;
         int failedSensors = 0;
+        int currentSensor = 1;
+        ArrayList<String> failures = new ArrayList<String>();
         for (Sensor s : Robot.sensors) {
+            telemetry.addData("Status", "Starting sensor " + currentSensor + " out of " + Robot.sensors.size() + "...");
+            telemetry.update();
             Blackbox.log("SENSOR", s.uniqueName());
+            Blackbox.log("SENSOR", "FW: " + Utils.intToHexString(s.firmwareRevision()) + ", MFG: " + Utils.intToHexString(s.manufacturer()) + ", CODE: " + Utils.intToHexString(s.sensorIDCode()));
             if (s.ping()) {
                 // yay
                 s.init();
-                Blackbox.log("SENSOR", "FW: " + Utils.intToHexString(s.firmwareRevision()) + ", MFG: " + Utils.intToHexString(s.manufacturer()) + ", CODE: " + Utils.intToHexString(s.sensorIDCode()));
                 Blackbox.log("SENSOR", "PASS");
                 s.update();
                 passedSensors++;
             } else {
                 // uh oh
                 Blackbox.log("SENSOR", "FAIL");
-                telemetry.addData("Failure #" + (failedSensors + 1), s.uniqueName());
+                failures.add(s.uniqueName());
                 failedSensors++;
             }
+            currentSensor++;
         }
 
         Blackbox.log("SENSOR", passedSensors + " sensor(s) passed / " + failedSensors + " sensor(s) failed");
@@ -77,6 +84,11 @@ public abstract class TaskedOperation extends LinearOpMode {
             // oh no
             Blackbox.log("SENSOR", "SENSOR FAILURE");
             telemetry.addData("Status", "SENSOR FAILURE");
+            int failIndex = 1;
+            for (String failure : failures) {
+                telemetry.addData("Failure #" + (failIndex), failure);
+                failIndex++;
+            }
             telemetry.addLine(passedSensors + " other sensors passed");
             telemetry.update();
             while (true) {
@@ -107,7 +119,6 @@ public abstract class TaskedOperation extends LinearOpMode {
         }
 
         int blueNegativeFactor = (Robot.currentAlliance == Alliance.BLUE ? -1 : 1);
-        int firstTurn = (Robot.currentAlliance == Alliance.RED ? 65 : 65);
 
         boolean shooting = true;
         boolean getBeacons = true;
@@ -116,25 +127,26 @@ public abstract class TaskedOperation extends LinearOpMode {
         // set up tasks
         ArrayList<Task> tasks = new ArrayList<Task>();
         //tasks.add(new LineFollowingTask(null));
-        tasks.add(new MoveForwardTask(2300));
+        tasks.add(new FlywheelEngageTask(null));
+        tasks.add(new MoveForwardTask(2100));
         if (shooting) {
             tasks.add(new ShootTask(null));
         }
 
         if (getBeacons) {
             // first beacon
-            tasks.add(new TurnToHeadingTask(firstTurn * blueNegativeFactor));
+            tasks.add(new TurnToHeadingTask(65 * blueNegativeFactor));
             tasks.add(new MoveForwardTask(1400));
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             tasks.add(new AlignmentTask((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
-            tasks.add(new MoveForwardTask(450));
+            //tasks.add(new MoveForwardTask(450));
             //tasks.add(new MoveForwardTask(-200));
             tasks.add(new ButtonPressTask(null));
 
             // go to second beacon
-            tasks.add(new TurnToHeadingTask(-5 * blueNegativeFactor));
-            tasks.add(new MoveForwardTask(2200));
+            tasks.add(new TurnToHeadingTask(0 * blueNegativeFactor));
+            tasks.add(new MoveForwardFastInaccurateTask(2200));
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new MoveForwardTask(220));
             tasks.add(new TurnUntilLineTask(null));
