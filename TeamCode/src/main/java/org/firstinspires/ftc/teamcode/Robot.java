@@ -50,8 +50,6 @@ public class Robot {
 
     // Sensors
     public static ColorSensor beaconColor = null;
-    public static MRColorSensor leftLineColor = null;
-    public static MRColorSensor rightLineColor = null;
     public static ModernRoboticsI2cRangeSensor range = null;
 
     public static OpticalDistanceSensor leftLineLight;
@@ -118,10 +116,6 @@ public class Robot {
         // Color
         beaconColor = hardwareMap.colorSensor.get("beacon color");
         beaconColor.enableLed(false);
-        leftLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("left line color"), I2cAddr.create8bit(0x6C));
-        sensors.add(leftLineColor);
-        rightLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("right line color"), I2cAddr.create8bit(0x4C));
-        sensors.add(rightLineColor);
 
         // Optical distance
         leftLineLight = hardwareMap.opticalDistanceSensor.get("left_line");
