@@ -89,15 +89,7 @@ public class AlignmentTask extends Task {
             }
 
             if (true) {
-                /*if (
-                        (Math.abs(leftAvg - leftReading) > 5) ||
-                        (Math.abs(rightAvg - rightReading) > 5)
-                        ) {
-                    Robot.leftMotors(0.0f);
-                    Robot.rightMotors(0.0f);
-                    return;
-                }*/
-                if (leftReading == rightReading) {// || leftReading - 1 == rightReading || leftReading + 1 == rightReading) {
+                if (leftReading == rightReading) {
                     Robot.leftMotors(0.25f);
                     Robot.rightMotors(0.25f);
                 } else if (leftReading > rightReading) {
@@ -129,10 +121,6 @@ public class AlignmentTask extends Task {
                     return;
                 }
             }
-
-            /*if (Robot.frontDist.getLightDetected() > 0.018) {
-                return;
-            }*/
 
             Robot.telemetry.update();
 

@@ -51,6 +51,9 @@ public class Robot {
     public static MRColorSensor rightLineColor = null;
     public static ModernRoboticsI2cRangeSensor range = null;
 
+    public static OpticalDistanceSensor leftLineLight;
+    public static OpticalDistanceSensor rightLineLight;
+
     public static IMU imu = null;
     public static PhoneGyro phoneGyro = null;
 
@@ -117,9 +120,12 @@ public class Robot {
         rightLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("right line color"), I2cAddr.create8bit(0x4C));
         sensors.add(rightLineColor);
 
+        // Optical distance
+        leftLineLight = hardwareMap.opticalDistanceSensor.get("left_line");
+        rightLineLight = hardwareMap.opticalDistanceSensor.get("right_line");
+
         // IMU
         imu = new IMU(hardwareMap.get(BNO055IMU.class, "imu"));
-        //imu.init();
         sensors.add(imu);
 
         range = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
@@ -134,7 +140,6 @@ public class Robot {
         // Vuforia
         vuforia = new Vuforia();
         sensors.add(vuforia);
-        //vuforia.init();
 
         // Voltage
         voltageSensor = hardwareMap.voltageSensor.iterator().next();

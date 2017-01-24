@@ -100,7 +100,6 @@ public abstract class TaskedOperation extends LinearOpMode {
             t.init();
         }
 
-
         // we're ready
         Blackbox.log("INFO", "READY TO GO!");
         telemetry.addData("Status", "READY TO GO!");
