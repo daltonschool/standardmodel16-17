@@ -22,7 +22,7 @@ public class AlignmentTask extends Task {
 
     @Override
     public void init() {
-        //VuforiaTrackable trackable = (VuforiaTrackable) extra;
+
     }
 
     @Override

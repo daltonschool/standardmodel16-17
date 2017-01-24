@@ -28,6 +28,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
 public class Robot {
+    // Constants
+    public static final double ODS_GRAY_VALUE = 0.2; // TODO: find this
 
     // Motors
     public static DcMotor leftMotor;

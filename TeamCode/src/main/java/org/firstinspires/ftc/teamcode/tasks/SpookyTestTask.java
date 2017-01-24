@@ -20,25 +20,13 @@ public class SpookyTestTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
-        /*while (true) {
-            if (Robot.vuforia.hasLocation()) {
-                VectorF translation = Robot.vuforia.getLocation();
-                Orientation orientation = Robot.vuforia.getOrientation();
-                Robot.telemetry.addData("Pos", Robot.vuforia.getLocationAsString());
-                Robot.telemetry.addData("Dist", translation.get(0));
-                Robot.telemetry.addData("Light Detected", Robot.frontDist.getLightDetected());
-                Robot.telemetry.addData("Raw Light Detected", Robot.frontDist.getRawLightDetected());
-            } else {
-                Robot.telemetry.addLine("No Vuforia position!");
-            }
+        while (true) {
+            Robot.telemetry.addData("Left line light", Robot.leftLineLight.getLightDetected());
+            Robot.telemetry.addData("Right line light", Robot.rightLineLight.getLightDetected());
             Robot.telemetry.addData("Distance (in)", Robot.range.getDistance(DistanceUnit.INCH));
+
             Robot.telemetry.update();
-            Robot.vuforia.update();
             Robot.idle();
-        }*/
-        Robot.turnToHeading(90, 0.7f);
-        /*Robot.turnToHeading(0, 1.0f);
-        Robot.turnToHeading(180, 1.0f);
-        Robot.turnToHeading(0, 1.0f);*/
+        }
     }
 }
