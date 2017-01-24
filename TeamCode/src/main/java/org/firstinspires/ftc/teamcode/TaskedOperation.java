@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.vuforia.CameraDevice;
 
 import org.firstinspires.ftc.teamcode.options.OptionManager;
-import org.firstinspires.ftc.teamcode.tasks.AlignmentTask;
+import org.firstinspires.ftc.teamcode.tasks.AlignmentTaskNew;
 import org.firstinspires.ftc.teamcode.tasks.ButtonPressTask;
 import org.firstinspires.ftc.teamcode.tasks.FlywheelEngageTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveForwardFastInaccurateTask;
@@ -61,7 +61,7 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new MoveForwardTask(1400));
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
-            tasks.add(new AlignmentTask((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
+            tasks.add(new AlignmentTaskNew((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
             tasks.add(new ButtonPressTask(null));
 
             // go to second beacon
@@ -71,7 +71,7 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new MoveForwardTask(220));
             tasks.add(new TurnUntilLineTask(null));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
-            tasks.add(new AlignmentTask((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
+            tasks.add(new AlignmentTaskNew((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             tasks.add(new ButtonPressTask(null));
         }

@@ -29,7 +29,8 @@ import java.util.ArrayList;
 
 public class Robot {
     // Constants
-    public static final double ODS_GRAY_VALUE = 0.2; // TODO: find this
+    public static final double ODS_BLACK_VALUE = 0.0; // TODO: find this
+    public static final double ODS_GRAY_VALUE = 0.2; // TODO: and this
 
     // Motors
     public static DcMotor leftMotor;
