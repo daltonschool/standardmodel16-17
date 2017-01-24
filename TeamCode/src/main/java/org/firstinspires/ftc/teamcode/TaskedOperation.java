@@ -1,16 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.Util;
 import com.vuforia.CameraDevice;
 
 import org.firstinspires.ftc.teamcode.options.OptionManager;
-import org.firstinspires.ftc.teamcode.sensors.Sensor;
-import org.firstinspires.ftc.teamcode.sensors.Vuforia;
 import org.firstinspires.ftc.teamcode.tasks.AlignmentTask;
 import org.firstinspires.ftc.teamcode.tasks.ButtonPressTask;
 import org.firstinspires.ftc.teamcode.tasks.FlywheelEngageTask;
-import org.firstinspires.ftc.teamcode.tasks.LineFollowingTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveForwardFastInaccurateTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveForwardTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveUntilLineTask;
@@ -18,10 +14,8 @@ import org.firstinspires.ftc.teamcode.tasks.ShootTask;
 import org.firstinspires.ftc.teamcode.tasks.SpookyTestTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnToHeadingTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnUntilLineTask;
-import org.firstinspires.ftc.teamcode.tasks.VuforiaAlignmentTask;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public abstract class TaskedOperation extends LinearOpMode {
