@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.tasks;
 
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
+
 import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.sensors.MRColorSensor;
@@ -17,21 +19,19 @@ public class TurnUntilLineTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
-        MRColorSensor checkingColorSensor = Robot.leftLineColor;
-        int leftFactor = -1;
+        OpticalDistanceSensor sensorToTest = Robot.leftLineLight;
+        int leftFactor = 1;
         if (Robot.currentAlliance == Alliance.RED) {
-            checkingColorSensor = Robot.rightLineColor;
+            sensorToTest = Robot.leftLineLight;
             leftFactor = -1;
-        } else if (Robot.currentAlliance == Alliance.BLUE) {
-            checkingColorSensor = Robot.leftLineColor;
-            leftFactor = 1;
         }
 
-        int whiteReading = (int)checkingColorSensor.whiteReading() - (int)6;
-        while ((whiteReading < 5)) {
+        while (sensorToTest.getLightDetected() <= Robot.ODS_BLACK_VALUE) {
             Robot.leftMotors(0.35f * leftFactor);
             Robot.rightMotors(-0.35f * leftFactor);
-            whiteReading = (int)checkingColorSensor.whiteReading() - (int)6;
+
+            Robot.update();
+            Robot.idle();
         }
 
         Robot.leftMotors(0.0f);
