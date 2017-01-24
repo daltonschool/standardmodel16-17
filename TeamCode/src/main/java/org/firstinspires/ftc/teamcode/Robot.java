@@ -158,6 +158,54 @@ public class Robot {
         opMode.idle();
     }
 
+    // Sensor management
+    public static void verifyAllSensors() throws InterruptedException {
+        Blackbox.log("SENSOR", "=== Sensor map ===");
+        telemetry.addData("Status", "Starting sensors...");
+        telemetry.update();
+        int passedSensors = 0;
+        int failedSensors = 0;
+        int currentSensor = 1;
+        ArrayList<String> failures = new ArrayList<String>();
+        for (Sensor s : Robot.sensors) {
+            telemetry.addData("Status", "Starting sensor " + currentSensor + " out of " + Robot.sensors.size() + "...");
+            telemetry.update();
+            Blackbox.log("SENSOR", s.uniqueName());
+            Blackbox.log("SENSOR", "FW: " + Utils.intToHexString(s.firmwareRevision()) + ", MFG: " + Utils.intToHexString(s.manufacturer()) + ", CODE: " + Utils.intToHexString(s.sensorIDCode()));
+            if (s.ping()) {
+                // yay
+                s.init();
+                Blackbox.log("SENSOR", "PASS");
+                s.update();
+                passedSensors++;
+            } else {
+                // uh oh
+                Blackbox.log("SENSOR", "FAIL");
+                failures.add(s.uniqueName());
+                failedSensors++;
+            }
+            currentSensor++;
+        }
+
+        Blackbox.log("SENSOR", passedSensors + " sensor(s) passed / " + failedSensors + " sensor(s) failed");
+
+        if (failedSensors > 0) {
+            // oh no
+            Blackbox.log("SENSOR", "SENSOR FAILURE");
+            telemetry.addData("Status", "SENSOR FAILURE");
+            int failIndex = 1;
+            for (String failure : failures) {
+                telemetry.addData("Failure #" + (failIndex), failure);
+                failIndex++;
+            }
+            telemetry.addLine(passedSensors + " other sensors passed");
+            telemetry.update();
+            while (true) {
+                Robot.idle();
+            }
+        }
+    }
+
     // Motor methods
 
     public static void leftMotors(double power) {

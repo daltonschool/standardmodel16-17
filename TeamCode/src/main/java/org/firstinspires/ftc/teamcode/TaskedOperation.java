@@ -30,93 +30,22 @@ public abstract class TaskedOperation extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        Blackbox.init();                                // set up logging
 
-        // set up logging
-        Blackbox.init();
         Blackbox.log("INFO", "Current alliance: " + (getCurrentAlliance() == Alliance.RED ? "red" : "blue"));
 
         telemetry.addData("Status", "Starting robot...");
         telemetry.update();
 
-        // set up robot
-        Robot.init(this);
+        Robot.init(this);                               // set up robot
 
         telemetry.addData("Status", "Starting options...");
         telemetry.update();
 
-        // set up options
-        OptionManager.init();
-
-        // set up alliance
-        Robot.currentAlliance = getCurrentAlliance();
-
-        // check all sensors
-        Blackbox.log("SENSOR", "=== Sensor map ===");
-        telemetry.addData("Status", "Starting sensors...");
-        telemetry.update();
-        int passedSensors = 0;
-        int failedSensors = 0;
-        int currentSensor = 1;
-        ArrayList<String> failures = new ArrayList<String>();
-        for (Sensor s : Robot.sensors) {
-            telemetry.addData("Status", "Starting sensor " + currentSensor + " out of " + Robot.sensors.size() + "...");
-            telemetry.update();
-            Blackbox.log("SENSOR", s.uniqueName());
-            Blackbox.log("SENSOR", "FW: " + Utils.intToHexString(s.firmwareRevision()) + ", MFG: " + Utils.intToHexString(s.manufacturer()) + ", CODE: " + Utils.intToHexString(s.sensorIDCode()));
-            if (s.ping()) {
-                // yay
-                s.init();
-                Blackbox.log("SENSOR", "PASS");
-                s.update();
-                passedSensors++;
-            } else {
-                // uh oh
-                Blackbox.log("SENSOR", "FAIL");
-                failures.add(s.uniqueName());
-                failedSensors++;
-            }
-            currentSensor++;
-        }
-
-        Blackbox.log("SENSOR", passedSensors + " sensor(s) passed / " + failedSensors + " sensor(s) failed");
-
-        if (failedSensors > 0) {
-            // oh no
-            Blackbox.log("SENSOR", "SENSOR FAILURE");
-            telemetry.addData("Status", "SENSOR FAILURE");
-            int failIndex = 1;
-            for (String failure : failures) {
-                telemetry.addData("Failure #" + (failIndex), failure);
-                failIndex++;
-            }
-            telemetry.addLine(passedSensors + " other sensors passed");
-            telemetry.update();
-            while (true) {
-                idle();
-            }
-        }
-
-        Blackbox.log("INFO", "Calibrating black level...");
-        telemetry.addData("Status", "Calibrating black level...");
-        telemetry.update();
-
-        Robot.leftLineColor.blackLevelCalibration();
-        Robot.rightLineColor.blackLevelCalibration();
-        Thread.sleep(500);
-
-        // print out options for verification
-        Field[] fields = OptionManager.getOptionFields();
-        for (Field f : fields) {
-            if (OptionManager.getPrettyName(f.getName()).equals("(null)")) {
-                continue;
-            }
-            try {
-                telemetry.addData(OptionManager.getPrettyName(f.getName()), f.get(OptionManager.currentOptions));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-                telemetry.addData(OptionManager.getPrettyName(f.getName()), "IllegalAccessException");
-            }
-        }
+        OptionManager.init();                           // set up options
+        Robot.currentAlliance = getCurrentAlliance();   // set up alliance
+        Robot.verifyAllSensors();                       // check all sensors
+        OptionManager.printAllOptions();                // print out options for verification
 
         int blueNegativeFactor = (Robot.currentAlliance == Alliance.BLUE ? -1 : 1);
 
@@ -126,7 +55,6 @@ public abstract class TaskedOperation extends LinearOpMode {
 
         // set up tasks
         ArrayList<Task> tasks = new ArrayList<Task>();
-        //tasks.add(new LineFollowingTask(null));
         tasks.add(new FlywheelEngageTask(null));
         tasks.add(new MoveForwardTask(2100));
         if (shooting) {
@@ -140,8 +68,6 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             tasks.add(new AlignmentTask((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
-            //tasks.add(new MoveForwardTask(450));
-            //tasks.add(new MoveForwardTask(-200));
             tasks.add(new ButtonPressTask(null));
 
             // go to second beacon
@@ -153,7 +79,6 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             tasks.add(new AlignmentTask((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
-            //tasks.add(new MoveForwardTask(220));
             tasks.add(new ButtonPressTask(null));
         }
 /*
