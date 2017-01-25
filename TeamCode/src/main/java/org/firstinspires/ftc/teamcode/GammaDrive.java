@@ -107,6 +107,8 @@ public class GammaDrive extends OpMode {
         leftprevstatebeaconhitter = false;
         rightout = false;
         leftout = false;
+
+        double v = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
     }
 
     /*
@@ -142,14 +144,14 @@ public class GammaDrive extends OpMode {
 
         //Launch
         if (gamepad2.dpad_up == true && upprevstatelaunchspeed == false && runtime.time() - lastuppresslaunchspeed > .5) {
-            launchpower += .1;
+            launchpower += .05;
             upprevstatelaunchspeed = true;
             lastuppresslaunchspeed = runtime.time();
         } else {
             upprevstatelaunchspeed = false;
         }
         if (gamepad2.dpad_down ==  true && downprevstatelaunchspeed == false && runtime.time() - lastdownpresslaunchspeed > .5) {
-            launchpower -= .1;
+            launchpower -= .05;
             downprevstatelaunchspeed = true;
             lastdownpresslaunchspeed = runtime.time();
         } else {

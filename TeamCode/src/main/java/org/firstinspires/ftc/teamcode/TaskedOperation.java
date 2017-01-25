@@ -62,7 +62,7 @@ public abstract class TaskedOperation extends LinearOpMode {
         tasks.add(new MoveUntilLineTask(null));
         tasks.add(new TurnToHeadingTask(80 * blueNegativeFactor));
         tasks.add(new AlignmentTask((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
-        //tasks.add(new MoveForwardTask(-200));
+//        tasks.add(new MoveForwardTask(-200));
         tasks.add(new ButtonPressTask(null));
 
         // go to second beacon

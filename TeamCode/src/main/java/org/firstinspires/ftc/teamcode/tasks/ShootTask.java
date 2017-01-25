@@ -17,6 +17,7 @@ public class ShootTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
+        if ()
         Robot.flywheelLeft.setPower(0.4f);
         Robot.flywheelRight.setPower(0.4f);
 
