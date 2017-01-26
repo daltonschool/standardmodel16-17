@@ -50,7 +50,7 @@ public class SlideStopTest extends OpMode {
             }
             if (justpressed2 == true) {
                 for (double a = powerMultiplier; a > 0; a -= 0.1) {
-                                                        x    liftl.setPower(-a);
+                                                        x       liftl.setPower(-a);
                     liftR.setPower(a);
                     try {
                         Thread.sleep(40);
