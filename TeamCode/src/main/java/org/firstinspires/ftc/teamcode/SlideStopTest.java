@@ -13,10 +13,11 @@ public class SlideStopTest extends OpMode {
 
     DcMotor liftl;
     DcMotor liftR;
-    double powerMultiplier = .75;
+    double powerMultiplier = 1;
     boolean justpressed1 = false;
     boolean justpressed2 = false;
 
+    //init
     public void init() {
         liftl = hardwareMap.dcMotor.get("lifttest2");
         liftR = hardwareMap.dcMotor.get("lifttest1");
@@ -24,6 +25,7 @@ public class SlideStopTest extends OpMode {
 
     public void loop() {
 
+        //woot lift code
         if (gamepad1.a == true) {
             liftl.setPower(powerMultiplier);
             liftR.setPower(-powerMultiplier);
@@ -32,6 +34,8 @@ public class SlideStopTest extends OpMode {
             liftl.setPower(-powerMultiplier);
             liftR.setPower(powerMultiplier);
             justpressed2 = true;
+
+        //acceleration dampening
         } else {
             liftl.setPower(0);
             liftR.setPower(0);
@@ -41,30 +45,21 @@ public class SlideStopTest extends OpMode {
                     liftR.setPower(-a);
                     try {
                         Thread.sleep(40);
-                    } catch (InterruptedException e) {
-
-                    }
-
+                    } catch (InterruptedException e) { }
                 }
                 justpressed1 = false;
             }
             if (justpressed2 == true) {
                 for (double a = powerMultiplier; a > 0; a -= 0.1) {
-                                                        x       liftl.setPower(-a);
+                    liftl.setPower(-a);
                     liftR.setPower(a);
                     try {
                         Thread.sleep(40);
-                    } catch (InterruptedException e) {
-
-                    }
-
+                    } catch (InterruptedException e) { }
                 }
                 justpressed2 = false;
             }
-
-
         }
-
-
+        //// TODO: add encoder stopping --> This should run into new Delta teleop 
     }
 }
