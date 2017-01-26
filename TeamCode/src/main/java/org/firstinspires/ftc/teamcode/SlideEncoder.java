@@ -68,21 +68,28 @@ public class SlideEncoder extends OpMode {
             liftr.setPower(0);
         }
 
-        liftl.setPower(leftState * powerMultiplier * leftMultiplier);
-        liftr.setPower(-1 * rightState * powerMultiplier * rightMultiplier);
+        boolean manuallyControlled = false;
 
         if (leftState == 0 && gamepad1.left_stick_y > 0) {
             liftl.setPower(0.3);
+            manuallyControlled = true;
         } else if (leftState == 0 && gamepad1.left_stick_y < 0) {
             liftl.setPower(-0.3);
+            manuallyControlled = true;
         }
 
         if (rightState == 0 && gamepad1.right_stick_y > 0) {
             liftr.setPower(-0.3);
+            manuallyControlled = true;
         } else if (rightState == 0 && gamepad1.right_stick_y < 0) {
             liftr.setPower(0.3);
+            manuallyControlled = true;
         }
 
+        if (!manuallyControlled) {
+            liftl.setPower(leftState * powerMultiplier * leftMultiplier);
+            liftr.setPower(-1 * rightState * powerMultiplier * rightMultiplier);
+        }
 
         telemetry.addData("Left Encoder Val:", leftEncoder);
         telemetry.addData("Right Encoder Val:", rightEncoder);
