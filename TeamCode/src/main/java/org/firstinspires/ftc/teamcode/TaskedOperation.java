@@ -106,7 +106,6 @@ public abstract class TaskedOperation extends LinearOpMode {
         Robot.beaconRight.setPosition(0.0);
 
         Robot.nomMiddle.setPower(1.0f);
-
         while (opModeIsActive()) {
             int taskIndex = 0;
             for (Task t : tasks) {
