@@ -19,15 +19,7 @@ public class ButtonPressTask extends Task {
 
     }
 
-    @Override
-    public void run() throws InterruptedException {
-        Robot.beaconLeft.setPosition(0.0);
-        Robot.beaconRight.setPosition(0.0);
-        Robot.telemetry.addLine("WAITING FOR SERVO POS");
-        Robot.telemetry.update();
-        Thread.sleep(500);
-
-        // find the right color
+    public Alliance getBeaconColor() {
         Alliance rightColor;
         if (Robot.beaconColor.red() == Robot.beaconColor.blue()) {
             rightColor = Alliance.UNKNOWN;
@@ -36,25 +28,10 @@ public class ButtonPressTask extends Task {
         } else {
             rightColor = Alliance.BLUE;
         }
+        return rightColor;
+    }
 
-        // check if we found it
-        if (rightColor == Alliance.UNKNOWN) {
-            // ahh!
-            Blackbox.log("INFO", "Could not find color!");
-            Robot.telemetry.addLine("Could not find color!");
-            Robot.telemetry.update();
-
-            // back up
-            Robot.leftMotors(-0.4f);
-            Robot.rightMotors(-0.4f);
-            Thread.sleep(500);
-            Robot.leftMotors(0.0f);
-            Robot.rightMotors(0.0f);
-
-            return;
-        }
-
-        // extend correct arm
+    public void extendArmBasedOnRightColor(Alliance rightColor) throws InterruptedException {
         if (rightColor == Robot.currentAlliance) {
             Blackbox.log("INFO", "Pressing RIGHT");
             Robot.telemetry.addLine("PRESSING RIGHT");
@@ -67,7 +44,41 @@ public class ButtonPressTask extends Task {
             Robot.beaconRight.setPosition(1.0);
         }
         Robot.telemetry.update();
+        Thread.sleep(1000);
+    }
+
+    @Override
+    public void run() throws InterruptedException {
+        Robot.beaconLeft.setPosition(0.0);
+        Robot.beaconRight.setPosition(0.0);
+        Robot.telemetry.addLine("WAITING FOR SERVO POS");
+        Robot.telemetry.update();
         Thread.sleep(500);
+
+        // find the right color
+        Alliance rightColor = getBeaconColor();
+
+        Blackbox.log("INFO", "Beacon color sensor: r: " + Robot.beaconColor.red() + ", g: " + Robot.beaconColor.green() + ", b: " + Robot.beaconColor.blue());
+
+        // check if we found it
+        if (rightColor == Alliance.UNKNOWN) {
+            // ahh!
+            Blackbox.log("INFO", "Could not find color!");
+            Robot.telemetry.addLine("Could not find color!");
+            Robot.telemetry.update();
+
+            // back up
+            /*Robot.leftMotors(-0.4f);
+            Robot.rightMotors(-0.4f);
+            Thread.sleep(500);
+            Robot.leftMotors(0.0f);
+            Robot.rightMotors(0.0f);*/
+
+            return;
+        }
+
+        // extend correct arm
+        extendArmBasedOnRightColor(rightColor);
 
         // move forwards
         Robot.leftMotors(0.5f);
@@ -79,9 +90,50 @@ public class ButtonPressTask extends Task {
         // retreat
         Robot.leftMotors(-0.5f);
         Robot.rightMotors(-0.5f);
-        Thread.sleep(350);
+        Thread.sleep(700);
         Robot.leftMotors(0.0f);
         Robot.rightMotors(0.0f);
+
+        // reset arm
+        Robot.beaconLeft.setPosition(0.0);
+        Robot.beaconRight.setPosition(0.0);
+        Thread.sleep(500);
+
+        rightColor = getBeaconColor();
+        /*int timesTried = 0;
+        while (rightColor != Robot.currentAlliance) {
+            extendArmBasedOnRightColor(rightColor);
+
+            // move forwards
+            Robot.leftMotors(0.5f);
+            Robot.rightMotors(0.5f);
+            Thread.sleep(1500);
+            Robot.leftMotors(0.0f);
+            Robot.rightMotors(0.0f);
+
+            // retreat
+            Robot.leftMotors(-0.5f);
+            Robot.rightMotors(-0.5f);
+            Thread.sleep(350);
+            Robot.leftMotors(0.0f);
+            Robot.rightMotors(0.0f);
+
+            // reset arm
+            Robot.beaconLeft.setPosition(0.0);
+            Robot.beaconRight.setPosition(0.0);
+            Thread.sleep(500);
+
+            rightColor = getBeaconColor(); // check new value
+            timesTried++;
+
+            if (timesTried > 2) {
+                // stop
+                Blackbox.log("BTN", "Tried too many times, giving up :(");
+                Robot.telemetry.addLine("Tried too many times, giving up :(");
+                Robot.telemetry.update();
+                return;
+            }
+        }*/
 
         // reset
         Robot.beaconLeft.setPosition(0.0);

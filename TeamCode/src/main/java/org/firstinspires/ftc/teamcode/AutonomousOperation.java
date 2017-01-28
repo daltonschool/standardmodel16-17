@@ -16,6 +16,19 @@ import org.firstinspires.ftc.teamcode.options.OptionManager;
 
 public abstract class AutonomousOperation extends LinearOpMode
 {
+    /*
+         ____ _____ ___  ____
+        / ___|_   _/ _ \|  _ \
+        \___ \ | || | | | |_) |
+         ___) || || |_| |  __/
+        |____/ |_| \___/|_|
+
+
+        This is probably not the code you want, go to TaskedOperation.java
+        if you are looking for the latest autonomous code.
+
+     */
+
     private ElapsedTime runtime = new ElapsedTime();
 
     public abstract Alliance getCurrentAlliance();

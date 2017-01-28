@@ -25,27 +25,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 /**
  * Demonstrates empty OpMode
  */
-@TeleOp(name = "LauncherTest2", group = "TeleOp")
-public class LaunchTest extends OpMode {
+@TeleOp(name = "CapBallTest", group = "TeleOp")
+public class CapBallTest extends OpMode {
 
 
-    DcMotor launchLeft;
-    DcMotor launchRight;
-
-    DcMotor leftback;
-    DcMotor rightback;
-
-    DcMotor nom;
-    DcMotor feeder;
+    DcMotor capballleft;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -53,14 +50,8 @@ public class LaunchTest extends OpMode {
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-
-        launchLeft = hardwareMap.dcMotor.get("launch_left");
-        launchRight = hardwareMap.dcMotor.get("launch_right");
-
-        leftback = hardwareMap.dcMotor.get("back_left");
-        rightback = hardwareMap.dcMotor.get("back_right");
-        nom = hardwareMap.dcMotor.get("nom");
-
+        //
+        capballleft = hardwareMap.dcMotor.get("lifttest");
 
     }
 
@@ -87,30 +78,23 @@ public class LaunchTest extends OpMode {
      */
     @Override
     public void loop() {
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-        //Launch
-        if (gamepad1.a == true) {
-            launchRight.setPower(-1);
-            launchLeft.setPower(1);
+        if (gamepad1.a == true && gamepad1.b == false) {
+            capballleft.setPower(.5);
+        } else if (gamepad1.b == true && gamepad1.a == false){
+            capballleft.setPower(-.5);
         } else {
-             launchRight.setPower(0.0);
-        }    launchLeft.setPower(0.0);
-
-
-        //Drive
-        leftback.setPower(gamepad1.left_stick_y);
-        rightback.setPower(-gamepad1.right_stick_y);
-
-        if (gamepad1.dpad_down == true) {
-            nom.setPower(.5);
+            capballleft.setPower(0);
         }
-        if (gamepad1.dpad_right == true) {
-            nom.setPower(.5);
-//            feeder.setPower(.3);
+
+    }
+
+    public double trim (double number) {
+        if (number > 1) {
+            number = 1;
+        } else if (number < -1) {
+            number = -1;
         }
-        if (gamepad1.dpad_up == true) {
-//            feeder.setPower(.3);
-        }
+        return number;
     }
 }

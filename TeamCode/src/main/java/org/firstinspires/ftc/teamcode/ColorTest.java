@@ -46,8 +46,8 @@ public class ColorTest extends LinearOpMode {
             telemetry.addData("right-b", rightLineColor.blue());
             telemetry.addData("right-a", rightLineColor.alpha());*/
 
-            telemetry.addData("left-w", leftLineColor.whiteReading());
-            telemetry.addData("right-w", rightLineColor.whiteReading());
+            telemetry.addData("left-w", ((Byte)leftLineColor.whiteReading()).intValue());
+            telemetry.addData("right-w", ((Byte)rightLineColor.whiteReading()).intValue());
             telemetry.addData("beaconColor-r", beaconColor.red());
             telemetry.addData("beaconColor-g", beaconColor.green());
             telemetry.addData("beaconColor-b", beaconColor.blue());

@@ -2,12 +2,12 @@
 //
 //import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //
-//@Autonomous(name="Tasked Operation - BLUE")
-//public class TaskedBlue extends TaskedOperation {
+//@Autonomous(name="TEST TEST TEST DO NOT RUN OR ELSE >:(")
+//public class TaskedRedTest extends TaskedOperation {
 //    public Alliance getCurrentAlliance() {
-//        return Alliance.BLUE;
+//        return Alliance.RED;
 //    }
 //    public boolean isASpookster() {
-//        return false;
+//        return true;
 //    }
 //}

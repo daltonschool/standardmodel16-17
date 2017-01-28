@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,16 +13,24 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.sensors.IMU;
 import org.firstinspires.ftc.teamcode.sensors.MRColorSensor;
+import org.firstinspires.ftc.teamcode.sensors.PhoneGyro;
+import org.firstinspires.ftc.teamcode.sensors.Sensor;
 import org.firstinspires.ftc.teamcode.sensors.Vuforia;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 
 public class Robot {
+    // Constants
+    public static final double ODS_BLACK_VALUE = 0.0; // TODO: find this
+    public static final double ODS_GRAY_VALUE = 0.2; // TODO: and this
 
     // Motors
     public static DcMotor leftMotor;
@@ -41,14 +50,22 @@ public class Robot {
 
     // Sensors
     public static ColorSensor beaconColor = null;
-    public static MRColorSensor leftLineColor = null;
-    public static MRColorSensor rightLineColor = null;
+    public static ModernRoboticsI2cRangeSensor range = null;
+
+    public static OpticalDistanceSensor leftLineLight;
+    public static OpticalDistanceSensor rightLineLight;
 
     public static IMU imu = null;
+    public static PhoneGyro phoneGyro = null;
 
     public static OpticalDistanceSensor frontDist;
 
     public static Vuforia vuforia;
+
+    public static VoltageSensor voltageSensor;
+
+    // Sensor list
+    public static ArrayList<Sensor> sensors;
 
     // Telemetry
     public static Telemetry telemetry;
@@ -67,7 +84,7 @@ public class Robot {
         HardwareMap hardwareMap = opMode.hardwareMap;
         telemetry = opMode.telemetry;
         appContext = hardwareMap.appContext;
-
+        sensors = new ArrayList<Sensor>();
 
         // Motors
         leftMotor = hardwareMap.dcMotor.get("drive_right");
@@ -82,7 +99,7 @@ public class Robot {
         flywheelRight = hardwareMap.dcMotor.get("launch_right");
         flywheelRight.setDirection(DcMotor.Direction.REVERSE);
 
-        nomMiddle = hardwareMap.dcMotor.get("inside_nom");
+        nomMiddle = hardwareMap.dcMotor.get("nom");
         nomMiddle.setDirection(DcMotor.Direction.FORWARD);
 
         nomFront = hardwareMap.dcMotor.get("outside_nom");
@@ -99,19 +116,30 @@ public class Robot {
         // Color
         beaconColor = hardwareMap.colorSensor.get("beacon color");
         beaconColor.enableLed(false);
-        leftLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("left line color"), I2cAddr.create8bit(0x6C));
-        rightLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("right line color"), I2cAddr.create8bit(0x4C));
+
+        // Optical distance
+        leftLineLight = hardwareMap.opticalDistanceSensor.get("left_line");
+        rightLineLight = hardwareMap.opticalDistanceSensor.get("right_line");
 
         // IMU
-        imu = new IMU();
-        imu.init(hardwareMap.get(BNO055IMU.class, "imu"));
+        imu = new IMU(hardwareMap.get(BNO055IMU.class, "imu"));
+        sensors.add(imu);
+
+        range = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
+
+        // Phone gyroscope
+        //phoneGyro = new PhoneGyro();
+        //sensors.add(phoneGyro);
 
         // Front distance
         frontDist = hardwareMap.opticalDistanceSensor.get("front dist");
 
         // Vuforia
         vuforia = new Vuforia();
-        vuforia.init();
+        sensors.add(vuforia);
+
+        // Voltage
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
     }
 
     public static void start() {
@@ -120,8 +148,9 @@ public class Robot {
 
     public static void update() {
         // update sensors
-        imu.update();
-        vuforia.update();
+        for (Sensor s : sensors) {
+            s.update();
+        }
 
         // and telemetry
         telemetry.update();
@@ -129,6 +158,54 @@ public class Robot {
 
     public static void idle() throws InterruptedException {
         opMode.idle();
+    }
+
+    // Sensor management
+    public static void verifyAllSensors() throws InterruptedException {
+        Blackbox.log("SENSOR", "=== Sensor map ===");
+        telemetry.addData("Status", "Starting sensors...");
+        telemetry.update();
+        int passedSensors = 0;
+        int failedSensors = 0;
+        int currentSensor = 1;
+        ArrayList<String> failures = new ArrayList<String>();
+        for (Sensor s : Robot.sensors) {
+            telemetry.addData("Status", "Starting sensor " + currentSensor + " out of " + Robot.sensors.size() + "...");
+            telemetry.update();
+            Blackbox.log("SENSOR", s.uniqueName());
+            Blackbox.log("SENSOR", "FW: " + Utils.intToHexString(s.firmwareRevision()) + ", MFG: " + Utils.intToHexString(s.manufacturer()) + ", CODE: " + Utils.intToHexString(s.sensorIDCode()));
+            if (s.ping()) {
+                // yay
+                s.init();
+                Blackbox.log("SENSOR", "PASS");
+                s.update();
+                passedSensors++;
+            } else {
+                // uh oh
+                Blackbox.log("SENSOR", "FAIL");
+                failures.add(s.uniqueName());
+                failedSensors++;
+            }
+            currentSensor++;
+        }
+
+        Blackbox.log("SENSOR", passedSensors + " sensor(s) passed / " + failedSensors + " sensor(s) failed");
+
+        if (failedSensors > 0) {
+            // oh no
+            Blackbox.log("SENSOR", "SENSOR FAILURE");
+            telemetry.addData("Status", "SENSOR FAILURE");
+            int failIndex = 1;
+            for (String failure : failures) {
+                telemetry.addData("Failure #" + (failIndex), failure);
+                failIndex++;
+            }
+            telemetry.addLine(passedSensors + " other sensors passed");
+            telemetry.update();
+            while (true) {
+                Robot.idle();
+            }
+        }
     }
 
     // Motor methods
@@ -148,28 +225,39 @@ public class Robot {
         boolean turnLeft = (targetHeading - currentHeading > 0 ? true : false);
         while (true) {
             telemetry.addData("hdg", currentHeading);
+            //telemetry.addData("phoneHdg", Robot.phoneGyro.getHeading());
             telemetry.update();
 
             double currentSpeed = power;
             float distanceTo = Math.abs(targetHeading - currentHeading);
+            double minimumSpeed = 0.3f;
+            double minimumLeftSpeed = (turnLeft ? -minimumSpeed : minimumSpeed);
+            double minimumRightSpeed = (turnLeft ? minimumSpeed : -minimumSpeed);
 
             if (distanceTo < 10) {
-                currentSpeed *= 0.40;
+                currentSpeed *= 0.20;
+                currentSpeed = Math.min(currentSpeed, 0.3f);
             } else if (distanceTo < 20) {
-                currentSpeed *= 0.50;
+                currentSpeed *= 0.30;
+                currentSpeed = Math.min(currentSpeed, 0.35f);
             } else if (distanceTo < 30) {
-                currentSpeed *= 0.60;
+                currentSpeed *= 0.40;
+                currentSpeed = Math.min(currentSpeed, 0.4f);
             }
 
-            leftMotors((turnLeft ? -currentSpeed : currentSpeed));
-            rightMotors((turnLeft ? currentSpeed : -currentSpeed));
+            leftMotors(Math.max(minimumLeftSpeed, (turnLeft ? -currentSpeed : currentSpeed)));
+            rightMotors(Math.max(minimumRightSpeed, (turnLeft ? currentSpeed : -currentSpeed)));
 
             imu.update();
             currentHeading = imu.getHeading();
 
-            if (turnLeft && targetHeading < currentHeading) {
+            turnLeft = (targetHeading - currentHeading > 0 ? true : false);
+            /*if (turnLeft && targetHeading < currentHeading) {
                 break;
             } else if (!turnLeft && targetHeading > currentHeading) {
+                break;
+            }*/
+            if (targetHeading == currentHeading) {
                 break;
             }
         }

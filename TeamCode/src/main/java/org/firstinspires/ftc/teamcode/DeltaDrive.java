@@ -25,8 +25,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package org.firstinspires.ftc.teamcode;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -38,8 +36,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * Demonstrates empty OpMode
  */
-@TeleOp(name = "GammaDrive", group = "TeleOp")
-public class GammaDrive extends OpMode {
+@TeleOp(name = "DeltaDrive", group = "TeleOp")
+public class DeltaDrive extends OpMode {
 
 
     DcMotor launchLeft;
@@ -48,9 +46,21 @@ public class GammaDrive extends OpMode {
     DcMotor leftback;
     DcMotor rightback;
 
-    DcMotor inside_nom;
-    DcMotor outside_nom;
+    DcMotor nom;
     DcMotor lift;
+
+    DcMotor cbleft;
+    DcMotor cbright;
+    double cbpowerMultiplier = 1;
+    double cbmaxLiftHeight = 3200;
+    double cbstoppingDistance = 100;
+    double cbstartPosL;
+    double cbstartPosR;
+    int cbleftState = 0;
+    int cbrightState = 0;
+
+    double cbEncoderR;
+    double cbEncoderL;
 
     Servo bpleft;
     Servo bpright;
@@ -59,7 +69,6 @@ public class GammaDrive extends OpMode {
     double powerright;
 
     double launchpower;
-
 
     boolean upprevstatelaunchspeed;
     boolean downprevstatelaunchspeed;
@@ -79,10 +88,17 @@ public class GammaDrive extends OpMode {
 
     boolean launching;
 
+    double leftMultiplier;
+    double rightMultiplier;
+
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void init() {
+
+        leftMultiplier = 1;
+        rightMultiplier = 1;
+
         telemetry.addData("Status", "Initialized");
 
         //
@@ -91,14 +107,19 @@ public class GammaDrive extends OpMode {
 
         leftback = hardwareMap.dcMotor.get("drive_left");
         rightback = hardwareMap.dcMotor.get("drive_right");
-        inside_nom = hardwareMap.dcMotor.get("nom");
-        outside_nom = hardwareMap.dcMotor.get("outside_nom");
+        nom = hardwareMap.dcMotor.get("nom");
         lift = hardwareMap.dcMotor.get("lift");
 
         launchpower = .4;
 
         bpright = hardwareMap.servo.get("leftBeacon");
         bpleft = hardwareMap.servo.get("rightBeacon");
+
+        cbleft = hardwareMap.dcMotor.get("cap_left");
+        cbright = hardwareMap.dcMotor.get("cap_right");
+
+        cbstartPosL = cbleft.getCurrentPosition();
+        cbstartPosR = cbright.getCurrentPosition();
 
         upprevstatelaunchspeed = false;
         downprevstatelaunchspeed = false;
@@ -137,7 +158,8 @@ public class GammaDrive extends OpMode {
      */
     @Override
     public void loop() {
-
+        cbEncoderR = cbright.getCurrentPosition() - cbstartPosR;
+        cbEncoderL = cbleft.getCurrentPosition() - cbstartPosL;
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
@@ -199,19 +221,11 @@ public class GammaDrive extends OpMode {
 
 
         if (gamepad2.a == true) {
-            inside_nom.setPower(1);
+            nom.setPower(1);
         } else if (gamepad2.y == true) {
-            inside_nom.setPower(-1);
+            nom.setPower(-1);
         } else {
-            inside_nom.setPower(0);
-        }
-
-        if (gamepad2.b == true) {
-            outside_nom.setPower(1);
-        } else if (gamepad2.x == true) {
-            outside_nom.setPower(-1);
-        } else {
-            outside_nom.setPower(0);
+            nom.setPower(0);
         }
 
         //Lift
@@ -242,9 +256,9 @@ public class GammaDrive extends OpMode {
             bpleft.setPosition(1);
         }
 
-        if (gamepad2.left_bumper == true && gamepad2.right_bumper == false) {
+        if (gamepad2.x == true && gamepad2.b == false) {
             lift.setPower(1);
-        } else if (gamepad2.left_bumper == false && gamepad2.right_bumper == true) {
+        } else if (gamepad2.x == false && gamepad2.b == true) {
             lift.setPower(-1);
         } else {
             lift.setPower(0);
@@ -262,6 +276,57 @@ public class GammaDrive extends OpMode {
 //        if (gamepad1.dpad_up == true) {
 ////            feeder.setPower(.3);
 //        }
+
+
+        if (gamepad2.right_bumper) {
+            cbleftState = 1;
+            cbrightState = 1;
+        } else if (gamepad1.left_bumper) {
+            cbleftState = -1;
+            cbrightState = -1;
+        }
+
+        if (cbleftState == 1 && cbEncoderL > cbmaxLiftHeight) {
+            cbleftState = 0;
+            cbleft.setPower(0);
+        } else if (cbleftState == -1 && cbEncoderL < cbstoppingDistance) {
+            cbleftState = 0;
+            cbleft.setPower(0);
+        }
+
+        if (cbrightState == 1 && cbEncoderR < -cbmaxLiftHeight) {
+            cbrightState = 0;
+            cbright.setPower(0);
+        } else if (cbrightState == -1 && cbEncoderR > -cbstoppingDistance) {
+            cbrightState = 0;
+            cbright.setPower(0);
+        }
+
+        boolean manuallyControlled = false;
+
+        if (cbleftState == 0 && gamepad2.left_stick_y > 0) {
+            cbleft.setPower(1);
+            manuallyControlled = true;
+
+        } else if (cbleftState == 0 && gamepad2.left_stick_y < 0) {
+            cbleft.setPower(-1);
+            manuallyControlled = true;
+        }
+
+        if (cbrightState == 0 && gamepad2.right_stick_y > 0) {
+            cbright.setPower(-1);
+            manuallyControlled = true;
+        } else if (cbrightState == 0 && gamepad2double leftMultiplier = 1;
+        double rightMultiplier = 1;
+        .right_stick_y < 0) {
+            cbright.setPower(1);
+            manuallyControlled = true;
+        }
+
+        if (!manuallyControlled) {
+            cbleft.setPower(cbleftState * cbpowerMultiplier * leftMultiplier);
+            cbright.setPower(-1 * cbrightState * cbpowerMultiplier * rightMultiplier);
+        }
     }
 
     public double trim (double number) {
