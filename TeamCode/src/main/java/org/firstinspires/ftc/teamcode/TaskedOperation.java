@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.vuforia.CameraDevice;
 
 import org.firstinspires.ftc.teamcode.options.OptionManager;
+import org.firstinspires.ftc.teamcode.tasks.AlignmentTaskIdk;
 import org.firstinspires.ftc.teamcode.tasks.AlignmentTaskNew;
 import org.firstinspires.ftc.teamcode.tasks.ButtonPressTask;
 import org.firstinspires.ftc.teamcode.tasks.FlywheelEngageTask;
@@ -57,11 +58,11 @@ public abstract class TaskedOperation extends LinearOpMode {
 
         if (getBeacons) {
             // first beacon
-            tasks.add(new TurnToHeadingTask(65 * blueNegativeFactor));
-            tasks.add(new MoveForwardTask(1400));
+            tasks.add(new TurnToHeadingTask(67 * blueNegativeFactor));
+            tasks.add(new MoveForwardTask(1800));
             tasks.add(new MoveUntilLineTask(null));
-            tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
-            tasks.add(new AlignmentTaskNew((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
+            tasks.add(new TurnUntilLineTask(null));
+            tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
             tasks.add(new ButtonPressTask(null));
 
             // go to second beacon
@@ -71,7 +72,7 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new MoveForwardTask(220));
             tasks.add(new TurnUntilLineTask(null));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
-            tasks.add(new AlignmentTaskNew((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
+            tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             tasks.add(new ButtonPressTask(null));
         }
@@ -83,10 +84,10 @@ public abstract class TaskedOperation extends LinearOpMode {
 
         if (isASpookster()) {
             Blackbox.log("INFO", "we have a spookster!!!");
-            Blackbox.log("INFO", "we have a spookster!!!");
-            Blackbox.log("INFO", "we have a spookster!!!");
             tasks.clear();
-            tasks.add(new SpookyTestTask(null));
+            //tasks.add(new SpookyTestTask(null));
+            //tasks.add(new TurnUntilLineTask(null));
+            tasks.add(new AlignmentTaskIdk(Robot.vuforia.gears));
         }
 
         // init tasks
@@ -105,7 +106,7 @@ public abstract class TaskedOperation extends LinearOpMode {
         Robot.beaconLeft.setPosition(0.0);
         Robot.beaconRight.setPosition(0.0);
 
-        Robot.nomMiddle.setPower(1.0f);
+        if (!isASpookster()) { Robot.nomMiddle.setPower(1.0f); }
         while (opModeIsActive()) {
             int taskIndex = 0;
             for (Task t : tasks) {

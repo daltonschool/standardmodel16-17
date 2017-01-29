@@ -21,14 +21,11 @@ public class MoveUntilLineTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
-        OpticalDistanceSensor sensorToTest = Robot.leftLineLight;
-        if (Robot.currentAlliance == Alliance.BLUE) {
-            sensorToTest = Robot.rightLineLight;
-        }
+        OpticalDistanceSensor sensorToTest = Robot.centerLineLight;
 
         while (true) {
-            Robot.leftMotors(0.18f);
-            Robot.rightMotors(0.18f);
+            Robot.leftMotors(0.2f);
+            Robot.rightMotors(0.2f);
 
             if (sensorToTest.getLightDetected() > Robot.ODS_BLACK_VALUE) {
                 break;

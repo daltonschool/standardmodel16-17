@@ -29,8 +29,8 @@ import java.util.ArrayList;
 
 public class Robot {
     // Constants
-    public static final double ODS_BLACK_VALUE = 0.0; // TODO: find this
-    public static final double ODS_GRAY_VALUE = 0.2; // TODO: and this
+    public static final double ODS_BLACK_VALUE = 0.08; // TODO: find this
+    public static final double ODS_GRAY_VALUE = 0.1; // TODO: and this
 
     // Motors
     public static DcMotor leftMotor;
@@ -54,6 +54,7 @@ public class Robot {
 
     public static OpticalDistanceSensor leftLineLight;
     public static OpticalDistanceSensor rightLineLight;
+    public static OpticalDistanceSensor centerLineLight;
 
     public static IMU imu = null;
     public static PhoneGyro phoneGyro = null;
@@ -120,6 +121,7 @@ public class Robot {
         // Optical distance
         leftLineLight = hardwareMap.opticalDistanceSensor.get("left_line");
         rightLineLight = hardwareMap.opticalDistanceSensor.get("right_line");
+        centerLineLight = hardwareMap.opticalDistanceSensor.get("center_line");
 
         // IMU
         imu = new IMU(hardwareMap.get(BNO055IMU.class, "imu"));
