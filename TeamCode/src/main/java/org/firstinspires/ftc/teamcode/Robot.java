@@ -100,7 +100,7 @@ public class Robot {
         flywheelRight = hardwareMap.dcMotor.get("launch_right");
         flywheelRight.setDirection(DcMotor.Direction.REVERSE);
 
-        nomMiddle = hardwareMap.dcMotor.get("inside_nom");
+        nomMiddle = hardwareMap.dcMotor.get("nom");
         nomMiddle.setDirection(DcMotor.Direction.FORWARD);
 
         nomFront = hardwareMap.dcMotor.get("outside_nom");
