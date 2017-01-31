@@ -59,9 +59,6 @@ public class DeltaDrive extends OpMode {
     int cbleftState = 0;
     int cbrightState = 0;
 
-    double cbEncoderR;
-    double cbEncoderL;
-
     Servo bpleft;
     Servo bpright;
 
@@ -132,7 +129,7 @@ public class DeltaDrive extends OpMode {
         rightout = false;
         leftout = false;
 
-        double v = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+        //double v = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
     }
 
     /*
@@ -158,8 +155,8 @@ public class DeltaDrive extends OpMode {
      */
     @Override
     public void loop() {
-        cbEncoderR = cbright.getCurrentPosition() - cbstartPosR;
-        cbEncoderL = cbleft.getCurrentPosition() - cbstartPosL;
+        double cbEncoderR = cbright.getCurrentPosition() - cbstartPosR;
+        double cbEncoderL = cbleft.getCurrentPosition() - cbstartPosL;
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
@@ -281,7 +278,7 @@ public class DeltaDrive extends OpMode {
         if (gamepad2.right_bumper) {
             cbleftState = 1;
             cbrightState = 1;
-        } else if (gamepad1.left_bumper) {
+        } else if (gamepad2.left_bumper) {
             cbleftState = -1;
             cbrightState = -1;
         }
