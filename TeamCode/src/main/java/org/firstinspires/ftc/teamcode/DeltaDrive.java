@@ -196,11 +196,11 @@ public class DeltaDrive extends OpMode {
 
 
         if (launching == true && gamepad1.left_bumper == false) {
-            launchRight.setPower(-launchpower);
-            launchLeft.setPower(launchpower);
+            launchRight.setPower(launchpower);
+            launchLeft.setPower(-launchpower);
         } else if (launching == false && gamepad1.left_bumper == true){
-            launchRight.setPower(.2);
-            launchLeft.setPower(-.2);
+            launchRight.setPower(-.2);
+            launchLeft.setPower(.2);
         } else {
             launchRight.setPower(0);
             launchLeft.setPower(0);
