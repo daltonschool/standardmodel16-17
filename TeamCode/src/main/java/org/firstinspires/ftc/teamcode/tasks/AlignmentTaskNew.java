@@ -52,7 +52,7 @@ public class AlignmentTaskNew extends Task {
                 Robot.rightMotors(basePower);
             }
 
-            if (Robot.range.getDistance(DistanceUnit.INCH) < 4) {
+            if (Robot.range.getDistance(DistanceUnit.INCH) < 7) {
                 // we are close enough, just stop
                 // TODO: check if we are straight. if we aren't, try to recover
                 return;

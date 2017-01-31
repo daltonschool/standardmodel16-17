@@ -23,6 +23,7 @@ public class SpookyTestTask extends Task {
         while (true) {
             Robot.telemetry.addData("Left line light", Robot.leftLineLight.getLightDetected());
             Robot.telemetry.addData("Right line light", Robot.rightLineLight.getLightDetected());
+            Robot.telemetry.addData("Center line light", Robot.centerLineLight.getLightDetected());
             Robot.telemetry.addData("Distance (in)", Robot.range.getDistance(DistanceUnit.INCH));
 
             Robot.telemetry.update();

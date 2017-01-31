@@ -19,7 +19,7 @@ public class TurnUntilLineTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
-        OpticalDistanceSensor sensorToTest = Robot.leftLineLight;
+        OpticalDistanceSensor sensorToTest = Robot.rightLineLight;
         int leftFactor = 1;
         if (Robot.currentAlliance == Alliance.RED) {
             sensorToTest = Robot.leftLineLight;
