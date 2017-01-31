@@ -17,8 +17,7 @@ public class ShootTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
-        /*float flywheelPower = 0.3f;
->>>>>>> 52d814953eeba0898c6d06f3c341f4b5a9f6a390
+        float flywheelPower = 0.3f;
 
         if (Robot.voltageSensor.getVoltage() < 13) {
             flywheelPower = 0.4f;
@@ -31,7 +30,7 @@ public class ShootTask extends Task {
         Robot.flywheelLeft.setPower(flywheelPower);
         Robot.flywheelRight.setPower(flywheelPower);
 
-        Thread.sleep(1500);*/
+        Thread.sleep(1500);
 
         Robot.conveyor.setPower(1.0f);
 
