@@ -25,8 +25,10 @@ public class SpookyTestTask extends Task {
             Robot.telemetry.addData("Right line light", Robot.rightLineLight.getLightDetected());
             Robot.telemetry.addData("Center line light", Robot.centerLineLight.getLightDetected());
             Robot.telemetry.addData("Distance (in)", Robot.range.getDistance(DistanceUnit.INCH));
+            Robot.telemetry.addData("Heading", Robot.imu.getHeading());
 
             Robot.telemetry.update();
+            Robot.update();
             Robot.idle();
         }
     }

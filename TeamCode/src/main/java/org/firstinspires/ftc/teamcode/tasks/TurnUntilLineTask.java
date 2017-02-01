@@ -36,5 +36,7 @@ public class TurnUntilLineTask extends Task {
 
         Robot.leftMotors(0.0f);
         Robot.rightMotors(0.0f);
+
+        Thread.sleep(2000);
     }
 }

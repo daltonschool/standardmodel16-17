@@ -52,26 +52,28 @@ public abstract class TaskedOperation extends LinearOpMode {
         ArrayList<Task> tasks = new ArrayList<Task>();
         tasks.add(new FlywheelEngageTask(null));
         tasks.add(new MoveForwardTask(2100));
-        if (shooting) {
+        /*if (shooting) {
             tasks.add(new ShootTask(null));
-        }
+        }*/
 
         if (getBeacons) {
             // first beacon
-            tasks.add(new TurnToHeadingTask(67 * blueNegativeFactor));
+            tasks.add(new TurnToHeadingTask(57 * blueNegativeFactor));
             tasks.add(new MoveForwardTask(1800));
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new TurnUntilLineTask(null));
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
+            tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+            tasks.add(new MoveForwardTask(-100));
             tasks.add(new ButtonPressTask(null));
+            tasks.add(new MoveForwardTask(-50));
 
             // go to second beacon
             tasks.add(new TurnToHeadingTask(0 * blueNegativeFactor));
             tasks.add(new MoveForwardFastInaccurateTask(2200));
             tasks.add(new MoveUntilLineTask(null));
-            tasks.add(new MoveForwardTask(220));
+            //tasks.add(new MoveForwardTask(220));
             tasks.add(new TurnUntilLineTask(null));
-            tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             tasks.add(new ButtonPressTask(null));
@@ -85,9 +87,9 @@ public abstract class TaskedOperation extends LinearOpMode {
         if (isASpookster()) {
             Blackbox.log("INFO", "we have a spookster!!!");
             tasks.clear();
-            //tasks.add(new SpookyTestTask(null));
+            tasks.add(new SpookyTestTask(null));
             //tasks.add(new TurnUntilLineTask(null));
-            tasks.add(new AlignmentTaskIdk(Robot.vuforia.gears));
+            //tasks.add(new AlignmentTaskIdk(Robot.vuforia.gears));
         }
 
         // init tasks

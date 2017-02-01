@@ -100,7 +100,7 @@ public class Robot {
         flywheelRight = hardwareMap.dcMotor.get("launch_right");
         flywheelRight.setDirection(DcMotor.Direction.REVERSE);
 
-        nomMiddle = hardwareMap.dcMotor.get("nom");
+        nomMiddle = hardwareMap.dcMotor.get("inside_nom");
         nomMiddle.setDirection(DcMotor.Direction.FORWARD);
 
         nomFront = hardwareMap.dcMotor.get("outside_nom");
@@ -232,7 +232,7 @@ public class Robot {
 
             double currentSpeed = power;
             float distanceTo = Math.abs(targetHeading - currentHeading);
-            double minimumSpeed = 0.3f;
+            double minimumSpeed = 0.2f;
             double minimumLeftSpeed = (turnLeft ? -minimumSpeed : minimumSpeed);
             double minimumRightSpeed = (turnLeft ? minimumSpeed : -minimumSpeed);
 
