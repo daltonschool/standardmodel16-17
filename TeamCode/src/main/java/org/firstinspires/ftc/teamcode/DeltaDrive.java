@@ -213,13 +213,13 @@ public class DeltaDrive extends OpMode {
         powerright += gamepad1.right_stick_x;
         powerleft -= gamepad1.right_stick_x;
 
-        leftback.setPower(-trim(powerleft));
-        rightback.setPower(trim(powerright));
+        leftback.setPower(trim(powerleft));
+        rightback.setPower(-trim(powerright));
 
 
-        if (gamepad2.a == true) {
+        if (gamepad2.a == false && gamepad2.y == true) {
             nom.setPower(1);
-        } else if (gamepad2.y == true) {
+        } else if (gamepad2.y == false && gamepad2.a == true) {
             nom.setPower(-1);
         } else {
             nom.setPower(0);
@@ -275,29 +275,29 @@ public class DeltaDrive extends OpMode {
 //        }
 
 
-        if (gamepad2.right_bumper) {
-            cbleftState = 1;
-            cbrightState = 1;
-        } else if (gamepad2.left_bumper) {
-            cbleftState = -1;
-            cbrightState = -1;
-        }
-
-        if (cbleftState == 1 && cbEncoderL > cbmaxLiftHeight) {
-            cbleftState = 0;
-            cbleft.setPower(0);
-        } else if (cbleftState == -1 && cbEncoderL < cbstoppingDistance) {
-            cbleftState = 0;
-            cbleft.setPower(0);
-        }
-
-        if (cbrightState == 1 && cbEncoderR < -cbmaxLiftHeight) {
-            cbrightState = 0;
-            cbright.setPower(0);
-        } else if (cbrightState == -1 && cbEncoderR > -cbstoppingDistance) {
-            cbrightState = 0;
-            cbright.setPower(0);
-        }
+//        if (gamepad2.right_bumper) {
+//            cbleftState = 1;
+//            cbrightState = 1;
+//        } else if (gamepad2.left_bumper) {
+//            cbleftState = -1;
+//            cbrightState = -1;
+//        }
+//
+//        if (cbleftState == 1 && cbEncoderL > cbmaxLiftHeight) {
+//            cbleftState = 0;
+//            cbleft.setPower(0);
+//        } else if (cbleftState == -1 && cbEncoderL < cbstoppingDistance) {
+//            cbleftState = 0;
+//            cbleft.setPower(0);
+//        }
+//
+//        if (cbrightState == 1 && cbEncoderR < -cbmaxLiftHeight) {
+//            cbrightState = 0;
+//            cbright.setPower(0);
+//        } else if (cbrightState == -1 && cbEncoderR > -cbstoppingDistance) {
+//            cbrightState = 0;
+//            cbright.setPower(0);
+//        }
 
         boolean manuallyControlled = false;
 
@@ -306,7 +306,7 @@ public class DeltaDrive extends OpMode {
             manuallyControlled = true;
 
         } else if (cbleftState == 0 && gamepad2.left_stick_y < 0) {
-            cbleft.setPower(-1);
+            cbleft.setPower(gamepad2.left_stick_y);
             manuallyControlled = true;
         }
 
@@ -314,7 +314,7 @@ public class DeltaDrive extends OpMode {
             cbright.setPower(-1);
             manuallyControlled = true;
         } else if (cbrightState == 0 && gamepad2.right_stick_y < 0) {
-            cbright.setPower(1);
+            cbright.setPower(-gamepad2.right_stick_y);
             manuallyControlled = true;
         }
 
