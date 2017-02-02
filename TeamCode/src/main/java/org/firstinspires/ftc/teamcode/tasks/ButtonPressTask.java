@@ -44,16 +44,16 @@ public class ButtonPressTask extends Task {
             Robot.beaconRight.setPosition(1.0);
         }
         Robot.telemetry.update();
-        Thread.sleep(1000);
+        Thread.sleep(500);
     }
 
     @Override
     public void run() throws InterruptedException {
-        Robot.beaconLeft.setPosition(0.0);
+        /*Robot.beaconLeft.setPosition(0.0);
         Robot.beaconRight.setPosition(0.0);
         Robot.telemetry.addLine("WAITING FOR SERVO POS");
         Robot.telemetry.update();
-        Thread.sleep(500);
+        Thread.sleep(500);*/
 
         // find the right color
         Alliance rightColor = getBeaconColor();
