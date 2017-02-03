@@ -213,8 +213,8 @@ public class DeltaDrive extends OpMode {
         powerright += gamepad1.right_stick_x;
         powerleft -= gamepad1.right_stick_x;
 
-        leftback.setPower(trim(powerleft));
-        rightback.setPower(-trim(powerright));
+        leftback.setPower(-trim(powerleft));
+        rightback.setPower(trim(powerright));
 
 
         if (gamepad2.a == false && gamepad2.y == true) {
