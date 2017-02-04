@@ -250,6 +250,7 @@ public class Robot {
             leftMotors(Math.max(minimumLeftSpeed, (turnLeft ? -currentSpeed : currentSpeed)));
             rightMotors(Math.max(minimumRightSpeed, (turnLeft ? currentSpeed : -currentSpeed)));
 
+            try { idle(); } catch (InterruptedException e) {}
             imu.update();
             currentHeading = imu.getHeading();
 
