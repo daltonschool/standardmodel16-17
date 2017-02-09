@@ -59,8 +59,8 @@ public abstract class TaskedOperation extends LinearOpMode {
 
         if (getBeacons) {
             // first beacon
-            tasks.add(new TurnToHeadingTask(59 * blueNegativeFactor));
-            tasks.add(new MoveForwardTask(1800));
+            tasks.add(new TurnToHeadingTask((Robot.currentAlliance == Alliance.RED ? 64 : -59)));
+            tasks.add(new MoveForwardFastInaccurateTask(1800));
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new MoveForwardTask(-100));
             tasks.add(new TurnUntilLineTask(null));
@@ -71,14 +71,15 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new MoveForwardTask(-50));
 
             // go to second beacon
-            tasks.add(new TurnToHeadingTask(-4 * blueNegativeFactor));
-            tasks.add(new MoveForwardFastInaccurateTask(2200));
+            tasks.add(new TurnToHeadingTask(-4));
+            tasks.add(new MoveForwardFastInaccurateTask(1850));
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new MoveForwardTask(-100));
             //tasks.add(new MoveForwardTask(220));
             tasks.add(new TurnUntilLineTask(null));
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+            tasks.add(new MoveForwardTask(-100));
             tasks.add(new ButtonPressTask(null));
         }
 /*
@@ -92,7 +93,11 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.clear();
             //tasks.add(new SpookyTestTask(null));
             //tasks.add(new TurnUntilLineTask(null));
-            tasks.add(new AlignmentTaskIdk(Robot.vuforia.gears));
+            //tasks.add(new AlignmentTaskIdk(Robot.vuforia.gears));
+            /*tasks.add(new MoveForwardFastInaccurateTask(1900));
+            tasks.add(new MoveForwardTask(300));
+            tasks.add(new MoveUntilLineTask(null));*/
+            tasks.add(new TurnToHeadingTask(90));
         }
 
         // init tasks

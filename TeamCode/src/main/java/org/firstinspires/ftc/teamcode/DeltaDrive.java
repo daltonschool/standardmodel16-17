@@ -302,11 +302,11 @@ public class DeltaDrive extends OpMode {
         boolean manuallyControlled = false;
 
         if (cbleftState == 0 && gamepad2.left_stick_y > 0) {
-            cbleft.setPower(1);
+            cbleft.setPower(.5);
             manuallyControlled = true;
 
         } else if (cbleftState == 0 && gamepad2.left_stick_y < 0) {
-            cbleft.setPower(gamepad2.left_stick_y);
+            cbleft.setPower(-.5);
             manuallyControlled = true;
         }
 
