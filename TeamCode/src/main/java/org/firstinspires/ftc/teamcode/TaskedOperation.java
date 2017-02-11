@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.tasks.AlignmentTaskIdk;
 import org.firstinspires.ftc.teamcode.tasks.AlignmentTaskNew;
 import org.firstinspires.ftc.teamcode.tasks.ButtonPressTask;
 import org.firstinspires.ftc.teamcode.tasks.FlywheelEngageTask;
+import org.firstinspires.ftc.teamcode.tasks.LineTestTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveForwardFastInaccurateTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveForwardTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveUntilLineTask;
@@ -50,8 +51,10 @@ public abstract class TaskedOperation extends LinearOpMode {
 
         // set up tasks
         ArrayList<Task> tasks = new ArrayList<Task>();
+
         tasks.add(new FlywheelEngageTask(null));
         tasks.add(new MoveForwardTask(2100));
+
 
         /*if (shooting) {
             tasks.add(new ShootTask(null));
@@ -72,9 +75,9 @@ public abstract class TaskedOperation extends LinearOpMode {
 
             // go to second beacon
             tasks.add(new TurnToHeadingTask(-4));
-            tasks.add(new MoveForwardFastInaccurateTask(1850));
+            tasks.add(new MoveForwardFastInaccurateTask(1750));
             tasks.add(new MoveUntilLineTask(null));
-            tasks.add(new MoveForwardTask(-100));
+            tasks.add(new MoveForwardTask(-200));
             //tasks.add(new MoveForwardTask(220));
             tasks.add(new TurnUntilLineTask(null));
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
@@ -97,7 +100,7 @@ public abstract class TaskedOperation extends LinearOpMode {
             /*tasks.add(new MoveForwardFastInaccurateTask(1900));
             tasks.add(new MoveForwardTask(300));
             tasks.add(new MoveUntilLineTask(null));*/
-            tasks.add(new TurnToHeadingTask(90));
+            tasks.add(new LineTestTask(null));
         }
 
         // init tasks
@@ -123,9 +126,9 @@ public abstract class TaskedOperation extends LinearOpMode {
                 Blackbox.log("TASK", "Current task: " + (taskIndex + 1));
                 telemetry.addData("Current task: ", taskIndex + 1);
 
-                CameraDevice.getInstance().setFlashTorchMode(false);
+                // CameraDevice.getInstance().setFlashTorchMode(false);
                 t.run();
-                CameraDevice.getInstance().setFlashTorchMode(false);
+                // CameraDevice.getInstance().setFlashTorchMode(false);
 
                 Robot.update();
                 Robot.idle();

@@ -39,6 +39,6 @@ public class ShootTask extends Task {
         Robot.conveyor.setPower(0.0f);
         Robot.flywheelLeft.setPower(0.0f);
         Robot.flywheelRight.setPower(0.0f);
-        Robot.nomMiddle.setPower(0.0f);
+        Robot.nom.setPower(0.0f);
     }
 }

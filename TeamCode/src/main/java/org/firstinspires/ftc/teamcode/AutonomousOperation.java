@@ -80,7 +80,7 @@ public abstract class AutonomousOperation extends LinearOpMode
             Robot.beaconLeft.setPosition(0.0);
             Robot.beaconRight.setPosition(0.0);
 
-            Robot.nomMiddle.setPower(1.0f);
+            Robot.nom.setPower(1.0f);
             Blackbox.log("INFO", "Servos reset, nom ON");
 
             if (OptionManager.currentOptions.shotsOnly) {
@@ -112,7 +112,7 @@ public abstract class AutonomousOperation extends LinearOpMode
             Robot.conveyor.setPower(0.0f);
             Robot.flywheelLeft.setPower(0.0f);
             Robot.flywheelRight.setPower(0.0f);
-            Robot.nomMiddle.setPower(0.0f);
+            Robot.nom.setPower(0.0f);
             Blackbox.log("INFO", "Flywheel, conveyor, and nom OFF");
 
             if (OptionManager.currentOptions.shotsOnly) {

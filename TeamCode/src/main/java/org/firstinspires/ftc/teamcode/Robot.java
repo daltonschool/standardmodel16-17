@@ -39,8 +39,7 @@ public class Robot {
     public static DcMotor flywheelLeft;
     public static DcMotor flywheelRight;
 
-    public static DcMotor nomFront;
-    public static DcMotor nomMiddle;
+    public static DcMotor nom;
 
     public static DcMotor conveyor;
 
@@ -100,11 +99,8 @@ public class Robot {
         flywheelRight = hardwareMap.dcMotor.get("launch_right");
         flywheelRight.setDirection(DcMotor.Direction.REVERSE);
 
-        nomMiddle = hardwareMap.dcMotor.get("inside_nom");
-        nomMiddle.setDirection(DcMotor.Direction.FORWARD);
-
-        nomFront = hardwareMap.dcMotor.get("outside_nom");
-        nomFront.setDirection(DcMotor.Direction.FORWARD);
+        nom = hardwareMap.dcMotor.get("nom");
+        nom.setDirection(DcMotor.Direction.FORWARD);
 
         conveyor = hardwareMap.dcMotor.get("lift");
         conveyor.setDirection(DcMotor.Direction.REVERSE);
@@ -138,7 +134,7 @@ public class Robot {
 
         // Vuforia
         vuforia = new Vuforia();
-        sensors.add(vuforia);
+        //sensors.add(vuforia);
 
         // Voltage
         voltageSensor = hardwareMap.voltageSensor.iterator().next();

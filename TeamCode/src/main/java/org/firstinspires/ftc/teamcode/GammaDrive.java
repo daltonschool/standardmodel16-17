@@ -49,7 +49,7 @@ public class GammaDrive extends OpMode {
     DcMotor rightback;
 
     DcMotor inside_nom;
-    DcMotor outside_nom;
+    //DcMotor outside_nom;
     DcMotor lift;
 
     Servo bpleft;
@@ -92,7 +92,7 @@ public class GammaDrive extends OpMode {
         leftback = hardwareMap.dcMotor.get("drive_left");
         rightback = hardwareMap.dcMotor.get("drive_right");
         inside_nom = hardwareMap.dcMotor.get("nom");
-        outside_nom = hardwareMap.dcMotor.get("outside_nom");
+        //outside_nom = hardwareMap.dcMotor.get("outside_nom");
         lift = hardwareMap.dcMotor.get("lift");
 
         launchpower = .4;
@@ -206,13 +206,13 @@ public class GammaDrive extends OpMode {
             inside_nom.setPower(0);
         }
 
-        if (gamepad2.b == true) {
+        /*if (gamepad2.b == true) {
             outside_nom.setPower(1);
         } else if (gamepad2.x == true) {
             outside_nom.setPower(-1);
         } else {
             outside_nom.setPower(0);
-        }
+        }*/
 
         //Lift
         if (gamepad2.right_trigger > .5  && rightprevstatebeaconhitter == false) {
