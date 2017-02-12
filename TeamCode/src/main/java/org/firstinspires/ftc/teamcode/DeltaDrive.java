@@ -226,14 +226,14 @@ public class DeltaDrive extends OpMode {
         }
 
         //Lift
-        if (gamepad2.right_trigger > .5  && rightprevstatebeaconhitter == false) {
+        if (gamepad2.right_bumper == true  && rightprevstatebeaconhitter == false) {
             rightout = !rightout;
             rightprevstatebeaconhitter = true;
         } else {
             rightprevstatebeaconhitter = false;
         }
 
-        if (gamepad2.left_trigger > .5 && leftprevstatebeaconhitter == false) {
+        if (gamepad2.left_bumper == true && leftprevstatebeaconhitter == false) {
             leftout = !leftout;
             leftprevstatebeaconhitter = true;
         } else {
@@ -241,16 +241,16 @@ public class DeltaDrive extends OpMode {
         }
 
         if (rightout == true ){
-            bpright.setPosition(0);
+            bpright.setPosition(1.0);
         } else {
-            bpright.setPosition(1);
+            bpright.setPosition(0.0);
         }
 
         if (leftout == true ) {
-            bpleft.setPosition(0);
+            bpleft.setPosition(0.0);
         } else {
 
-            bpleft.setPosition(1);
+            bpleft.setPosition(0.95);
         }
 
         if (gamepad2.x == true && gamepad2.b == false) {
