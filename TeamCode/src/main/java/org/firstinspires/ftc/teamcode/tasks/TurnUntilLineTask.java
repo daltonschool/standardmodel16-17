@@ -27,8 +27,8 @@ public class TurnUntilLineTask extends Task {
         }
 
         while (sensorToTest.getLightDetected() <= Robot.ODS_BLACK_VALUE) {
-            Robot.leftMotors(0.3f * leftFactor);
-            Robot.rightMotors(-0.3f * leftFactor);
+            Robot.leftMotors(0.6f * leftFactor);
+            Robot.rightMotors(-0.6f * leftFactor);
 
             Robot.update();
             Robot.idle();

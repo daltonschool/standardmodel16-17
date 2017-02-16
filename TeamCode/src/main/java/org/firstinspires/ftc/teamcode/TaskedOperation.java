@@ -52,8 +52,8 @@ public abstract class TaskedOperation extends LinearOpMode {
         // set up tasks
         ArrayList<Task> tasks = new ArrayList<Task>();
 
-        tasks.add(new FlywheelEngageTask(null));
-        tasks.add(new MoveForwardTask(2100));
+        //tasks.add(new FlywheelEngageTask(null));
+        tasks.add(new MoveForwardTask(1100));
 
 
         /*if (shooting) {
@@ -63,9 +63,9 @@ public abstract class TaskedOperation extends LinearOpMode {
         if (getBeacons) {
             // first beacon
             tasks.add(new TurnToHeadingTask((Robot.currentAlliance == Alliance.RED ? 64 : -59)));
-            tasks.add(new MoveForwardFastInaccurateTask(1800));
+            tasks.add(new MoveForwardFastInaccurateTask(1200));
             tasks.add(new MoveUntilLineTask(null));
-            tasks.add(new MoveForwardTask(-100));
+            tasks.add(new MoveForwardTask(-200));
             tasks.add(new TurnUntilLineTask(null));
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
@@ -95,12 +95,18 @@ public abstract class TaskedOperation extends LinearOpMode {
             Blackbox.log("INFO", "we have a spookster!!");
             tasks.clear();
             //tasks.add(new SpookyTestTask(null));
+            //tasks.add(new ButtonPressTask(null));
             //tasks.add(new TurnUntilLineTask(null));
             //tasks.add(new AlignmentTaskIdk(Robot.vuforia.gears));
             /*tasks.add(new MoveForwardFastInaccurateTask(1900));
             tasks.add(new MoveForwardTask(300));
             tasks.add(new MoveUntilLineTask(null));*/
-            tasks.add(new LineTestTask(null));
+            //tasks.add(new LineTestTask(null));
+
+            tasks.add(new MoveUntilLineTask(null));
+            tasks.add(new MoveForwardTask(-200));
+            tasks.add(new TurnUntilLineTask(null));
+            tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
         }
 
         // init tasks
@@ -116,8 +122,8 @@ public abstract class TaskedOperation extends LinearOpMode {
         waitForStart();
 
         Robot.start();
-        Robot.beaconLeft.setPosition(0.0);
-        Robot.beaconRight.setPosition(0.0);
+        Robot.beaconLeft.setPosition(0.7f);
+        Robot.beaconRight.setPosition(0.9f);
 
         //if (!isASpookster()) { Robot.nomMiddle.setPower(1.0f); }
         while (opModeIsActive()) {

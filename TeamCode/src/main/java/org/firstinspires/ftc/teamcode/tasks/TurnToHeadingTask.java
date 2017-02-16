@@ -15,6 +15,6 @@ public class TurnToHeadingTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
-        Robot.turnToHeading((int) extra, 0.4f);
+        Robot.turnToHeading((int) extra, 1.0f);
     }
 }

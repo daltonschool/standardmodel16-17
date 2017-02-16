@@ -23,8 +23,8 @@ public class MoveUntilLineTask extends Task {
     public void run() throws InterruptedException {
         OpticalDistanceSensor sensorToTest = Robot.centerLineLight;
 
-        Robot.leftMotors(0.18f);
-        Robot.rightMotors(0.18f);
+        Robot.leftMotors(0.28f);
+        Robot.rightMotors(0.28f);
 
         while (true) {
             if (sensorToTest.getLightDetected() > Robot.ODS_BLACK_VALUE) {

@@ -48,7 +48,8 @@ public class Robot {
     public static Servo beaconRight;
 
     // Sensors
-    public static ColorSensor beaconColor = null;
+    public static ColorSensor leftBeaconColor = null;
+    public static ColorSensor rightBeaconColor = null;
     public static ModernRoboticsI2cRangeSensor range = null;
 
     public static OpticalDistanceSensor leftLineLight;
@@ -57,8 +58,6 @@ public class Robot {
 
     public static IMU imu = null;
     public static PhoneGyro phoneGyro = null;
-
-    public static OpticalDistanceSensor frontDist;
 
     public static Vuforia vuforia;
 
@@ -87,10 +86,10 @@ public class Robot {
         sensors = new ArrayList<Sensor>();
 
         // Motors
-        leftMotor = hardwareMap.dcMotor.get("drive_right");
+        leftMotor = hardwareMap.dcMotor.get("drive_left");
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        rightMotor = hardwareMap.dcMotor.get("drive_left");
+        rightMotor = hardwareMap.dcMotor.get("drive_right");
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
 
         flywheelLeft = hardwareMap.dcMotor.get("launch_left");
@@ -111,8 +110,12 @@ public class Robot {
 
         // Sensors
         // Color
-        beaconColor = hardwareMap.colorSensor.get("beacon color");
-        beaconColor.enableLed(false);
+        leftBeaconColor = hardwareMap.colorSensor.get("left beacon color");
+        leftBeaconColor.enableLed(false);
+
+        rightBeaconColor = hardwareMap.colorSensor.get("right beacon color");
+        rightBeaconColor.setI2cAddress(I2cAddr.create8bit(0x4C));
+        rightBeaconColor.enableLed(false);
 
         // Optical distance
         leftLineLight = hardwareMap.opticalDistanceSensor.get("left_line");
@@ -130,7 +133,7 @@ public class Robot {
         //sensors.add(phoneGyro);
 
         // Front distance
-        frontDist = hardwareMap.opticalDistanceSensor.get("front dist");
+        //frontDist = hardwareMap.opticalDistanceSensor.get("front dist");
 
         // Vuforia
         vuforia = new Vuforia();
@@ -228,13 +231,13 @@ public class Robot {
 
             double currentSpeed = power;
             float distanceTo = Math.abs(targetHeading - currentHeading);
-            double minimumSpeed = 0.2f;
+            double minimumSpeed = 0.4f;
             double minimumLeftSpeed = (turnLeft ? -minimumSpeed : minimumSpeed);
             double minimumRightSpeed = (turnLeft ? minimumSpeed : -minimumSpeed);
 
             if (distanceTo < 10) {
                 currentSpeed *= 0.20;
-                currentSpeed = Math.min(currentSpeed, 0.3f);
+                currentSpeed = Math.min(currentSpeed, 0.35f);
             } else if (distanceTo < 20) {
                 currentSpeed *= 0.30;
                 currentSpeed = Math.min(currentSpeed, 0.35f);
@@ -306,7 +309,7 @@ public class Robot {
     }
 
     // Sensing methods
-    public static Alliance getBeaconRightColor() throws InterruptedException {
+    /*public static Alliance getBeaconRightColor() throws InterruptedException {
         beaconLeft.setPosition(0.0);
         beaconRight.setPosition(0.0);
         telemetry.addLine("WAITING FOR SERVO POS");
@@ -322,5 +325,5 @@ public class Robot {
         }
         return response;
     }
-
+*/
 }

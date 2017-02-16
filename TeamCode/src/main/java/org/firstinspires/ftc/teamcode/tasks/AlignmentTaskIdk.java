@@ -23,13 +23,13 @@ public class AlignmentTaskIdk extends Task {
             double rightLine = Robot.rightLineLight.getLightDetected();
 
             if (0.005 < leftLine && leftLine < 0.07 && 0.005 < rightLine && rightLine < 0.07) {
-                Robot.leftMotors(0.3f);
-                Robot.rightMotors(0.3f);
+                Robot.leftMotors(0.65f);
+                Robot.rightMotors(0.65f);
             } else if (leftLine > rightLine) {
                 Robot.leftMotors(0.0f);
-                Robot.rightMotors(0.35f);
+                Robot.rightMotors(0.6f);
             } else if (rightLine > leftLine) {
-                Robot.leftMotors(0.35f);
+                Robot.leftMotors(0.6f);
                 Robot.rightMotors(0.0f);
             } else {
                 Robot.leftMotors(0.0f);
