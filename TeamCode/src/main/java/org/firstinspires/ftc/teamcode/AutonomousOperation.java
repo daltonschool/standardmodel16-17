@@ -35,6 +35,7 @@ public abstract class AutonomousOperation extends LinearOpMode
 
     @Override
     public void runOpMode() throws InterruptedException {
+        /*
         telemetry.addData("Status", "Starting...");
         telemetry.update();
 
@@ -80,7 +81,7 @@ public abstract class AutonomousOperation extends LinearOpMode
             Robot.beaconLeft.setPosition(0.0);
             Robot.beaconRight.setPosition(0.0);
 
-            Robot.nomMiddle.setPower(1.0f);
+            Robot.nom.setPower(1.0f);
             Blackbox.log("INFO", "Servos reset, nom ON");
 
             if (OptionManager.currentOptions.shotsOnly) {
@@ -112,7 +113,7 @@ public abstract class AutonomousOperation extends LinearOpMode
             Robot.conveyor.setPower(0.0f);
             Robot.flywheelLeft.setPower(0.0f);
             Robot.flywheelRight.setPower(0.0f);
-            Robot.nomMiddle.setPower(0.0f);
+            Robot.nom.setPower(0.0f);
             Blackbox.log("INFO", "Flywheel, conveyor, and nom OFF");
 
             if (OptionManager.currentOptions.shotsOnly) {
@@ -167,11 +168,11 @@ public abstract class AutonomousOperation extends LinearOpMode
                 Robot.moveForward_encoder(450, 0.5f);
                 Thread.sleep(500);
             }
-
+**/
             /*Robot.turnToHeading(90, 0.8f);
             telemetry.addLine("ALIGN TURN DONE");
             telemetry.update();
-            Thread.sleep(100);*/
+            Thread.sleep(100);*//*
 
             for (int i = 0; i < 1000; i++) {
                 telemetry.addData("r", Robot.beaconColor.red());
@@ -220,14 +221,14 @@ public abstract class AutonomousOperation extends LinearOpMode
             Robot.rightMotors(0.5f);
             Thread.sleep(1500);
             Robot.leftMotors(0.0f);
-            Robot.rightMotors(0.0f);
+            Robot.rightMotors(0.0f);*/
 
             /*if (rightColor != currentAlliance) {
                 Thread.sleep(250);
                 Robot.beaconServo.setPosition(0.65);
             }*/
 
-            Blackbox.log("INFO", "Retreating");
+            /*Blackbox.log("INFO", "Retreating");
             telemetry.addLine("RETREAT");
             telemetry.update();
             Robot.leftMotors(-0.3f);
@@ -271,7 +272,7 @@ public abstract class AutonomousOperation extends LinearOpMode
             Robot.idle();
 
             return;
-        }
+        }*/
     }
 
     public void veryEnd() throws InterruptedException {

@@ -28,26 +28,13 @@ public class ColorTest extends LinearOpMode {
         rightLineColor.setI2cAddress(I2cAddr.create8bit(0x4C));
         rightLineColor.enableLed(true);*/
 
-        MRColorSensor leftLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("left line color"), I2cAddr.create8bit(0x6C));
-        MRColorSensor rightLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("right line color"), I2cAddr.create8bit(0x4C));
-        ColorSensor beaconColor = hardwareMap.colorSensor.get("beacon color");
+        //MRColorSensor leftLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("left line color"), I2cAddr.create8bit(0x6C));
+        //MRColorSensor rightLineColor = new MRColorSensor(hardwareMap.i2cDeviceSynch.get("right line color"), I2cAddr.create8bit(0x4C));
+        ColorSensor beaconColor = hardwareMap.colorSensor.get("left beacon color");
+        beaconColor.setI2cAddress(I2cAddr.create8bit(0x4C));
         beaconColor.enableLed(false);
 
         while (opModeIsActive()) {
-            /*telemetry.addData("left-r", leftLineColor.red());
-            telemetry.addData("left-g", leftLineColor.green());
-            telemetry.addData("left-b", leftLineColor.blue());
-            telemetry.addData("left-a", leftLineColor.alpha());
-            telemetry.addData("left-q", Utils.intelIsBetterThanQualcomm((ModernRoboticsI2cColorSensor) leftLineColor, 0x4 + 0x11));
-
-            //((ModernRoboticsI2cColorSensor)leftLineColor).
-            telemetry.addData("right-r", rightLineColor.red());
-            telemetry.addData("right-g", rightLineColor.green());
-            telemetry.addData("right-b", rightLineColor.blue());
-            telemetry.addData("right-a", rightLineColor.alpha());*/
-
-            telemetry.addData("left-w", ((Byte)leftLineColor.whiteReading()).intValue());
-            telemetry.addData("right-w", ((Byte)rightLineColor.whiteReading()).intValue());
             telemetry.addData("beaconColor-r", beaconColor.red());
             telemetry.addData("beaconColor-g", beaconColor.green());
             telemetry.addData("beaconColor-b", beaconColor.blue());

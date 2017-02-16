@@ -134,7 +134,7 @@ public class Vuforia extends Sensor{
 
     public void start() {
         // activate vuforia dataset
-        ftcTrackables.activate();
+        //ftcTrackables.activate();
     }
 
     @Override

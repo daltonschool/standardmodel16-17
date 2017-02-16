@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Temperature;
 
 /**
  * IMU = fancy name for accelerometer, gyroscope, and compass combo
@@ -87,6 +88,7 @@ public class IMU extends Sensor {
 
     @Override
     public void update() {
+
         angles = _imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
         gravity = _imu.getGravity();
     }

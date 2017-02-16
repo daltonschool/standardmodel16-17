@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Tasked Operation - RED")
-public class TaskedRed extends TaskedOperation {
+@Autonomous(name="Tasked Operation - Shots only")
+public class TaskedShotsOnly extends TaskedOperation {
     public Alliance getCurrentAlliance() {
         return Alliance.RED;
     }
@@ -11,6 +11,6 @@ public class TaskedRed extends TaskedOperation {
         return false;
     }
     public boolean isShotsOnly() {
-        return false;
+        return true;
     }
 }
