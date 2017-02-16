@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.tasks.MoveForwardFastInaccurateTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveForwardTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveUntilLineTask;
 //import org.firstinspires.ftc.teamcode.tasks.ShootTask;
+import org.firstinspires.ftc.teamcode.tasks.ShootTask;
 import org.firstinspires.ftc.teamcode.tasks.SpookyTestTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnToHeadingTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnUntilLineTask;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 public abstract class TaskedOperation extends LinearOpMode {
     public abstract Alliance getCurrentAlliance();
     public abstract boolean isASpookster();
+    public abstract boolean isShotsOnly();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -107,6 +109,16 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new MoveForwardTask(-200));
             tasks.add(new TurnUntilLineTask(null));
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
+        }
+
+        if (isShotsOnly()) {
+            Blackbox.log("INFO", "Shots only!");
+            tasks.clear();
+
+            tasks.add(new FlywheelEngageTask(null));
+            tasks.add(new MoveForwardTask(1100));
+            tasks.add(new ShootTask(null));
+            tasks.add(new MoveForwardTask(1100));
         }
 
         // init tasks

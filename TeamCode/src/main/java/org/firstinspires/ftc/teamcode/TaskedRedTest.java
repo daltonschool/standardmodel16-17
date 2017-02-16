@@ -10,4 +10,7 @@ public class TaskedRedTest extends TaskedOperation {
     public boolean isASpookster() {
         return true;
     }
+    public boolean isShotsOnly() {
+        return false;
+    }
 }
