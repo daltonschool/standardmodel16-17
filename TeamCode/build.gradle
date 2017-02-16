@@ -8,13 +8,15 @@
 // please think carefully as to whether such customizations are really necessary
 // before doing so.
 
-
 // Custom definitions may go here
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
 apply plugin: 'com.android.application'
 
+dependencies {
+    compile 'com.android.support:appcompat-v7:23.+'
+}
 android {
 
     compileSdkVersion 23
