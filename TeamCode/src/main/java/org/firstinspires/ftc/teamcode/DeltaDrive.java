@@ -88,6 +88,10 @@ public class DeltaDrive extends OpMode {
     double leftMultiplier;
     double rightMultiplier;
 
+    double maxliftpowerup;
+
+    double maxliftpowerdown;
+
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -128,6 +132,10 @@ public class DeltaDrive extends OpMode {
         leftprevstatebeaconhitter = false;
         rightout = false;
         leftout = false;
+
+        //make sure cap ball doesn't go too fast
+        maxliftpowerdown = -.3;
+        maxliftpowerup = .8;
 
         //double v = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
     }
@@ -261,66 +269,53 @@ public class DeltaDrive extends OpMode {
             lift.setPower(0);
         }
 
-        //
-
-//        if (gamepad1.dpad_down == true) {
-//            nom.setPower(.5);
-//        }
-//        if (gamepad1.dpad_right == true) {
-//            nom.setPower(.5);
-////            feeder.setPower(.3);
-//        }
-//        if (gamepad1.dpad_up == true) {
-////            feeder.setPower(.3);
-//        }
-
-
-//        if (gamepad2.right_bumper) {
-//            cbleftState = 1;
-//            cbrightState = 1;
-//        } else if (gamepad2.left_bumper) {
-//            cbleftState = -1;
-//            cbrightState = -1;
-//        }
-//
-//        if (cbleftState == 1 && cbEncoderL > cbmaxLiftHeight) {
-//            cbleftState = 0;
-//            cbleft.setPower(0);
-//        } else if (cbleftState == -1 && cbEncoderL < cbstoppingDistance) {
-//            cbleftState = 0;
-//            cbleft.setPower(0);
-//        }
-//
-//        if (cbrightState == 1 && cbEncoderR < -cbmaxLiftHeight) {
-//            cbrightState = 0;
-//            cbright.setPower(0);
-//        } else if (cbrightState == -1 && cbEncoderR > -cbstoppingDistance) {
-//            cbrightState = 0;
-//            cbright.setPower(0);
-//        }
-
         boolean manuallyControlled = false;
 
-        if (cbleftState == 0 && gamepad2.left_stick_y > 0) {
-            cbleft.setPower(.5);
-            manuallyControlled = true;
+//        if (cbleftState == 0 && gamepad2.left_stick_y > 0 && cbleft.getCurrentPosition() > cbstartPosL) {
+//            cbleft.setPower(gamepad2.left_stick_y);
+//            manuallyControlled = true;
+//
+//        } else if (cbleftState == 0 && gamepad2.left_stick_y < 0) {
+//            cbleft.setPower(gamepad2.left_stick_y);
+//            manuallyControlled = true;
+//        }
+//
+//        if (cbrightState == 0 && gamepad2.right_stick_y > 0 && cbright.getCurrentPosition() > cbstartPosR) {
+//            cbright.setPower(gamepad2.right_stick_y);
+//            manuallyControlled = true;
+//        } else if (cbrightState == 0 && gamepad2.right_stick_y < 0) {
+//            cbright.setPower(gamepad2.right_stick_y);
+//            manuallyControlled = true;
+//        }
 
-        } else if (cbleftState == 0 && gamepad2.left_stick_y < 0) {
-            cbleft.setPower(-.5);
-            manuallyControlled = true;
+//        if (!manuallyControlled) {
+//            cbleft.setPower(cbleftState * cbpowerMultiplier * leftMultiplier);
+//            cbright.setPower(-1 * cbrightState * cbpowerMultiplier * rightMultiplier);
+//        }
+
+
+        if (cbright.getCurrentPosition() > cbstartPosR) {
+            if (gamepad2.right_stick_y > maxliftpowerup) {
+                cbright.setPower(maxliftpowerup);
+            } else if (gamepad2.right_stick_y < maxliftpowerdown) {
+                cbright.setPower(maxliftpowerdown);
+            } else {
+                cbright.setPower(gamepad2.right_stick_y);
+            }
+        } else {
+            cbright.setPower(0);
         }
 
-        if (cbrightState == 0 && gamepad2.right_stick_y > 0) {
-            cbright.setPower(gamepad2.right_stick_y);
-            manuallyControlled = true;
-        } else if (cbrightState == 0 && gamepad2.right_stick_y < 0) {
-            cbright.setPower(gamepad2.right_stick_y);
-            manuallyControlled = true;
-        }
-
-        if (!manuallyControlled) {
-            cbleft.setPower(cbleftState * cbpowerMultiplier * leftMultiplier);
-            cbright.setPower(-1 * cbrightState * cbpowerMultiplier * rightMultiplier);
+        if (cbleft.getCurrentPosition() > cbstartPosL) {
+            if (gamepad2.left_stick_y > maxliftpowerup) {
+                cbleft.setPower(maxliftpowerup);
+            } else if (gamepad2.left_stick_y < maxliftpowerdown) {
+                cbleft.setPower(maxliftpowerdown);
+            } else {
+                cbleft.setPower(gamepad2.left_stick_y);
+            }
+        } else {
+            cbleft.setPower(0);
         }
     }
 
