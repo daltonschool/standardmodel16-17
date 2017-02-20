@@ -310,6 +310,56 @@ public class Robot {
         rightMotors(0.0);
     }
 
+    public static void turnToHeadingWithPID(float targetHeading, double power) {
+        float currentHeading = imu.getHeading();
+        boolean turnLeft = (targetHeading - currentHeading > 0 ? true : false);
+        while (true) {
+            telemetry.addData("hdg", currentHeading);
+            //telemetry.addData("phoneHdg", Robot.phoneGyro.getHeading());
+            telemetry.update();
+
+            double currentSpeed = power;
+            float distanceTo = Math.abs(targetHeading - currentHeading);
+
+            
+
+
+            double minimumSpeed = 0.55f;
+            double minimumLeftSpeed = (turnLeft ? -minimumSpeed : minimumSpeed);
+            double minimumRightSpeed = (turnLeft ? minimumSpeed : -minimumSpeed);
+
+            if (distanceTo < 10) {
+                currentSpeed *= 0.20;
+                currentSpeed = Math.min(currentSpeed, 0.6f);
+            } else if (distanceTo < 20) {
+                currentSpeed *= 0.30;
+                currentSpeed = Math.min(currentSpeed, 0.65f);
+            } else if (distanceTo < 30) {
+                currentSpeed *= 0.40;
+                currentSpeed = Math.min(currentSpeed, 0.7f);
+            }
+
+            leftMotors(Math.max(minimumLeftSpeed, (turnLeft ? -currentSpeed : currentSpeed)));
+            rightMotors(Math.max(minimumRightSpeed, (turnLeft ? currentSpeed : -currentSpeed)));
+
+            try { idle(); } catch (InterruptedException e) {}
+            imu.update();
+            currentHeading = imu.getHeading();
+
+            turnLeft = (targetHeading - currentHeading > 0 ? true : false);
+            /*if (turnLeft && targetHeading < currentHeading) {
+                break;
+            } else if (!turnLeft && targetHeading > currentHeading) {
+                break;
+            }*/
+            if (targetHeading == currentHeading) {
+                break;
+            }
+        }
+        leftMotors(0.0);
+        rightMotors(0.0);
+    }
+
     // Sensing methods
     /*public static Alliance getBeaconRightColor() throws InterruptedException {
         beaconLeft.setPosition(0.0);
