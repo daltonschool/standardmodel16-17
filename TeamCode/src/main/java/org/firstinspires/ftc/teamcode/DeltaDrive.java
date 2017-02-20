@@ -70,16 +70,16 @@ public class DeltaDrive extends OpMode {
 
     boolean upprevstatelaunchspeed;
     boolean downprevstatelaunchspeed;
-
     double lastuppresslaunchspeed;
     double lastdownpresslaunchspeed;
 
     boolean prevstatelaunchtoggle;
-
     double lastpresslaunchtoggle;
 
     boolean leftprevstatebeaconhitter;
     boolean rightprevstatebeaconhitter;
+    double lastpressrightbeaconhitter;
+    double lastpressleftbeaconhitter;
 
     boolean rightout;
     boolean leftout;
@@ -131,6 +131,8 @@ public class DeltaDrive extends OpMode {
 
         rightprevstatebeaconhitter = false;
         leftprevstatebeaconhitter = false;
+        lastpressrightbeaconhitter = 0;
+        lastpressleftbeaconhitter = 0;
         rightout = false;
         leftout = false;
 
@@ -235,16 +237,18 @@ public class DeltaDrive extends OpMode {
         }
 
         //Lift
-        if (gamepad2.right_bumper == true  && rightprevstatebeaconhitter == false) {
+        if (gamepad2.right_bumper == true  && rightprevstatebeaconhitter == false && runtime.time() - lastpressrightbeaconhitter > .5) {
             rightout = !rightout;
             rightprevstatebeaconhitter = true;
+            lastpressrightbeaconhitter = runtime.time();
         } else {
             rightprevstatebeaconhitter = false;
         }
 
-        if (gamepad2.left_bumper == true && leftprevstatebeaconhitter == false) {
+        if (gamepad2.left_bumper == true && leftprevstatebeaconhitter == false && runtime.time() - lastpressleftbeaconhitter > .5) {
             leftout = !leftout;
             leftprevstatebeaconhitter = true;
+            lastpressleftbeaconhitter = runtime.time();
         } else {
             leftprevstatebeaconhitter = false;
         }
@@ -270,54 +274,54 @@ public class DeltaDrive extends OpMode {
             lift.setPower(0);
         }
 
-        boolean manuallyControlled = false;
-
-        if (cbleftState == 0 && gamepad2.left_stick_y > 0) {
-            cbleft.setPower(gamepad2.left_stick_y);
-            manuallyControlled = true;
-
-        } else if (cbleftState == 0 && gamepad2.left_stick_y < 0) {
-            cbleft.setPower(gamepad2.left_stick_y);
-            manuallyControlled = true;
-        }
-
-        if (cbrightState == 0 && gamepad2.right_stick_y > 0) {
-            cbright.setPower(gamepad2.right_stick_y);
-            manuallyControlled = true;
-        } else if (cbrightState == 0 && gamepad2.right_stick_y < 0) {
-            cbright.setPower(gamepad2.right_stick_y);
-            manuallyControlled = true;
-        }
-
-        if (!manuallyControlled) {
-            cbleft.setPower(cbleftState * cbpowerMultiplier * leftMultiplier);
-            cbright.setPower(-1 * cbrightState * cbpowerMultiplier * rightMultiplier);
-        }
-
-
-//        if (cbright.getCurrentPosition() > cbstartPosR) {
-//            if (gamepad2.right_stick_y > maxliftpowerup) {
-//                cbright.setPower(maxliftpowerup);
-//            } else if (gamepad2.right_stick_y < maxliftpowerdown) {
-//                cbright.setPower(maxliftpowerdown);
-//            } else {
-//                cbright.setPower(gamepad2.right_stick_y);
-//            }
-//        } else {
-//            cbright.setPower(0);
+//        boolean manuallyControlled = false;
+//
+//        if (cbleftState == 0 && gamepad2.left_stick_y > 0) {
+//            cbleft.setPower(gamepad2.left_stick_y);
+//            manuallyControlled = true;
+//
+//        } else if (cbleftState == 0 && gamepad2.left_stick_y < 0) {
+//            cbleft.setPower(gamepad2.left_stick_y);
+//            manuallyControlled = true;
 //        }
 //
-//        if (cbleft.getCurrentPosition() > cbstartPosL) {
-//            if (gamepad2.left_stick_y > maxliftpowerup) {
-//                cbleft.setPower(maxliftpowerup);
-//            } else if (gamepad2.left_stick_y < maxliftpowerdown) {
-//                cbleft.setPower(maxliftpowerdown);
-//            } else {
-//                cbleft.setPower(gamepad2.left_stick_y);
-//            }
-//        } else {
-//            cbleft.setPower(0);
+//        if (cbrightState == 0 && gamepad2.right_stick_y > 0) {
+//            cbright.setPower(gamepad2.right_stick_y);
+//            manuallyControlled = true;
+//        } else if (cbrightState == 0 && gamepad2.right_stick_y < 0) {
+//            cbright.setPower(gamepad2.right_stick_y);
+//            manuallyControlled = true;
 //        }
+//
+//        if (!manuallyControlled) {
+//            cbleft.setPower(cbleftState * cbpowerMultiplier * leftMultiplier);
+//            cbright.setPower(-1 * cbrightState * cbpowerMultiplier * rightMultiplier);
+//        }
+
+
+        if (cbright.getCurrentPosition() < cbstartPosR) {
+            if (gamepad2.right_stick_y > maxliftpowerup) {
+                cbright.setPower(maxliftpowerup);
+            } else if (gamepad2.right_stick_y < maxliftpowerdown) {
+                cbright.setPower(maxliftpowerdown);
+            } else {
+                cbright.setPower(gamepad2.right_stick_y);
+            }
+        } else {
+            cbright.setPower(0);
+        }
+
+        if (cbleft.getCurrentPosition() < cbstartPosL) {
+            if (gamepad2.left_stick_y > maxliftpowerup) {
+                cbleft.setPower(maxliftpowerup);
+            } else if (gamepad2.left_stick_y < maxliftpowerdown) {
+                cbleft.setPower(maxliftpowerdown);
+            } else {
+                cbleft.setPower(gamepad2.left_stick_y);
+            }
+        } else {
+            cbleft.setPower(0);
+        }
     }
 
     public double trim (double number) {
