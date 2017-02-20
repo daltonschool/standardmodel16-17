@@ -35,7 +35,7 @@ public class ButtonPressTask extends Task {
         if (leftColor == Robot.currentAlliance) {
             Blackbox.log("INFO", "Pressing LEFT");
             Robot.telemetry.addLine("PRESSING LEFT");
-            Robot.beaconLeft.setPosition(0.7f);
+            Robot.beaconLeft.setPosition(1.0f);
             Robot.beaconRight.setPosition(0.9f);
         } else {
             Blackbox.log("INFO", "Pressing RIGHT");
@@ -95,7 +95,7 @@ public class ButtonPressTask extends Task {
         Robot.rightMotors(0.0f);
 
         // reset arm
-        Robot.beaconLeft.setPosition(0.7f);
+        Robot.beaconLeft.setPosition(1.0f);
         Robot.beaconRight.setPosition(0.9f);
         Thread.sleep(500);
 
@@ -136,7 +136,7 @@ public class ButtonPressTask extends Task {
         }*/
 
         // reset
-        Robot.beaconLeft.setPosition(0.7f);
+        Robot.beaconLeft.setPosition(1.0f);
         Robot.beaconRight.setPosition(0.9f);
     }
 }

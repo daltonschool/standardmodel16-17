@@ -6,6 +6,7 @@ import com.vuforia.CameraDevice;
 import org.firstinspires.ftc.teamcode.options.OptionManager;
 import org.firstinspires.ftc.teamcode.tasks.AlignmentTaskIdk;
 import org.firstinspires.ftc.teamcode.tasks.AlignmentTaskNew;
+import org.firstinspires.ftc.teamcode.tasks.AttackCapBallTask;
 import org.firstinspires.ftc.teamcode.tasks.ButtonPressTask;
 import org.firstinspires.ftc.teamcode.tasks.FlywheelEngageTask;
 import org.firstinspires.ftc.teamcode.tasks.LineTestTask;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.tasks.MoveUntilLineTask;
 //import org.firstinspires.ftc.teamcode.tasks.ShootTask;
 import org.firstinspires.ftc.teamcode.tasks.ShootTask;
 import org.firstinspires.ftc.teamcode.tasks.SpookyTestTask;
+import org.firstinspires.ftc.teamcode.tasks.TurnTestTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnToHeadingTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnUntilLineTask;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
@@ -54,13 +56,12 @@ public abstract class TaskedOperation extends LinearOpMode {
         // set up tasks
         ArrayList<Task> tasks = new ArrayList<Task>();
 
-        //tasks.add(new FlywheelEngageTask(null));
+        tasks.add(new FlywheelEngageTask(null));
         tasks.add(new MoveForwardTask(1100));
 
-
-        /*if (shooting) {
+        if (shooting) {
             tasks.add(new ShootTask(null));
-        }*/
+        }
 
         if (getBeacons) {
             // first beacon
@@ -94,7 +95,7 @@ public abstract class TaskedOperation extends LinearOpMode {
         }*/
 
         if (isASpookster()) {
-            Blackbox.log("INFO", "we have a spookster!!");
+            Blackbox.log("INFO", "we have a spookster!!!");
             tasks.clear();
             //tasks.add(new SpookyTestTask(null));
             //tasks.add(new ButtonPressTask(null));
@@ -105,10 +106,15 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new MoveUntilLineTask(null));*/
             //tasks.add(new LineTestTask(null));
 
-            tasks.add(new MoveUntilLineTask(null));
+            /*tasks.add(new MoveUntilLineTask(null));
             tasks.add(new MoveForwardTask(-200));
             tasks.add(new TurnUntilLineTask(null));
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
+            //tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+            tasks.add(new MoveForwardTask(-100));*/
+            tasks.add(new ButtonPressTask(null));
+
+            //tasks.add(new TurnTestTask(null));
         }
 
         if (isShotsOnly()) {
@@ -118,7 +124,8 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new FlywheelEngageTask(null));
             tasks.add(new MoveForwardTask(1100));
             tasks.add(new ShootTask(null));
-            tasks.add(new MoveForwardTask(1100));
+            tasks.add(new MoveForwardTask(1500));
+            tasks.add(new AttackCapBallTask(null));
         }
 
         // init tasks
@@ -134,10 +141,10 @@ public abstract class TaskedOperation extends LinearOpMode {
         waitForStart();
 
         Robot.start();
-        Robot.beaconLeft.setPosition(0.7f);
+        Robot.beaconLeft.setPosition(1.0f);
         Robot.beaconRight.setPosition(0.9f);
 
-        //if (!isASpookster()) { Robot.nomMiddle.setPower(1.0f); }
+        if (!isASpookster()) { Robot.nom.setPower(1.0f); }
         while (opModeIsActive()) {
             int taskIndex = 0;
             for (Task t : tasks) {

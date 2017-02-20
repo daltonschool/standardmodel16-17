@@ -20,7 +20,7 @@ public class ServoTest extends LinearOpMode
         Thread.sleep(3000);
 
         Utils.showToast("Pressing left", 0);
-        beaconLeft.setPosition(0.7f);
+        beaconLeft.setPosition(1.0f);
         beaconRight.setPosition(0.9f);
         Thread.sleep(3000);
 

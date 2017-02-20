@@ -9,6 +9,7 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
@@ -86,23 +87,24 @@ public class Robot {
         sensors = new ArrayList<Sensor>();
 
         // Motors
-        leftMotor = hardwareMap.dcMotor.get("drive_left");
+        leftMotor = hardwareMap.dcMotor.get("drive_right");
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        rightMotor = hardwareMap.dcMotor.get("drive_right");
+        rightMotor = hardwareMap.dcMotor.get("drive_left");
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
 
         flywheelLeft = hardwareMap.dcMotor.get("launch_left");
         flywheelLeft.setDirection(DcMotor.Direction.FORWARD);
 
         flywheelRight = hardwareMap.dcMotor.get("launch_right");
+        flywheelRight = hardwareMap.dcMotor.get("launch_right");
         flywheelRight.setDirection(DcMotor.Direction.REVERSE);
 
         nom = hardwareMap.dcMotor.get("nom");
-        nom.setDirection(DcMotor.Direction.FORWARD);
+        nom.setDirection(DcMotor.Direction.REVERSE);
 
         conveyor = hardwareMap.dcMotor.get("lift");
-        conveyor.setDirection(DcMotor.Direction.REVERSE);
+        conveyor.setDirection(DcMotor.Direction.FORWARD);
 
         // Servos
         beaconLeft = hardwareMap.servo.get("leftBeacon");
@@ -231,19 +233,19 @@ public class Robot {
 
             double currentSpeed = power;
             float distanceTo = Math.abs(targetHeading - currentHeading);
-            double minimumSpeed = 0.4f;
+            double minimumSpeed = 0.55f;
             double minimumLeftSpeed = (turnLeft ? -minimumSpeed : minimumSpeed);
             double minimumRightSpeed = (turnLeft ? minimumSpeed : -minimumSpeed);
 
             if (distanceTo < 10) {
                 currentSpeed *= 0.20;
-                currentSpeed = Math.min(currentSpeed, 0.35f);
+                currentSpeed = Math.min(currentSpeed, 0.6f);
             } else if (distanceTo < 20) {
                 currentSpeed *= 0.30;
-                currentSpeed = Math.min(currentSpeed, 0.35f);
+                currentSpeed = Math.min(currentSpeed, 0.65f);
             } else if (distanceTo < 30) {
                 currentSpeed *= 0.40;
-                currentSpeed = Math.min(currentSpeed, 0.4f);
+                currentSpeed = Math.min(currentSpeed, 0.7f);
             }
 
             leftMotors(Math.max(minimumLeftSpeed, (turnLeft ? -currentSpeed : currentSpeed)));
@@ -285,23 +287,23 @@ public class Robot {
     }
 
     public static void moveForward_encoder(double distanceToDrive, double power) throws InterruptedException {
-        double startPos = leftMotor.getCurrentPosition();
+        double startPos = -leftMotor.getCurrentPosition();
         boolean negative = (distanceToDrive < 0);
         if (negative) {
             power *= -1;
         }
         while (
-                (!negative && leftMotor.getCurrentPosition() - startPos < distanceToDrive) ||
-                (negative && leftMotor.getCurrentPosition() - startPos > distanceToDrive)
+                (!negative && -leftMotor.getCurrentPosition() - startPos < distanceToDrive) ||
+                (negative && -leftMotor.getCurrentPosition() - startPos > distanceToDrive)
         ) {
             double factor = 1.0f;
-            if ((leftMotor.getCurrentPosition() - startPos) > (distanceToDrive / 2)) {
+            if ((-leftMotor.getCurrentPosition() - startPos) > (distanceToDrive / 2)) {
                 factor = 0.5f;
             }
             leftMotors(power * factor);
             rightMotors(power * factor);
             idle();
-            telemetry.addData("curPos", leftMotor.getCurrentPosition());
+            telemetry.addData("curPos", -leftMotor.getCurrentPosition());
             telemetry.update();
         }
         leftMotors(0.0);
@@ -324,6 +326,6 @@ public class Robot {
             response = Alliance.BLUE;
         }
         return response;
-    }
-*/
+    }*/
+
 }
