@@ -300,25 +300,27 @@ public class DeltaDrive extends OpMode {
 
 
         if (cbright.getCurrentPosition() < cbstartPosR) {
-            if (gamepad2.right_stick_y > maxliftpowerup) {
-                cbright.setPower(maxliftpowerup);
-            } else if (gamepad2.right_stick_y < maxliftpowerdown) {
-                cbright.setPower(maxliftpowerdown);
-            } else {
-                cbright.setPower(gamepad2.right_stick_y);
-            }
+//            if (gamepad2.right_stick_y > maxliftpowerup) {
+//                cbright.setPower(maxliftpowerup);
+//            } else if (gamepad2.right_stick_y < maxliftpowerdown) {
+//                cbright.setPower(maxliftpowerdown);
+//            } else {
+//                cbright.setPower(gamepad2.right_stick_y);
+//            }
+            cbright.setPower(scaletobounds(gamepad2.right_stick_y, maxliftpowerup, maxliftpowerdown));
         } else {
             cbright.setPower(0);
         }
 
         if (cbleft.getCurrentPosition() < cbstartPosL) {
-            if (gamepad2.left_stick_y > maxliftpowerup) {
-                cbleft.setPower(maxliftpowerup);
-            } else if (gamepad2.left_stick_y < maxliftpowerdown) {
-                cbleft.setPower(maxliftpowerdown);
-            } else {
-                cbleft.setPower(gamepad2.left_stick_y);
-            }
+//            if (gamepad2.left_stick_y > maxliftpowerup) {
+//                cbleft.setPower(maxliftpowerup);
+//            } else if (gamepad2.left_stick_y < maxliftpowerdown) {
+//                cbleft.setPower(maxliftpowerdown);
+//            } else {
+//                cbleft.setPower(gamepad2.left_stick_y);
+//            }
+            cbleft.setPower(scaletobounds(gamepad2.left_stick_y, maxliftpowerup, maxliftpowerdown));
         } else {
             cbleft.setPower(0);
         }
@@ -331,5 +333,15 @@ public class DeltaDrive extends OpMode {
             number = -1;
         }
         return number;
+    }
+
+    public double scaletobounds(double input, double max, double min) {
+        double output = input;
+        if (input > 0) {
+            output =+ input*max;
+        } else if (input < 0) {
+            output =- input*min;
+        }
+        return output;
     }
 }
