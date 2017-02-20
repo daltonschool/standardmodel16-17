@@ -269,6 +269,41 @@ public class Robot {
         rightMotors(0.0);
     }
 
+    public static void turnToHeadingFast(float targetHeading, double power) {
+        float currentHeading = imu.getHeading();
+        boolean turnLeft = (targetHeading - currentHeading > 0 ? true : false);
+        while (true) {
+            telemetry.addData("hdg", currentHeading);
+            //telemetry.addData("phoneHdg", Robot.phoneGyro.getHeading());
+            telemetry.update();
+
+            double currentSpeed = power;
+            float distanceTo = Math.abs(targetHeading - currentHeading);
+            double minimumSpeed = 0.55f;
+            double minimumLeftSpeed = (turnLeft ? -minimumSpeed : minimumSpeed);
+            double minimumRightSpeed = (turnLeft ? minimumSpeed : -minimumSpeed);
+
+            leftMotors(Math.max(minimumLeftSpeed, (turnLeft ? -currentSpeed : currentSpeed)));
+            rightMotors(Math.max(minimumRightSpeed, (turnLeft ? currentSpeed : -currentSpeed)));
+
+            try { idle(); } catch (InterruptedException e) {}
+            imu.update();
+            currentHeading = imu.getHeading();
+
+            turnLeft = (targetHeading - currentHeading > 0 ? true : false);
+            /*if (turnLeft && targetHeading < currentHeading) {
+                break;
+            } else if (!turnLeft && targetHeading > currentHeading) {
+                break;
+            }*/
+            if (Math.abs(targetHeading - currentHeading) < 10) {
+                break;
+            }
+        }
+        leftMotors(0.0);
+        rightMotors(0.0);
+    }
+
 
     public static void moveForward_accel(double distanceToDrive, double power) throws InterruptedException {
         double distanceDriven = 0.0f;
