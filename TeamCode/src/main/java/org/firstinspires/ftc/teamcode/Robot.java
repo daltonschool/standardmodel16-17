@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.sensors.MRColorSensor;
 import org.firstinspires.ftc.teamcode.sensors.PhoneGyro;
 import org.firstinspires.ftc.teamcode.sensors.Sensor;
 import org.firstinspires.ftc.teamcode.sensors.Vuforia;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -78,6 +79,9 @@ public class Robot {
 
     // The current alliance
     public static Alliance currentAlliance;
+
+    //Runtime
+    ElapsedTime runtime = new ElapsedTime();
 
     public static void init(LinearOpMode om) {
         opMode = om;
@@ -143,6 +147,9 @@ public class Robot {
 
         // Voltage
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
+
+        //Runtime
+
     }
 
     public static void start() {
@@ -345,6 +352,96 @@ public class Robot {
         rightMotors(0.0);
     }
 
+    public static void turnToHeadingWithPID(float targetHeading, double power) {
+        float currentHeading = imu.getHeading();
+        boolean turnLeft = (targetHeading - currentHeading > 0 ? true : false);
+
+        double p;
+        double i = 0;
+        double d;
+        double prevp = (targetHeading - currentHeading);
+
+        double kp = .003;
+        double ki = .0001;
+        double kd = .003;
+
+        double powerinput = power;
+
+        while (true) {
+            telemetry.addData("hdg", currentHeading);
+            //telemetry.addData("phoneHdg", Robot.phoneGyro.getHeading());
+            telemetry.update();
+
+            double currentSpeed = power;
+            float distanceTo = Math.abs(targetHeading - currentHeading);
+
+
+
+            p = (targetHeading-currentHeading);
+            i += p;
+            d = p - prevp;
+
+            prevp = d;
+
+            powerinput = power + kp*p + ki*i + kd*d;
+
+            telemetry.addData("p", p);
+            telemetry.addData("k*p", kp*p);
+            telemetry.addData("i", p);
+            telemetry.addData("k*i", ki*i);
+            telemetry.addData("d", d);
+            telemetry.addData("k*d", kd*d);
+            telemetry.addData("power", powerinput);
+
+
+//            double minimumSpeed = 0.55f;
+//            double minimumLeftSpeed = (turnLeft ? -minimumSpeed : minimumSpeed);
+//            double minimumRightSpeed = (turnLeft ? minimumSpeed : -minimumSpeed);
+//
+//            if (distanceTo < 10) {
+//                currentSpeed *= 0.20;
+//                currentSpeed = Math.min(currentSpeed, 0.6f);
+//            } else if (distanceTo < 20) {
+//                currentSpeed *= 0.30;
+//                currentSpeed = Math.min(currentSpeed, 0.65f);
+//            } else if (distanceTo < 30) {
+//                currentSpeed *= 0.40;
+//                currentSpeed = Math.min(currentSpeed, 0.7f);
+//            }
+//
+//            leftMotors(Math.max(minimumLeftSpeed, (turnLeft ? -currentSpeed : currentSpeed)));
+//            rightMotors(Math.max(minimumRightSpeed, (turnLeft ? currentSpeed : -currentSpeed)));
+            leftMotors(trim(powerinput));
+            rightMotors(trim(powerinput));
+
+
+            try { idle(); } catch (InterruptedException e) {}
+            imu.update();
+            currentHeading = imu.getHeading();
+
+            turnLeft = (targetHeading - currentHeading > 0 ? true : false);
+            /*if (turnLeft && targetHeading < currentHeading) {
+                break;
+            } else if (!turnLeft && targetHeading > currentHeading) {
+                break;
+            }*/
+            if (targetHeading == currentHeading) {
+                break;
+            }
+        }
+        leftMotors(0.0);
+        rightMotors(0.0);
+    }
+
+    public static double trim (double number) {
+        if (number > 1) {
+            number = 1;
+        } else if (number < -1) {
+            number = -1;
+        }
+        return number;
+    }
+
     // Sensing methods
     /*public static Alliance getBeaconRightColor() throws InterruptedException {
         beaconLeft.setPosition(0.0);
@@ -362,5 +459,6 @@ public class Robot {
         }
         return response;
     }*/
+
 
 }
