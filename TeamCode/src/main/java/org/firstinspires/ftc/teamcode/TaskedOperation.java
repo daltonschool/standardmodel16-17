@@ -56,19 +56,19 @@ public abstract class TaskedOperation extends LinearOpMode {
         // set up tasks
         ArrayList<Task> tasks = new ArrayList<Task>();
 
-        tasks.add(new FlywheelEngageTask(null));
+        //tasks.add(new FlywheelEngageTask(null));
         tasks.add(new MoveForwardTask(1100));
 
-        if (shooting) {
+        /*if (shooting) {
             tasks.add(new ShootTask(null));
-        }
+        }*/
 
         if (getBeacons) {
             // first beacon
             tasks.add(new TurnToHeadingTask((Robot.currentAlliance == Alliance.RED ? 64 : -59)));
             tasks.add(new MoveForwardFastInaccurateTask(1200));
             tasks.add(new MoveUntilLineTask(null));
-            tasks.add(new MoveForwardTask(-200));
+            tasks.add(new MoveForwardTask(-100));
             tasks.add(new TurnUntilLineTask(null));
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
@@ -97,7 +97,7 @@ public abstract class TaskedOperation extends LinearOpMode {
         if (isASpookster()) {
             Blackbox.log("INFO", "we have a spookster!!!");
             tasks.clear();
-            //tasks.add(new SpookyTestTask(null));
+            tasks.add(new SpookyTestTask(null));
             //tasks.add(new ButtonPressTask(null));
             //tasks.add(new TurnUntilLineTask(null));
             //tasks.add(new AlignmentTaskIdk(Robot.vuforia.gears));
@@ -112,7 +112,7 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
             //tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             tasks.add(new MoveForwardTask(-100));*/
-            tasks.add(new ButtonPressTask(null));
+            //tasks.add(new ButtonPressTask(null));
 
             //tasks.add(new TurnTestTask(null));
         }
@@ -140,34 +140,35 @@ public abstract class TaskedOperation extends LinearOpMode {
 
         waitForStart();
 
+        telemetry.addData("Status", "Starting...");
+        telemetry.update();
+
         Robot.start();
         Robot.beaconLeft.setPosition(1.0f);
         Robot.beaconRight.setPosition(0.9f);
 
-        if (!isASpookster()) { Robot.nom.setPower(1.0f); }
-        while (opModeIsActive()) {
-            int taskIndex = 0;
-            for (Task t : tasks) {
-                Blackbox.log("TASK", "Current task: " + (taskIndex + 1));
-                telemetry.addData("Current task: ", taskIndex + 1);
+        //if (!isASpookster()) { Robot.nom.setPower(1.0f); }
 
-                // CameraDevice.getInstance().setFlashTorchMode(false);
-                t.run();
-                // CameraDevice.getInstance().setFlashTorchMode(false);
+        int taskIndex = 0;
+        for (Task t : tasks) {
+            Blackbox.log("TASK", "Current task: " + (taskIndex + 1));
+            telemetry.addData("Current task: ", taskIndex + 1);
 
-                Robot.update();
-                Robot.idle();
+            // CameraDevice.getInstance().setFlashTorchMode(false);
+            t.run();
+            // CameraDevice.getInstance().setFlashTorchMode(false);
 
-                taskIndex++;
-            }
+            Robot.update();
+            Robot.idle();
 
-            Blackbox.log("INFO", "All tasks completed.");
-            telemetry.addData("Status", "All tasks completed.");
-            telemetry.update();
-
-            requestOpModeStop();
-            return;
+            taskIndex++;
         }
+
+        Blackbox.log("INFO", "All tasks completed.");
+        telemetry.addData("Status", "All tasks completed.");
+        telemetry.update();
+
+        requestOpModeStop();
 
     }
 }

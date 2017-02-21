@@ -129,8 +129,8 @@ public class Robot {
         centerLineLight = hardwareMap.opticalDistanceSensor.get("center_line");
 
         // IMU
-        imu = new IMU(hardwareMap.get(BNO055IMU.class, "imu"));
-        sensors.add(imu);
+        //imu = new IMU(hardwareMap.get(BNO055IMU.class, "imu"));
+        //sensors.add(imu);
 
         range = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
 

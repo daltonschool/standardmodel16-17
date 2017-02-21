@@ -35,6 +35,11 @@ public class IMU extends Sensor {
         imuParameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
         _imu.initialize(imuParameters);
+
+        BNO055IMU.SystemError e = _imu.getSystemError();
+        BNO055IMU.SystemStatus s = _imu.getSystemStatus();
+        Temperature t = _imu.getTemperature();
+        Orientation o = _imu.getAngularOrientation();
     }
 
     @Override
