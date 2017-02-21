@@ -254,16 +254,16 @@ public class DeltaDrive extends OpMode {
         }
 
         if (rightout == true ){
-            bpright.setPosition(1.0);
+            bpright.setPosition(0.3);
         } else {
-            bpright.setPosition(0.0);
+            bpright.setPosition(0.1);
         }
 
         if (leftout == true ) {
-            bpleft.setPosition(0.0);
+            bpleft.setPosition(0.9);
         } else {
 
-            bpleft.setPosition(0.95);
+            bpleft.setPosition(1);
         }
 
         if (gamepad2.x == true && gamepad2.b == false) {
