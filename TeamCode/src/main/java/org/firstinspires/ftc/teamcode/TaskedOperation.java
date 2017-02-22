@@ -144,7 +144,7 @@ public abstract class TaskedOperation extends LinearOpMode {
         telemetry.addData("Status", "Starting...");
         telemetry.update();
 
-        Robot.start();
+//        Robot.start();
         Robot.beaconLeft.setPosition(1.0f);
         Robot.beaconRight.setPosition(0.9f);
 

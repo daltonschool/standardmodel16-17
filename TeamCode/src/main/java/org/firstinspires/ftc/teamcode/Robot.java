@@ -147,8 +147,6 @@ public class Robot {
         // Voltage
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        //Runtime
-
     }
 
     public static void start() {
