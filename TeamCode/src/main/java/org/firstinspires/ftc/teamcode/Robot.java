@@ -116,10 +116,10 @@ public class Robot {
         // Sensors
         // Color
         leftBeaconColor = hardwareMap.colorSensor.get("left beacon color");
+        leftBeaconColor.setI2cAddress(I2cAddr.create8bit(0x4C));
         leftBeaconColor.enableLed(false);
 
         rightBeaconColor = hardwareMap.colorSensor.get("right beacon color");
-        rightBeaconColor.setI2cAddress(I2cAddr.create8bit(0x4C));
         rightBeaconColor.enableLed(false);
 
         // Optical distance
