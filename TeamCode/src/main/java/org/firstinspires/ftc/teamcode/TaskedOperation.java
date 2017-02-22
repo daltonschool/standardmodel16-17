@@ -65,22 +65,22 @@ public abstract class TaskedOperation extends LinearOpMode {
 
         if (getBeacons) {
             // first beacon
-            tasks.add(new TurnToHeadingTask((Robot.currentAlliance == Alliance.RED ? 64 : -59)));
+            tasks.add(new TurnToHeadingTask((Robot.currentAlliance == Alliance.RED ? 64 : -61)));
             tasks.add(new MoveForwardFastInaccurateTask(1200));
             tasks.add(new MoveUntilLineTask(null));
-            tasks.add(new MoveForwardTask(-100));
+            tasks.add(new MoveForwardTask(-200));
             tasks.add(new TurnUntilLineTask(null));
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             tasks.add(new MoveForwardTask(-100));
             tasks.add(new ButtonPressTask(null));
-            tasks.add(new MoveForwardTask(-50));
+            tasks.add(new MoveForwardTask(-150));
 
             // go to second beacon
             tasks.add(new TurnToHeadingTask(-4));
             tasks.add(new MoveForwardFastInaccurateTask(1750));
             tasks.add(new MoveUntilLineTask(null));
-            tasks.add(new MoveForwardTask(-200));
+            tasks.add(new MoveForwardTask(-150));
             //tasks.add(new MoveForwardTask(220));
             tasks.add(new TurnUntilLineTask(null));
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
@@ -141,12 +141,15 @@ public abstract class TaskedOperation extends LinearOpMode {
 
         waitForStart();
 
-        telemetry.addData("Status", "Starting...");
+        telemetry.addData("Status", "ihuaefguyadfsuhifsjkhafskjlhadfs");
         telemetry.update();
+        /*requestOpModeStop();
+        if (true) {
+            return;
+        }*/
 
         Robot.start();
-        Robot.beaconLeft.setPosition(1.0f);
-        Robot.beaconRight.setPosition(0.9f);
+        Robot.extendBoth();
 
         //if (!isASpookster()) { Robot.nom.setPower(1.0f); }
 

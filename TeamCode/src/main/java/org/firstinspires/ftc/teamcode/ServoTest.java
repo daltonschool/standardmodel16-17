@@ -15,18 +15,18 @@ public class ServoTest extends LinearOpMode
         waitForStart();
 
         Utils.showToast("Sensing mode", 0);
-        beaconLeft.setPosition(0.1f);
-        beaconRight.setPosition(0.3f);
+        beaconLeft.setPosition(0.15);
+        beaconRight.setPosition(0.19);
         Thread.sleep(3000);
 
         Utils.showToast("Pressing left", 0);
-        beaconLeft.setPosition(1.0f);
-        beaconRight.setPosition(0.9f);
+        beaconLeft.setPosition(0.6);
+        beaconRight.setPosition(0.65);
         Thread.sleep(3000);
 
         Utils.showToast("Pressing right", 0);
-        beaconLeft.setPosition(0.1f);
-        beaconRight.setPosition(0.3f);
+        beaconLeft.setPosition(0.15);
+        beaconRight.setPosition(0.19);
         Thread.sleep(3000);
 
         requestOpModeStop();

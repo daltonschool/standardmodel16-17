@@ -227,6 +227,27 @@ public class Robot {
         rightMotor.setPower(power);
     }
 
+    // Servo methods
+    public static void extendLeft() {
+        Robot.beaconLeft.setPosition(0.6);
+        Robot.beaconRight.setPosition(0.65);
+    }
+
+    public static void extendRight() {
+        Robot.beaconLeft.setPosition(0.15);
+        Robot.beaconRight.setPosition(0.19);
+    }
+
+    public static void extendBoth() {
+        Robot.beaconLeft.setPosition(0.6);
+        Robot.beaconRight.setPosition(0.19);
+    }
+
+    public static void retractBoth() {
+        Robot.beaconLeft.setPosition(0.15);
+        Robot.beaconRight.setPosition(0.65);
+    }
+
     // Driving methods
 
     public static void turnToHeading(float targetHeading, double power) {
