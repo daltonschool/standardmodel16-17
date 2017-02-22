@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.tasks.AttackCapBallTask;
 import org.firstinspires.ftc.teamcode.tasks.ButtonPressTask;
 import org.firstinspires.ftc.teamcode.tasks.FlywheelEngageTask;
 import org.firstinspires.ftc.teamcode.tasks.LineTestTask;
+import org.firstinspires.ftc.teamcode.tasks.MoveBackUntilFrontLineTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveForwardFastInaccurateTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveForwardTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveUntilLineTask;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.tasks.SpookyTestTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnTestTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnToHeadingTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnUntilLineTask;
+import org.firstinspires.ftc.teamcode.tasks.WaitTask;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
 
 import java.util.ArrayList;
@@ -65,7 +67,7 @@ public abstract class TaskedOperation extends LinearOpMode {
 
         if (getBeacons) {
             // first beacon
-            tasks.add(new TurnToHeadingTask((Robot.currentAlliance == Alliance.RED ? 64 : -61)));
+            tasks.add(new TurnToHeadingTask((Robot.currentAlliance == Alliance.RED ? 64 : -60)));
             tasks.add(new MoveForwardFastInaccurateTask(1200));
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new MoveForwardTask(-200));
@@ -80,12 +82,10 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new TurnToHeadingTask(-4));
             tasks.add(new MoveForwardFastInaccurateTask(1750));
             tasks.add(new MoveUntilLineTask(null));
-            tasks.add(new MoveForwardTask(-150));
-            //tasks.add(new MoveForwardTask(220));
-            tasks.add(new TurnUntilLineTask(null));
-            tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
+            tasks.add(new MoveBackUntilFrontLineTask(null));
+            tasks.add(new MoveForwardTask(-50));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
-            tasks.add(new MoveForwardTask(-100));
+            tasks.add(new WaitTask(100));
             tasks.add(new ButtonPressTask(null));
         }
 /*
@@ -97,24 +97,18 @@ public abstract class TaskedOperation extends LinearOpMode {
         if (isASpookster()) {
             Blackbox.log("INFO", "we have a spookster!!!");
             tasks.clear();
-            tasks.add(new SpookyTestTask(null));
-            //tasks.add(new ButtonPressTask(null));
-            //tasks.add(new TurnUntilLineTask(null));
-            //tasks.add(new AlignmentTaskIdk(Robot.vuforia.gears));
-            /*tasks.add(new MoveForwardFastInaccurateTask(1900));
-            tasks.add(new MoveForwardTask(300));
-            tasks.add(new MoveUntilLineTask(null));*/
-            //tasks.add(new LineTestTask(null));
+            //tasks.add(new SpookyTestTask(null));
 
-            /*tasks.add(new MoveUntilLineTask(null));
-            tasks.add(new MoveForwardTask(-200));
+            tasks.add(new MoveUntilLineTask(null));
+            tasks.add(new MoveBackUntilFrontLineTask(null));
+            tasks.add(new MoveForwardTask(-50));
+            tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+            tasks.add(new WaitTask(100));
+            tasks.add(new ButtonPressTask(null));
+            /*tasks.add(new MoveForwardTask(-200));
             tasks.add(new TurnUntilLineTask(null));
-            tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
-            //tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
-            tasks.add(new MoveForwardTask(-100));*/
-            //tasks.add(new ButtonPressTask(null));
-
-            //tasks.add(new TurnTestTask(null));
+            tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
+            tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));*/
         }
 
         if (isShotsOnly()) {
