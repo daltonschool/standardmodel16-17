@@ -316,7 +316,7 @@ public class DeltaDrive extends OpMode {
 //        } else {
 //            cbleft.setPower(0);
 //        }
-        
+
         cbright.setPower(scaletobounds(-gamepad2.right_stick_y, -maxliftpowerdown, -maxliftpowerup));
         cbleft.setPower(scaletobounds(gamepad2.left_stick_y, maxliftpowerup, maxliftpowerdown));
     }
