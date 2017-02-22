@@ -14,6 +14,7 @@ public class GyroTest extends LinearOpMode
     public void runOpMode() throws InterruptedException {
         IMU imu = new IMU(hardwareMap.get(BNO055IMU.class, "imu"));
         imu.init();
+        imu.update();
 
         telemetry.addData("Status", "spook");
         telemetry.update();
