@@ -318,7 +318,7 @@ public class DeltaDrive extends OpMode {
 //        }
 
         cbright.setPower(scaletobounds(-gamepad2.right_stick_y, -maxliftpowerdown, -maxliftpowerup));
-        cbleft.setPower(scaletobounds(gamepad2.left_stick_y, maxliftpowerup, maxliftpowerdown));
+        cbleft.setPower(scaletobounds(gamepad2.right_stick_y, maxliftpowerup, maxliftpowerdown));
     }
 
     public double trim (double number) {
