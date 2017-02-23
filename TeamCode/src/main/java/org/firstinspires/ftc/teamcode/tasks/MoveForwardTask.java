@@ -15,6 +15,11 @@ public class MoveForwardTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
-        Robot.moveForward_encoder((int) extra, 0.5f);
+        double voltage = Robot.voltageSensor.getVoltage();
+        double power = 0.5f;
+        if (voltage > 12.5) {
+            power = 0.4f;
+        }
+        Robot.moveForward_encoder((int) extra, power);
     }
 }

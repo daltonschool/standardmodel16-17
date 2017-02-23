@@ -52,6 +52,8 @@ public abstract class TaskedOperation extends LinearOpMode {
 
         int blueNegativeFactor = (Robot.currentAlliance == Alliance.BLUE ? -1 : 1);
 
+        double voltage = Robot.voltageSensor.getVoltage();
+
         boolean shooting = true;
         boolean getBeacons = true;
         boolean getCapBall = false;
@@ -68,7 +70,7 @@ public abstract class TaskedOperation extends LinearOpMode {
 
         if (getBeacons) {
             // first beacon
-            tasks.add(new TurnToHeadingTask((Robot.currentAlliance == Alliance.RED ? 64 : -60)));
+            tasks.add(new TurnToHeadingTask((Robot.currentAlliance == Alliance.RED ? 60 : -60)));
             tasks.add(new MoveForwardFastInaccurateTask(1200));
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new MoveForwardTask(-200));
@@ -83,8 +85,16 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new TurnToHeadingTask(-4));
             tasks.add(new MoveForwardFastInaccurateTask(1750));
             tasks.add(new MoveUntilLineTask(null));
-            tasks.add(new MoveForwardTask(-200));
-            tasks.add(new TurnToSecondBeaconTask(null));
+            tasks.add(new MoveBackUntilFrontLineTask(null));
+            if (voltage < 12.5) {
+                tasks.add(new MoveForwardTask(-100));
+            } else {
+                tasks.add(new MoveForwardTask(-5));
+            }
+            tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+            tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
+            tasks.add(new WaitTask(100));
+            tasks.add(new ButtonPressTask(null));
 
 //            tasks.add(new MoveBackUntilFrontLineTask(null));
 //            tasks.add(new MoveForwardTask(-50));
@@ -105,8 +115,13 @@ public abstract class TaskedOperation extends LinearOpMode {
 
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new MoveBackUntilFrontLineTask(null));
-            tasks.add(new MoveForwardTask(-50));
+            if (voltage < 12.5) {
+                tasks.add(new MoveForwardTask(-100));
+            } else {
+                tasks.add(new MoveForwardTask(-5));
+            }
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+            tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
             tasks.add(new WaitTask(100));
             tasks.add(new ButtonPressTask(null));
             /*tasks.add(new MoveForwardTask(-200));
