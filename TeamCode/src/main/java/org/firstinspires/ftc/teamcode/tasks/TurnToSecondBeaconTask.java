@@ -24,17 +24,19 @@ public class TurnToSecondBeaconTask extends Task {
 
             Robot.update();
 
-            double leftLine = Robot.leftLineLight.getLightDetected();
-            double rightLine = Robot.rightLineLight.getLightDetected();
-            Robot.telemetry.addData("Left line light", leftLine);
-            Robot.telemetry.addData("Right line light", rightLine);
+//            double leftLine = Robot.leftLineLight.getLightDetected();
+//            double rightLine = Robot.rightLineLight.getLightDetected();
+            Robot.telemetry.addData("Left line light", Robot.leftLineLight.getLightDetected());
+            Robot.telemetry.addData("Right line light", Robot.rightLineLight.getLightDetected());
             Robot.telemetry.update();
 
-            if (leftLine > Robot.ODS_BLACK_VALUE || rightLine > Robot.ODS_BLACK_VALUE) {
+            if (Robot.leftLineLight.getLightDetected() > Robot.ODS_BLACK_VALUE || Robot.rightLineLight.getLightDetected() > Robot.ODS_BLACK_VALUE) {
                 Robot.telemetry.addData("On The Line", 1);
                 Robot.telemetry.update();
-                task.add(new TurnToHeadingTask(90 * blueNegativeFactor));
-                if (leftLine > Robot.ODS_BLACK_VALUE || rightLine > Robot.ODS_BLACK_VALUE) {
+                Task turn1 = new TurnToHeadingTask(90 * blueNegativeFactor);
+                turn1.init();
+                turn1.run();
+                if (Robot.leftLineLight.getLightDetected() > Robot.ODS_BLACK_VALUE || Robot.rightLineLight.getLightDetected() > Robot.ODS_BLACK_VALUE) {
                     Robot.telemetry.addData("On The Line", 2);
                     Robot.telemetry.update();
                     task.add(new AlignmentTaskIdk(null));
