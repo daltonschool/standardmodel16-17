@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.tasks.ShootTask;
 import org.firstinspires.ftc.teamcode.tasks.SpookyTestTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnTestTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnToHeadingTask;
+import org.firstinspires.ftc.teamcode.tasks.TurnToSecondBeaconTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnUntilLineTask;
 import org.firstinspires.ftc.teamcode.tasks.WaitTask;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
@@ -83,7 +84,7 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new MoveForwardFastInaccurateTask(1750));
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new MoveForwardTask(-200));
-            tasks.add(new TurnToHeadingTask(null));
+            tasks.add(new TurnToSecondBeaconTask(null));
 
 //            tasks.add(new MoveBackUntilFrontLineTask(null));
 //            tasks.add(new MoveForwardTask(-50));
