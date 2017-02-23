@@ -82,9 +82,18 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new TurnToHeadingTask(-4));
             tasks.add(new MoveForwardFastInaccurateTask(1750));
             tasks.add(new MoveUntilLineTask(null));
-            tasks.add(new MoveBackUntilFrontLineTask(null));
-            tasks.add(new MoveForwardTask(-50));
+//          tasks.add(new MoveBackUntilFrontLineTask(null));
+            tasks.add(new MoveForwardTask(-150));
+//            if (Robot.leftLineLight.getLightDetected() > Robot.ODS_BLACK_VALUE && Robot.rightLineLight.getLightDetected() > Robot.ODS_BLACK_VALUE) {
+//
+//                tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
+//                tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+//                tasks.add(new MoveForwardTask(-100));
+//            } else {
+//                tasks.add(new TurnUntilLineTask(null));
+//            }
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+
             tasks.add(new WaitTask(100));
             tasks.add(new ButtonPressTask(null));
         }
