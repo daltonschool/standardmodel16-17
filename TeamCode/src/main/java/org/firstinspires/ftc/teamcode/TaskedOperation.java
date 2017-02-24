@@ -86,12 +86,16 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new MoveForwardFastInaccurateTask(1750));
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new MoveBackUntilFrontLineTask(null));
-            if (voltage < 12.5) {
+            //NOTE that in a comp we will almost always have a full battery
+            if (voltage < 12.5) { //will never happen
                 tasks.add(new MoveForwardTask(-100));
             } else {
                 tasks.add(new MoveForwardTask(-5));
             }
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+            //TRY THIS: This is a new value that I got from a mathematical simulation I made. NOTE: when you do you should comment out the if and else statement above
+            // tasks.add(new TurnToHeadingTask(60 * blueNegativeFactor));
+
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
             tasks.add(new WaitTask(100));
             tasks.add(new ButtonPressTask(null));
