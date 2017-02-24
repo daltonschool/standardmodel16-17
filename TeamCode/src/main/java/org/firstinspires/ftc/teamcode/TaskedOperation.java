@@ -79,7 +79,7 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             tasks.add(new MoveForwardTask(-100));
             tasks.add(new ButtonPressTask(null));
-            tasks.add(new MoveForwardTask(-150));
+            tasks.add(new MoveForwardTask(-200));
 
             // go to second beacon
             tasks.add(new TurnToHeadingTask(-4));

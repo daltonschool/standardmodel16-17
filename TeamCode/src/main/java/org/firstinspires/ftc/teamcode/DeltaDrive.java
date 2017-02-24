@@ -133,8 +133,8 @@ public class DeltaDrive extends OpMode {
         leftprevstatebeaconhitter = false;
         lastpressrightbeaconhitter = 0;
         lastpressleftbeaconhitter = 0;
-        rightout = false;
-        leftout = false;
+        rightout = true;
+        leftout = true;
 
         //make sure cap ball doesn't go too fast
         maxliftpowerdown = -.3;
