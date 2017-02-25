@@ -55,11 +55,19 @@
         android:checked="true"
         android:layout_below="@+id/settings_beacon_mode"/>
 
+    <CheckBox
+        android:id="@+id/settings_longer_start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Longer start movement"
+        android:checked="true"
+        android:layout_below="@+id/settings_cap_ball"/>
+
     <TextView
         android:id="@+id/settings_config_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/settings_cap_ball"
+        android:layout_below="@+id/settings_longer_start"
         android:textSize="16sp"/>
 
     <TextView
@@ -68,12 +76,4 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/settings_config_info"
         android:textSize="16sp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/settings_estimated_points"
-        android:textColor="@color/very_bright_red"
-        android:text="THIS PAGE CURRENTLY DOES NOTHING AND HAS NO EFFECT ON ANYTHING DO NOT USE IT!!!!"
-        android:textSize="18sp"/>
 </RelativeLayout>

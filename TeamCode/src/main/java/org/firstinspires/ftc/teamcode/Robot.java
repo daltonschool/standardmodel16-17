@@ -100,7 +100,6 @@ public class Robot {
         flywheelLeft.setDirection(DcMotor.Direction.FORWARD);
 
         flywheelRight = hardwareMap.dcMotor.get("launch_right");
-        flywheelRight = hardwareMap.dcMotor.get("launch_right");
         flywheelRight.setDirection(DcMotor.Direction.REVERSE);
 
         nom = hardwareMap.dcMotor.get("nom");
@@ -237,8 +236,8 @@ public class Robot {
     }
 
     public static void extendBoth() {
-        Robot.beaconLeft.setPosition(0.6);
-        Robot.beaconRight.setPosition(0.19);
+        Robot.beaconLeft.setPosition(0.95);
+        Robot.beaconRight.setPosition(0.05);
     }
 
     public static void retractBoth() {

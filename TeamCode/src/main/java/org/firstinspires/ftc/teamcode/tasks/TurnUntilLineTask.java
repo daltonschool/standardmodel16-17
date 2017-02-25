@@ -26,9 +26,16 @@ public class TurnUntilLineTask extends Task {
             leftFactor = -1;
         }
 
+        double voltage = Robot.voltageSensor.getVoltage();
+        double power = 0.6f;
+
+        if (voltage < 13) {
+            power = 0.75f;
+        }
+
         while (sensorToTest.getLightDetected() <= Robot.ODS_BLACK_VALUE) {
-            Robot.leftMotors(0.6f * leftFactor);
-            Robot.rightMotors(-0.6f * leftFactor);
+            Robot.leftMotors(power * leftFactor);
+            Robot.rightMotors(-power * leftFactor);
 
             Robot.update();
             Robot.idle();

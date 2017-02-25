@@ -30,18 +30,31 @@ public class AutonomousPlanActivity extends AppCompatActivity implements CheckBo
         OptionManager.init();
 
         // yes this is ugly but it's easier than a NumberPicker so TOO BAD
+        Spinner startDelaySpinner = ((Spinner)findViewById(R.id.settings_start_delay));
         ArrayAdapter<String> startDelayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, Arrays.asList("No start delay", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds", "11 seconds", "12 seconds", "13 seconds", "14 seconds", "15 seconds"));
-        ((Spinner)findViewById(R.id.settings_start_delay)).setAdapter(startDelayAdapter);
+        startDelaySpinner.setAdapter(startDelayAdapter);
+        startDelaySpinner.setOnItemSelectedListener(this);
+        startDelaySpinner.setSelection(OptionManager.currentOptions.startDelay);
 
+        Spinner shootModeSpinner = ((Spinner)findViewById(R.id.settings_shoot_mode));
         ArrayAdapter<String> shootModeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, Arrays.asList("Two particles", "One particle", "No particles"));
-        ((Spinner)findViewById(R.id.settings_shoot_mode)).setAdapter(shootModeAdapter);
-        ((Spinner)findViewById(R.id.settings_shoot_mode)).setOnItemSelectedListener(this);
+        shootModeSpinner.setAdapter(shootModeAdapter);
+        shootModeSpinner.setOnItemSelectedListener(this);
+        shootModeSpinner.setSelection(2 - OptionManager.currentOptions.particleCount);
 
+        Spinner beaconModeSpinnner = ((Spinner)findViewById(R.id.settings_beacon_mode));
         ArrayAdapter<String> beaconModeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, Arrays.asList("Both beacons", "First beacon only", "No beacons"));
-        ((Spinner)findViewById(R.id.settings_beacon_mode)).setAdapter(beaconModeAdapter);
-        ((Spinner)findViewById(R.id.settings_beacon_mode)).setOnItemSelectedListener(this);
+        beaconModeSpinnner.setAdapter(beaconModeAdapter);
+        beaconModeSpinnner.setOnItemSelectedListener(this);
+        shootModeSpinner.setSelection(2 - OptionManager.currentOptions.beaconCount);
 
-        ((CheckBox)findViewById(R.id.settings_cap_ball)).setOnCheckedChangeListener(this);
+        CheckBox capBallCheckbox = ((CheckBox)findViewById(R.id.settings_cap_ball));
+        capBallCheckbox.setOnCheckedChangeListener(this);
+        capBallCheckbox.setChecked(OptionManager.currentOptions.capBall);
+
+        CheckBox longerStartCheckbox = ((CheckBox)findViewById(R.id.settings_longer_start));
+        longerStartCheckbox.setOnCheckedChangeListener(this);
+        longerStartCheckbox.setChecked(OptionManager.currentOptions.longerStartMovement);
 
         updateInfoText();
     }
@@ -49,18 +62,36 @@ public class AutonomousPlanActivity extends AppCompatActivity implements CheckBo
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean val) {
         // TODO: find better way of doing this
-        /*switch (compoundButton.getId()) {
-            case R.id.settings_shots_only:
-                OptionManager.currentOptions.shotsOnly = val;
+        switch (compoundButton.getId()) {
+            case R.id.settings_cap_ball:
+                OptionManager.currentOptions.capBall = val;
                 break;
-        }*/
+            case R.id.settings_longer_start:
+                OptionManager.currentOptions.longerStartMovement = val;
+                break;
+        }
 
         OptionManager.save(OptionManager.currentOptions);
         updateInfoText();
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+    public void onItemSelected(AdapterView<?> spinnerView, View view, int position, long id) {
+        switch (spinnerView.getId()) {
+            case R.id.settings_start_delay:
+                OptionManager.currentOptions.startDelay = position;
+                break;
+
+            case R.id.settings_shoot_mode:
+                OptionManager.currentOptions.particleCount = 2 - position;
+                break;
+
+            case R.id.settings_beacon_mode:
+                OptionManager.currentOptions.beaconCount = 2 - position;
+                break;
+        }
+
+        OptionManager.save(OptionManager.currentOptions);
         updateInfoText();
     }
 
@@ -87,7 +118,7 @@ public class AutonomousPlanActivity extends AppCompatActivity implements CheckBo
         isConfigValid = true;
 
         if (
-                (capBallPoints > 0 && beaconCount != 2) // trying capball w/o beacons
+                (capBallPoints > 0 && beaconCount != 0) // trying capball w/ beacons
                 ) {
             isConfigValid = false;
         }
