@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.vuforia.CameraDevice;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.options.OptionManager;
 import org.firstinspires.ftc.teamcode.tasks.AlignmentTaskIdk;
 import org.firstinspires.ftc.teamcode.tasks.AlignmentTaskNew;
@@ -95,6 +96,11 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             //TRY THIS: This is a new value that I got from a mathematical simulation I made. NOTE: when you do you should comment out the if and else statement above
             // tasks.add(new TurnToHeadingTask(60 * blueNegativeFactor));
+            while (Robot.range.getDistance(DistanceUnit.INCH) < 8) {
+                Robot.leftMotors(-.6f);
+                Robot.rightMotors(-.6f);
+                return;
+            }
 
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
             tasks.add(new WaitTask(100));
