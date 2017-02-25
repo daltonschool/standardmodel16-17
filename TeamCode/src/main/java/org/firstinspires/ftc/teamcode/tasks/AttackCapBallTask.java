@@ -15,8 +15,8 @@ public class AttackCapBallTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
-        Robot.leftMotors(-1.0f);
-        Robot.rightMotors(1.0f);
+        Robot.leftMotors(1.0f);
+        Robot.rightMotors(-1.0f);
 
         Thread.sleep(2000);
 

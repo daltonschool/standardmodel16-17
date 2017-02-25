@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.vuforia.CameraDevice;
-
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.options.Option;
 import org.firstinspires.ftc.teamcode.options.OptionManager;
 import org.firstinspires.ftc.teamcode.tasks.ActuallyGoOnLineTask;
@@ -93,9 +93,16 @@ public abstract class TaskedOperation extends LinearOpMode {
                 tasks.add(new MoveForwardFastInaccurateTask(1750));
                 tasks.add(new MoveUntilLineTask(null));
                 tasks.add(new MoveBackUntilFrontLineTask(null));
-//                tasks.add(new MoveForwardTask(-100));
-//                tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
-                tasks.add(new TurnToHeadingTask(60 * blueNegativeFactor));
+                tasks.add(new MoveForwardTask(-50));
+                tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+                //TRY THIS: This is a new value that I got from a mathematical simulation I made. NOTE: when you do you should comment out the if and else statement above
+                // tasks.add(new TurnToHeadingTask(60 * blueNegativeFactor));
+                while (Robot.range.getDistance(DistanceUnit.INCH) < 8) {
+                    Robot.leftMotors(-.6f);
+                    Robot.rightMotors(-.6f);
+                    return;
+                }
+//                tasks.add(new TurnToHeadingTask(60 * blueNegativeFactor));
                 tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
                 tasks.add(new WaitTask(100));
                 tasks.add(new ButtonPressTask(null));
@@ -103,7 +110,8 @@ public abstract class TaskedOperation extends LinearOpMode {
         }
 
         if (getCapBall) {
-            tasks.add(new MoveForwardTask(1500));
+          tasks.add(new TurnToHeadingTask(180));
+            tasks.add(new MoveForwardTask(-1500));
             tasks.add(new AttackCapBallTask(null));
         }
 
@@ -114,19 +122,6 @@ public abstract class TaskedOperation extends LinearOpMode {
 
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new ActuallyGoOnLineTask(null));
-        }
-
-        if (isShotsOnly()) {
-            Blackbox.log("INFO", "Shots only!");
-            tasks.clear();
-
-            shooting = true;
-
-            tasks.add(new FlywheelEngageTask(null));
-            tasks.add(new MoveForwardTask(1100));
-            tasks.add(new ShootTask(null));
-            tasks.add(new MoveForwardTask(1500));
-            tasks.add(new AttackCapBallTask(null));
         }
 
         // init tasks

@@ -97,9 +97,9 @@ public class ButtonPressTask extends Task {
         Thread.sleep(500);
 
         leftColor = getBeaconColor();
-        /*int timesTried = 0;
-        while (rightColor != Robot.currentAlliance) {
-            extendArmBasedOnRightColor(leftColor);
+        int timesTried = 0;
+        while (leftColor != Robot.currentAlliance) {
+            extendArmBasedOnLeftColor(leftColor);
 
             // move forwards
             Robot.leftMotors(0.5f);
@@ -129,7 +129,7 @@ public class ButtonPressTask extends Task {
                 Robot.telemetry.update();
                 return;
             }
-        }*/
+        }
 
         // reset
         Robot.extendBoth();
