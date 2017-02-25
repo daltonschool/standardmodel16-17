@@ -100,41 +100,41 @@ public class ButtonPressTask extends Task {
         int timesTried = 0;
         Robot.telemetry.addLine("Pressed once");
         Robot.telemetry.update();
-        while (leftColor != Robot.currentAlliance) {
-            Robot.telemetry.addLine("The beacon is: " + leftColor);
-            Blackbox.log("INFO", "Pressing again since color is: " +  leftColor);
-            Robot.telemetry.update();
-            extendArmBasedOnLeftColor(leftColor);
-
-            // move forwards7m
-            Robot.leftMotors(0.5f);
-            Robot.rightMotors(0.5f);
-            Thread.sleep(1500);
-            Robot.leftMotors(0.0f);
-            Robot.rightMotors(0.0f);
-
-            // retreat
-            Robot.leftMotors(-0.5f);
-            Robot.rightMotors(-0.5f);
-            Thread.sleep(700);
-            Robot.leftMotors(0.0f);
-            Robot.rightMotors(0.0f);;
-
-            // reset arm
-            Robot.extendBoth();
-            Thread.sleep(500);
-
-            leftColor = getBeaconColor(); // check new value
-            timesTried++;
-
-            if (timesTried > 2) {
-                // stop
-                Blackbox.log("BTN", "Tried too many times, giving up :(");
-                Robot.telemetry.addLine("Tried too many times, giving up :(");
-                Robot.telemetry.update();
-                return;
-            }
-        }
+//        while (leftColor != Robot.currentAlliance) {
+//            Robot.telemetry.addLine("The beacon is: " + leftColor);
+//            Blackbox.log("INFO", "Pressing again since color is: " +  leftColor);
+//            Robot.telemetry.update();
+//            extendArmBasedOnLeftColor(leftColor);
+//
+//            // move forwards7m
+//            Robot.leftMotors(0.5f);
+//            Robot.rightMotors(0.5f);
+//            Thread.sleep(1500);
+//            Robot.leftMotors(0.0f);
+//            Robot.rightMotors(0.0f);
+//
+//            // retreat
+//            Robot.leftMotors(-0.5f);
+//            Robot.rightMotors(-0.5f);
+//            Thread.sleep(700);
+//            Robot.leftMotors(0.0f);
+//            Robot.rightMotors(0.0f);;
+//
+//            // reset arm
+//            Robot.extendBoth();
+//            Thread.sleep(500);
+//
+//            leftColor = getBeaconColor(); // check new value
+//            timesTried++;
+//
+//            if (timesTried > 2) {
+//                // stop
+//                Blackbox.log("BTN", "Tried too many times, giving up :(");
+//                Robot.telemetry.addLine("Tried too many times, giving up :(");
+//                Robot.telemetry.update();
+//                return;
+//            }
+//        }
 
         // reset
         Robot.extendBoth();

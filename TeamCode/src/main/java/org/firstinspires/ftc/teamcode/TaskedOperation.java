@@ -80,24 +80,29 @@ public abstract class TaskedOperation extends LinearOpMode {
             tasks.add(new MoveForwardFastInaccurateTask(1200));
             tasks.add(new MoveUntilLineTask(null));
             tasks.add(new MoveForwardTask(-200));
-            tasks.add(new TurnUntilLineTask(null));
+            tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+            //tasks.add(new TurnUntilLineTask(null));
             tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.gears : Robot.vuforia.wheels)));
             tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
             tasks.add(new MoveForwardTask(-100));
             tasks.add(new ButtonPressTask(null));
-            tasks.add(new MoveForwardTask(-200));
+            tasks.add(new MoveForwardTask(-230));
 
             if (OptionManager.currentOptions.beaconCount == 2) {
                 // go to second beacon
                 tasks.add(new TurnToHeadingTask(-4));
                 tasks.add(new MoveForwardFastInaccurateTask(1750));
                 tasks.add(new MoveUntilLineTask(null));
+                telemetry.addLine("I see the secound line");
+                telemetry.update();
                 tasks.add(new MoveBackUntilFrontLineTask(null));
                 tasks.add(new MoveForwardTask(-50));
                 tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
                 //TRY THIS: This is a new value that I got from a mathematical simulation I made. NOTE: when you do you should comment out the if and else statement above
                 // tasks.add(new TurnToHeadingTask(60 * blueNegativeFactor));
                 while (Robot.range.getDistance(DistanceUnit.INCH) < 8) {
+                    telemetry.addLine("too close...");
+                    telemetry.update();
                     Robot.leftMotors(-.6f);
                     Robot.rightMotors(-.6f);
                     return;
