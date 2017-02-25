@@ -99,7 +99,7 @@ public class ButtonPressTask extends Task {
         leftColor = getBeaconColor();
         /*int timesTried = 0;
         while (rightColor != Robot.currentAlliance) {
-            extendArmBasedOnRightColor(rightColor);
+            extendArmBasedOnRightColor(leftColor);
 
             // move forwards
             Robot.leftMotors(0.5f);
@@ -111,16 +111,15 @@ public class ButtonPressTask extends Task {
             // retreat
             Robot.leftMotors(-0.5f);
             Robot.rightMotors(-0.5f);
-            Thread.sleep(350);
+            Thread.sleep(700);
             Robot.leftMotors(0.0f);
-            Robot.rightMotors(0.0f);
+            Robot.rightMotors(0.0f);;
 
             // reset arm
-            Robot.beaconLeft.setPosition(0.0);
-            Robot.beaconRight.setPosition(0.0);
+            Robot.extendBoth();
             Thread.sleep(500);
 
-            rightColor = getBeaconColor(); // check new value
+            leftColor = getBeaconColor(); // check new value
             timesTried++;
 
             if (timesTried > 2) {

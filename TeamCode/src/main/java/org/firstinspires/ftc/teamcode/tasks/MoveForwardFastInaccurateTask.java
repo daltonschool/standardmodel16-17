@@ -15,6 +15,6 @@ public class MoveForwardFastInaccurateTask extends Task {
 
     @Override
     public void run() throws InterruptedException {
-        Robot.moveForward_encoder((int) extra, 1.0f);
+        Robot.moveForward_encoder(((int) extra), 1.0f);
     }
 }
