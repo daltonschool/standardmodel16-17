@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.tasks.MoveForwardFastInaccurateTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveForwardTask;
 import org.firstinspires.ftc.teamcode.tasks.MoveUntilLineTask;
 //import org.firstinspires.ftc.teamcode.tasks.ShootTask;
+import org.firstinspires.ftc.teamcode.tasks.ShootSlowTask;
 import org.firstinspires.ftc.teamcode.tasks.ShootTask;
 import org.firstinspires.ftc.teamcode.tasks.SpookyTestTask;
 import org.firstinspires.ftc.teamcode.tasks.TurnTestTask;
@@ -146,7 +147,7 @@ public abstract class TaskedOperation extends LinearOpMode {
 
             tasks.add(new FlywheelEngageTask(null));
             tasks.add(new MoveForwardTask(1100));
-            tasks.add(new ShootTask(null));
+            tasks.add(new ShootSlowTask(null));
             tasks.add(new MoveForwardTask(1500));
             tasks.add(new AttackCapBallTask(null));
         }
