@@ -93,8 +93,9 @@ public abstract class TaskedOperation extends LinearOpMode {
                 tasks.add(new MoveForwardFastInaccurateTask(1750));
                 tasks.add(new MoveUntilLineTask(null));
                 tasks.add(new MoveBackUntilFrontLineTask(null));
-                tasks.add(new MoveForwardTask(-100));
-                tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+//                tasks.add(new MoveForwardTask(-100));
+//                tasks.add(new TurnToHeadingTask(90 * blueNegativeFactor));
+                tasks.add(new TurnToHeadingTask(60 * blueNegativeFactor));
                 tasks.add(new AlignmentTaskIdk((Robot.currentAlliance == Alliance.RED ? Robot.vuforia.tools : Robot.vuforia.legos)));
                 tasks.add(new WaitTask(100));
                 tasks.add(new ButtonPressTask(null));
@@ -123,7 +124,7 @@ public abstract class TaskedOperation extends LinearOpMode {
 
             tasks.add(new FlywheelEngageTask(null));
             tasks.add(new MoveForwardTask(1100));
-            tasks.add(new ShootSlowTask(null));
+            tasks.add(new ShootTask(null));
             tasks.add(new MoveForwardTask(1500));
             tasks.add(new AttackCapBallTask(null));
         }
