@@ -98,10 +98,15 @@ public class ButtonPressTask extends Task {
 
         leftColor = getBeaconColor();
         int timesTried = 0;
+        Robot.telemetry.addLine("Pressed once");
+        Robot.telemetry.update();
         while (leftColor != Robot.currentAlliance) {
+            Robot.telemetry.addLine("The beacon is: " + leftColor);
+            Blackbox.log("INFO", "Pressing again since color is: " +  leftColor);
+            Robot.telemetry.update();
             extendArmBasedOnLeftColor(leftColor);
 
-            // move forwards
+            // move forwards7m
             Robot.leftMotors(0.5f);
             Robot.rightMotors(0.5f);
             Thread.sleep(1500);

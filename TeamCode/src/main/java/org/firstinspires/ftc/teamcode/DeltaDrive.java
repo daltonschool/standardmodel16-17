@@ -333,10 +333,9 @@ public class DeltaDrive extends OpMode {
     public double scaletobounds(double input, double max, double min) {
         double output = input;
         if (input > 0) {
-            output =+ input*max;
-        } else if (input < 0) {
-            output =- input*min;
+            return input * max;
+        } else {
+            return input * min;
         }
-        return output;
     }
 }
