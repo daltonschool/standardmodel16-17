@@ -263,13 +263,13 @@ public class Robot {
 
             if (distanceTo < 10) {
                 currentSpeed *= 0.20;
-                currentSpeed = Math.min(currentSpeed, 0.6f);
+                currentSpeed = Math.min(currentSpeed, 0.8f);
             } else if (distanceTo < 20) {
                 currentSpeed *= 0.30;
-                currentSpeed = Math.min(currentSpeed, 0.65f);
+                currentSpeed = Math.min(currentSpeed, 0.85f);
             } else if (distanceTo < 30) {
                 currentSpeed *= 0.40;
-                currentSpeed = Math.min(currentSpeed, 0.7f);
+                currentSpeed = Math.min(currentSpeed, 0.9f);
             }
 
             leftMotors(Math.max(minimumLeftSpeed, (turnLeft ? -currentSpeed : currentSpeed)));
