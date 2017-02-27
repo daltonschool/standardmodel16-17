@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.options;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
+import org.firstinspires.ftc.teamcode.Blackbox;
 import org.firstinspires.ftc.teamcode.Robot;
 
 import java.io.File;
@@ -21,15 +22,24 @@ public class OptionManager {
         currentOptions = load();
     }
 
+    public static Options getDefault() {
+        Options defaults = new Options();
+
+        defaults.startDelay = 0;
+        defaults.particleCount = 2;
+        defaults.beaconCount = 2;
+        defaults.capBall = false;
+        defaults.longerStartMovement = false;
+
+        return defaults;
+    }
+
     public static Options load() {
         Gson g = new Gson();
         File optionsFile = new File(optionPath);
         if (!optionsFile.exists()) {
             // options file doesn't exist...
-            Options defaults = new Options();
-            defaults.shotsOnly = false;
-            defaults.startDelay = false;
-            return defaults;
+            return getDefault();
         }
         try {
             FileReader optionsFR = new FileReader(optionsFile);
@@ -104,6 +114,7 @@ public class OptionManager {
             }
             try {
                 Robot.telemetry.addData(OptionManager.getPrettyName(f.getName()), f.get(OptionManager.currentOptions));
+                Blackbox.log("OPTIONS", OptionManager.getPrettyName(f.getName()) + " == " + f.get(OptionManager.currentOptions).toString());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
                 Robot.telemetry.addData(OptionManager.getPrettyName(f.getName()), "IllegalAccessException");

@@ -444,11 +444,12 @@ public class FtcRobotControllerActivity extends Activity {
       finish();
       return true;
     }
-    /*else if (id == R.id.action_autonomous_settings) { // AUTO SETTINGS PATCH STARTS HERE
+    else if (id == R.id.action_autonomous_settings) { // AUTO SETTINGS PATCH STARTS HERE
       // we can't directly reference TeamCode, so refer to the activity by name
       Intent autoSettingsIntent = new Intent("org.firstinspires.ftc.teamcode.AutonomousPlanConfigAction");
       startActivity(autoSettingsIntent);
-    } // AUTO SETTINGS PATCH ENDS HERE*/
+      return true;
+    } // AUTO SETTINGS PATCH ENDS HERE
 
    return super.onOptionsItemSelected(item);
   }

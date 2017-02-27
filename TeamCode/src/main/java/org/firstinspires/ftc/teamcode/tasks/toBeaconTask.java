@@ -3,10 +3,9 @@ package org.firstinspires.ftc.teamcode.tasks;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class AlignmentTaskIdk extends Task {
-    public AlignmentTaskIdk(Object e) {
+public class toBeaconTask extends Task {
+    public toBeaconTask(Object e) {
         super(e);
     }
 
@@ -19,26 +18,19 @@ public class AlignmentTaskIdk extends Task {
     public void run() throws InterruptedException {
         while (true) {
             Robot.update();
-//            while (Robot.range.getDistance(DistanceUnit.INCH) < 8) {
-//                Robot.telemetry.addLine("too close...");
-//                Robot.telemetry.update();
-//                Robot.leftMotors(-.6f);
-//                Robot.rightMotors(-.6f);
-//                return;
-//            }
 
             double leftLine = Robot.leftLineLight.getLightDetected();
             double rightLine = Robot.rightLineLight.getLightDetected();
 
-            if (0.005 < leftLine && leftLine < 0.07 && 0.005 < rightLine && rightLine < 0.07) {
+            if (0.005 < leftLine && leftLine < 0.07 && 0.005 < rightLine && rightLine < 0.07) { //if on the line
                 Robot.leftMotors(0.65f);
                 Robot.rightMotors(0.65f);
-            } else if (leftLine > rightLine) {
-                Robot.leftMotors(0.0f);
+            } else if (leftLine > rightLine) { //to the right of the line
+                Robot.leftMotors(0.1f);
                 Robot.rightMotors(0.6f);
-            } else if (rightLine > leftLine) {
+            } else if (rightLine > leftLine) { //to the left of the line
                 Robot.leftMotors(0.6f);
-                Robot.rightMotors(0.0f);
+                Robot.rightMotors(0.1f);
             } else {
                 Robot.leftMotors(0.0f);
                 Robot.rightMotors(0.0f);
@@ -49,11 +41,6 @@ public class AlignmentTaskIdk extends Task {
                 Robot.rightMotors(0.0f);
                 return;
             }
-
-//            if(currentTime - startTime > 100) {
-                Robot.telemetry.addLine("Distance to beaon: " + Robot.range.getDistance(DistanceUnit.INCH));
-                Robot.telemetry.update();
-//            }
 
             Robot.telemetry.addData("Left line light", leftLine);
             Robot.telemetry.addData("Right line light", rightLine);

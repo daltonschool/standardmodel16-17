@@ -5,8 +5,8 @@ import org.firstinspires.ftc.teamcode.Blackbox;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.taskutil.Task;
 
-public class ShootTask extends Task {
-    public ShootTask(Object e) {
+public class ShootSlowTask extends Task {
+    public ShootSlowTask(Object e) {
         super(e);
     }
 
@@ -20,11 +20,11 @@ public class ShootTask extends Task {
         float flywheelPower = 0.3f;
 
         if (Robot.voltageSensor.getVoltage() < 13) {
-            flywheelPower = 0.35f;
+            flywheelPower = 0.5f;
         } else if (Robot.voltageSensor.getVoltage() < 13.5) {
-            flywheelPower = 0.3f;
+            flywheelPower = 0.45f;
         } else {
-            flywheelPower = 0.25f;
+            flywheelPower = 0.4f;
         }
 
         Robot.flywheelLeft.setPower(flywheelPower);
@@ -32,6 +32,10 @@ public class ShootTask extends Task {
 
         Thread.sleep(1500);
 
+        Robot.conveyor.setPower(1.0f);
+        Thread.sleep(500);
+        Robot.conveyor.setPower(0.0f);
+        Thread.sleep(500);
         Robot.conveyor.setPower(1.0f);
 
         Thread.sleep(3000);
