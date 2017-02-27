@@ -20,11 +20,11 @@ public class ShootTask extends Task {
         float flywheelPower = 0.3f;
 
         if (Robot.voltageSensor.getVoltage() < 13) {
-            flywheelPower = 0.5f;
+            flywheelPower = 0.35f;
         } else if (Robot.voltageSensor.getVoltage() < 13.5) {
-            flywheelPower = 0.45f;
+            flywheelPower = 0.3f;
         } else {
-            flywheelPower = 0.4f;
+            flywheelPower = 0.25f;
         }
 
         Robot.flywheelLeft.setPower(flywheelPower);

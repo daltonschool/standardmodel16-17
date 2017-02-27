@@ -226,13 +226,13 @@ public class Robot {
 
     // Servo methods
     public static void extendLeft() {
-        Robot.beaconLeft.setPosition(0.6);
-        Robot.beaconRight.setPosition(0.65);
+        Robot.beaconLeft.setPosition(0.95);
+        Robot.beaconRight.setPosition(0.95);
     }
 
     public static void extendRight() {
-        Robot.beaconLeft.setPosition(0.15);
-        Robot.beaconRight.setPosition(0.19);
+        Robot.beaconLeft.setPosition(0.05);
+        Robot.beaconRight.setPosition(0.05);
     }
 
     public static void extendBoth() {
@@ -257,19 +257,19 @@ public class Robot {
 
             double currentSpeed = power;
             float distanceTo = Math.abs(targetHeading - currentHeading);
-            double minimumSpeed = 0.55f;
+            double minimumSpeed = 0.65f;
             double minimumLeftSpeed = (turnLeft ? -minimumSpeed : minimumSpeed);
             double minimumRightSpeed = (turnLeft ? minimumSpeed : -minimumSpeed);
 
             if (distanceTo < 10) {
                 currentSpeed *= 0.20;
-                currentSpeed = Math.min(currentSpeed, 0.8f);
+                currentSpeed = Math.min(currentSpeed, 0.7f);
             } else if (distanceTo < 20) {
                 currentSpeed *= 0.30;
-                currentSpeed = Math.min(currentSpeed, 0.85f);
+                currentSpeed = Math.min(currentSpeed, 0.75f);
             } else if (distanceTo < 30) {
                 currentSpeed *= 0.40;
-                currentSpeed = Math.min(currentSpeed, 0.9f);
+                currentSpeed = Math.min(currentSpeed, 0.8f);
             }
 
             leftMotors(Math.max(minimumLeftSpeed, (turnLeft ? -currentSpeed : currentSpeed)));
@@ -357,7 +357,7 @@ public class Robot {
         ) {
             double factor = 1.0f;
             if ((-leftMotor.getCurrentPosition() - startPos) > (distanceToDrive / 2)) {
-                factor = 0.5f;
+                factor = 0.75f;
             }
             leftMotors(power * factor);
             rightMotors(power * factor);
