@@ -41,6 +41,7 @@ public abstract class TaskedOperation extends LinearOpMode {
         telemetry.update();
 
         Robot.init(this);                               // set up robot
+        Robot.extendBoth();
 
         telemetry.addData("Status", "Starting options...");
         telemetry.update();

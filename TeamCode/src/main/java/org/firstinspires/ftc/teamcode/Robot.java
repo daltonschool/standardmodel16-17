@@ -237,8 +237,8 @@ public class Robot {
     }
 
     public static void extendBoth() {
-        Robot.beaconLeft.setPosition(0.6);
-        Robot.beaconRight.setPosition(0.19);
+        Robot.beaconLeft.setPosition(0.95);
+        Robot.beaconRight.setPosition(0.05);
     }
 
     public static void retractBoth() {
